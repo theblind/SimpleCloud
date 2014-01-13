@@ -1,5 +1,5 @@
 """
-Django settings for jianyun project.
+Django settings for SimpleCloud project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'l!nlm9g#wf9-60239$e=xxmfdmzu!ta9n)w=)f&gmoi^q-uib^'
+SECRET_KEY = '4ip$mk1&#co3k((i^*esnlknxs7lc3=!8oqiph3t)oo0@ocvwr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -47,9 +47,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'jianyun.urls'
+ROOT_URLCONF = 'SimpleCloud.urls'
 
-WSGI_APPLICATION = 'jianyun.wsgi.application'
+WSGI_APPLICATION = 'SimpleCloud.wsgi.application'
 
 
 # Database

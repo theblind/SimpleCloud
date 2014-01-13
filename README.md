@@ -1,4 +1,4 @@
-#jianyun
+#SimpleCloud
 
 ##benchmark/benchmark.sh
 
