@@ -9,11 +9,27 @@ class IaaSProvider(models.Model):
 	# IaaS Provoder description
 	description = models.CharField(max_length = 300)
 
+# create model UnixBench to represent
+# this benchmark's detail
+class UnixBench(models.Model):
+	# machine score for serail test
+	serialScore = models.IntegerField()
+	# machine score for parallel test
+	parallelScore = models.IntegerField()
+
+# create model Phoronix to represent
+# this benchmark's detail
+class Phoronix(models.Model):
+	pass
 
 # create model machine to represent virtual machine
 class Machine(models.Model):
 	# many to one relationship with IaaS Provider
 	provider = models.ForeignKey(IaaSProvider)
+	# many to one relationship with UnixBench
+	unixBench = models.ForeignKey(UnixBench)
+	# many to one relationship with Phoronix Test Suite
+	phoronix = models.ForeignKey(Phoronix)
 
 	# machine name
 	name = models.CharField(max_length = 30)
@@ -40,25 +56,5 @@ class Machine(models.Model):
 			('L', 'Large'),
 			('H', 'Huge'),
 		)
-	scale = models.CharField(max_length = 1, choices = VIRTUAL_MACHINE_SCALE)
-
-# create model Benchmark Performance to represent
-# a virtual machine's performance
-class BenchmarkPerformance(models.Model):
-	# many to one relationship whith machine
-	machine = models.ForeignKey(Machine)
-
-# create model UnixBench to represent
-# this benchmark's detail
-class UnixBench(models.Model):
-	# many to one relationship with benchmark performance
-	benchmarkPerformance = models.ForeignKey(BenchmarkPerformance)
-
-	# desciption for UnixBench benchmark
-	description = models.CharField(max_length = 300)
-
-	# machine score for serail test
-	serialScore = models.IntegerField()
-	# machine score for parallel test
-	parallelScore = models.IntegerField()
-
+	scale = models.CharField(max_length = 1,
+	 choices = VIRTUAL_MACHINE_SCALE)
