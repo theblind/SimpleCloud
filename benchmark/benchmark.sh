@@ -67,7 +67,6 @@ function run_phoronix
     mkdir -p $output_path
     phoronix-test-suite batch-benchmark dbench > $output_path/dbench.log
     phoronix-test-suite batch-benchmark compress-7zip > $output_path/compress-7zip.log
-    phoronix-test-suite batch-benchmark x264 > $output_path/x264.log
     format_result 'Average' $output_path/UnixBench.log | xargs log "* compress-7zip: "
     #phoronix-test-suite batch-benchmark x264 > $output_path/x264.log
     phoronix-test-suite batch-benchmark pgbench > $output_path/pgbench.log
