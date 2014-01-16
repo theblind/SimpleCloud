@@ -1,1 +1,4 @@
 *.pyc
+
+benchmark/benchmark.conf
+benchmark/results
