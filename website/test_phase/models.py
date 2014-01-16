@@ -9,27 +9,41 @@ class IaaSProvider(models.Model):
 	# IaaS Provoder description
 	description = models.CharField(max_length = 300)
 
+	# return description as object's string format
+	def __unicode__(self):
+		return description
+
+
 # create model UnixBench to represent
 # this benchmark's detail
 class UnixBench(models.Model):
 	# machine score for serail test
 	serialScore = models.IntegerField()
+
 	# machine score for parallel test
 	parallelScore = models.IntegerField()
+
 
 # create model Phoronix to represent
 # this benchmark's detail
 class Phoronix(models.Model):
-	pass
+	# test result for 7-zip compression
+	# result unit is MIPS
+	compressionResult = models.IntegerField()
+
+	# test result for postgreSQL benchmark
+	# result unit is TPS
+	pgbenchResult = models.IntegerField()
+
 
 # create model machine to represent virtual machine
 class Machine(models.Model):
 	# many to one relationship with IaaS Provider
 	provider = models.ForeignKey(IaaSProvider)
-	# many to one relationship with UnixBench
-	unixBench = models.ForeignKey(UnixBench)
-	# many to one relationship with Phoronix Test Suite
-	phoronix = models.ForeignKey(Phoronix)
+	# many to many relationship with UnixBench
+	unixBenchResults = models.ManyToManyField(UnixBench)
+	# many to many relationship with Phoronix Test Suite
+	phoronixResults = models.ManyToManyField(Phoronix)
 
 	# machine name
 	name = models.CharField(max_length = 30)
