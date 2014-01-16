@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'test_phase/css/style.css' %}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -108,37 +109,37 @@
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="http://www.baidu.com/">
-                        <img src="{{ STATIC_URL }}images/aws.jpg" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="AWS"></a>
+                        <img src="{% static 'test_phase/images/aws.jpg' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="AWS"></a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#">
-                        <img src="{{ STATIC_URL }}images/azure.jpg" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="Azure"></a>
+                        <img src="{% static 'test_phase/images/azure.jpg' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="Azure"></a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#">
-                        <img src="{{ STATIC_URL }}images/aliyun.jpg" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="=AWS"></a>
+                        <img src="{% static 'test_phase/images/aliyun.jpg' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="=AWS"></a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#">
-                        <img src="{{ STATIC_URL }}images/rackspace.jpg" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="=AWS"></a>
+                        <img src="{% static 'test_phase/images/rackspace.jpg' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="=AWS"></a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#">
-                        <img src="{{ STATIC_URL }}images/gce.png" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="=AWS"></a>
+                        <img src="{% static 'test_phase/images/gce.png' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="=AWS"></a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="thumbnail">
                     <a href="#">
-                        <img src="{{ STATIC_URL }}images/hpcloud.jpg" width="150" height="60" data-src="{{ STATIC_URL }}images/aws.jpg" alt="=AWS"></a>
+                        <img src="{% static 'test_phase/images/hpcloud.jpg' %}" width="150" height="60" data-src="{% static 'test_phase/images/aws.jpg' %}" alt="=AWS"></a>
                 </div>
             </div>
         </div>
@@ -151,7 +152,7 @@
                     <h4>About Us</h4>
                     <div class="text-muted media">
                         <a class="pull-left" href="#">
-                            <img class="media-object" src="{{ STATIC_URL }}images/about_us.png" alt="About Us">
+                            <img class="media-object" src="{% static 'test_phase/images/about_us.png' %}" alt="About Us">
                         </a>
                         <p class="text-muted font16">
                             简云是一个免费开放的云服务商测评工具，给出不同服务商不同配置实例的性能分析和价格对比结果，用户可以自行配置虚拟机硬件需求，简云会自动找出最符合用户需求的云服务商及虚拟机解决方案。

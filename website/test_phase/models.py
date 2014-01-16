@@ -18,7 +18,7 @@ class IaaSProvider(models.Model):
 # this benchmark's detail
 class UnixBench(models.Model):
 	# machine score for serail test
-	serialScore = models.IntegerField()
+	serialScore = models.IntegerField()cour
 
 	# machine score for parallel test
 	parallelScore = models.IntegerField()
