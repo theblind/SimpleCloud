@@ -12,7 +12,14 @@ mkdir -p $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp
 
 function log
 {
-    echo "$1" >> $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/benchmark.log
+    echo "$@" >> $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/benchmark.log
+}
+
+# format_result file_path indicator
+function format_result
+{
+    index=$(($(echo $2 | wc -w)+1))
+    grep -i "$2" $1 | awk "{print \$$index}" | tr "\\n" " "
 }
 
 # setup benchmark_name dependencies compressed_file
@@ -36,10 +43,13 @@ function setup_unixbench
 
 function run_unixbench
 {
-    log "Run UnixBench"
+    log "Run UnixBench at "`date +%F\ %T`
     cd $ROOT_DIRECTORY/UnixBench    
-    mkdir -p $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/UnixBench
-    ./Run > $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/UnixBench/UnixBench.log
+    output_path=$ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/UnixBench
+    mkdir -p $output_path
+    ./Run > $output_path/UnixBench.log
+    format_result 'System Benchmarks Index Score' $output_path/UnixBench.log | xargs log "* UnixBench: "
+    log "> UnixBench Finished at "`date +%F\ %T`
 }
 
 function setup_phoronix
@@ -52,13 +62,16 @@ function setup_phoronix
 
 function run_phoronix
 {
-    log "Run Phoronix"
+    log "Run Phoronix at "`date +%F\ %T`
     output_path=$ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/Phoronix
     mkdir -p $output_path
     phoronix-test-suite batch-benchmark dbench > $output_path/dbench.log
     phoronix-test-suite batch-benchmark compress-7zip > $output_path/compress-7zip.log
-    phoronix-test-suite batch-benchmark x264 > $output_path/x264.log
+    format_result 'Average' $output_path/UnixBench.log | xargs log "* compress-7zip: "
+    #phoronix-test-suite batch-benchmark x264 > $output_path/x264.log
     phoronix-test-suite batch-benchmark pgbench > $output_path/pgbench.log
+    format_result 'Average' $output_path/UnixBench.log | xargs log "* pgbench: "
+    log "> Phoronix Finished at "`date +%F\ %T`
 }
 
 # need_config benchmark_name
@@ -71,3 +84,4 @@ need_config 'unixbench' && setup_unixbench
 run_unixbench
 need_config 'phoronix' && setup_phoronix
 run_phoronix
+
