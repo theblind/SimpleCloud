@@ -12,4 +12,7 @@
 ```
 
 ### 输出
-当前目录的 *./results/日期\_时间* 目录下
+
+Benchmark的原始输出在当前目录的 *./results/日期\_时间* 目录下
+
+目前已格式化UnixBench与Phoronix中compress-7zip、pgbench的输出，结果放于当前目录的 *./results/日期\_时间/benchmark.log* 之中
