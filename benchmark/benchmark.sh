@@ -2,6 +2,19 @@
 
 set -e
 
+if [ $# -ne 2 ];
+then
+    echo 'Illegal number of parameters'
+    echo
+    echo './benchmark.sh UnixBench_compressed_file_path Phoronix_compressed_file_path'
+    echo
+    echo 'NOTE: Compressed file will be extracted with option "x"'
+    exit
+fi
+
+unixbench_compressed_file_path=$1
+phoronix_compressed_file_path=$2
+
 export ROOT_DIRECTORY=`pwd`
 export RESULT_DIRECTORY='results'
 CONFIGURATION_FILE="benchmark.conf"
@@ -39,7 +52,7 @@ function setup
 
 function setup_unixbench
 {
-    setup "unixbench" "libx11-dev libgl1-mesa-dev libxext-dev perl perl-modules make" "UnixBench5.1.3.tgz"
+    setup "unixbench" "libx11-dev libgl1-mesa-dev libxext-dev perl perl-modules make" $unixbench_compressed_file_path
 }
 
 function run_unixbench
@@ -55,7 +68,7 @@ function run_unixbench
 
 function setup_phoronix
 {
-    setup "Phoronix" "php5-cli php5-json php5-gd" "phoronix_test_suites.tar.gz"
+    setup "Phoronix" "php5-cli php5-json php5-gd" $phoronix_compressed_file_path
     cd phoronix-test-suite
     sudo ./install-sh
     expect -c 'spawn phoronix-test-suite batch-setup; expect "*(Y/n): "; send "y\r"; expect "*(y/N): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "Y\r"; interact '
