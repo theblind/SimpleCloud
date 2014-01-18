@@ -8,8 +8,10 @@
 将文件与UnixBench和Phoronix复制到某一目录下，使用以下命令执行benchmark.sh
 
 ```bash
-    nohup ./benchmark.sh &
+    nohup ./benchmark.sh UnixBench压缩文件路径 Phoronix压缩文件路径 &
 ```
+
+注意：脚本使用x选项来解压压缩文件
 
 ### 输出
 
