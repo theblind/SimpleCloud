@@ -81,10 +81,10 @@ function run_phoronix
     mkdir -p $output_path
     phoronix-test-suite batch-benchmark dbench > $output_path/dbench.log
     phoronix-test-suite batch-benchmark compress-7zip > $output_path/compress-7zip.log
-    format_result $output_path/UnixBench.log 'Average' 'compress-7zip'
+    format_result $output_path/compress-7zip.log 'Average' 'compress-7zip'
     #phoronix-test-suite batch-benchmark x264 > $output_path/x264.log
     phoronix-test-suite batch-benchmark pgbench > $output_path/pgbench.log
-    format_result $output_path/UnixBench.log 'Average' 'pgbench'
+    format_result $output_path/pgbench.log 'Average' 'pgbench'
     log "> Phoronix Finished at "`date +%F\ %T`
 }
 
