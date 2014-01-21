@@ -11,7 +11,7 @@ class IaaSProvider(models.Model):
 
 	# return description as object's string format
 	def __unicode__(self):
-		return description
+		return self.description
 
 
 # create model machine to represent virtual machine
@@ -22,7 +22,19 @@ class Machine(models.Model):
 	# machine name
 	name = models.CharField(max_length = 30)
 	# machine price
-	price = models.IntegerField()
+	price = models.DecimalField(max_digits = 4, decimal_places = 2)
+
+	# machine vCPU frequency, unit is GHz/s
+	vCPUFrequency = models.DecimalField(max_digits = 2, decimal_places = 1)
+	# machine vCPU number
+	vCPUNumber = models.IntegerField()
+	# machine memory size, unit is GB
+	memorySize = models.IntegerField()
+	# machine storage capacity, unit is GB
+	storageCapacity = models.IntegerField()
+	# machine bandwidth, unit is Mb/s
+	bandwidth = models.IntegerField()
+
 
 	# machine's purpose type represent
 	# what will user work with this VM
@@ -33,7 +45,7 @@ class Machine(models.Model):
 			('S', 'Storage'),
 		)
 	purpose_type = models.CharField(max_length = 1, 
-		choices = VIRTUAL_MACHINE_PURPOSE_TYPE)
+					choices = VIRTUAL_MACHINE_PURPOSE_TYPE)
 
 	# machine's sclae represent
 	# how big the VM it is
@@ -45,7 +57,18 @@ class Machine(models.Model):
 			('H', 'Huge'),
 		)
 	scale = models.CharField(max_length = 1,
-	 choices = VIRTUAL_MACHINE_SCALE)
+	 		choices = VIRTUAL_MACHINE_SCALE)
+
+	# return machine's information
+	def __unicode__(self):
+		machineInformation = "\nIaaS Provider:\t\t%s \nMachine Name:\t\t%s \
+								\nMachine price:\t\t%s" \
+								% (self.provider, self.name, self.price)
+		machineHardware = "vCPU Frequency:\t\t%s \nvCPU Number:\t\t%s \nmemory size:\t\t%s \
+								\nstorage capacity:\t%s \nbandwidth:\t\t%s" \
+								% (self.vCPUFrequency, self.vCPUNumber, \
+								self.memorySize, self.storageCapacity, self.bandwidth)
+		return "%s\n%s\n" % (machineInformation, machineHardware)
 
 
 # create model UnixBench to represent
@@ -61,7 +84,7 @@ class UnixBench(models.Model):
 	parallelScore = models.IntegerField()
 
 	# timestamps for single test
-	created_at = models.DateField(auto_now_add = True)
+	createdAt = models.DateField(auto_now_add = True)
 
 
 # create model Phoronix to represent
@@ -79,4 +102,4 @@ class Phoronix(models.Model):
 	pgbenchResult = models.IntegerField()
 
 	# timestamps for single test
-	created_at = models.DateField(auto_now_add = True)
+	createdAt = models.DateField(auto_now_add = True)
