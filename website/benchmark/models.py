@@ -19,11 +19,11 @@ class Machine(models.Model):
 	# many to one relationship with IaaS Provider
 	provider = models.ForeignKey(IaaSProvider)
 
+	# using md5 encryption to identify virtual machine
+	key = models.CharField(max_length = 32)
+
 	# machine name
 	name = models.CharField(max_length = 30)
-	# machine price
-	price = models.DecimalField(max_digits = 4, decimal_places = 2)
-
 	# machine vCPU frequency, unit is GHz/s
 	vCPUFrequency = models.DecimalField(max_digits = 2, decimal_places = 1)
 	# machine vCPU number
@@ -61,14 +61,20 @@ class Machine(models.Model):
 
 	# return machine's information
 	def __unicode__(self):
-		machineInformation = "\nIaaS Provider:\t\t%s \nMachine Name:\t\t%s \
-								\nMachine price:\t\t%s" \
-								% (self.provider, self.name, self.price)
+		machineInformation = "\nIaaS Provider:\t\t%s \nMachine Name:\t\t%s" \
+								% (self.provider, self.name)
 		machineHardware = "vCPU Frequency:\t\t%s \nvCPU Number:\t\t%s \nmemory size:\t\t%s \
 								\nstorage capacity:\t%s \nbandwidth:\t\t%s" \
 								% (self.vCPUFrequency, self.vCPUNumber, \
 								self.memorySize, self.storageCapacity, self.bandwidth)
 		return "%s\n%s\n" % (machineInformation, machineHardware)
+
+
+# create model Price to represent
+# virtual machine's price
+class Price(models.Model):
+	# many to one relationship with machine
+	machine = models.ForeignKey(Machine)
 
 
 # create model UnixBench to represent
