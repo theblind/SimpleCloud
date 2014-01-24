@@ -14,42 +14,41 @@ class IaaSProvider(models.Model):
 		return self.description
 
 
-# create model machine to represent virtual machine
-class Machine(models.Model):
+# create model Instance Type to represent 
+# instance's hardware information
+class InstanceType(models.Model):
 	# many to one relationship with IaaS Provider
 	provider = models.ForeignKey(IaaSProvider)
 
-	# using md5 encryption to identify virtual machine
-	key = models.CharField(max_length = 32)
 
-	# machine name
+	# instance name
 	name = models.CharField(max_length = 30)
-	# machine vCPU frequency, unit is GHz/s
+	# instance vCPU frequency, unit is GHz/s
 	vCPUFrequency = models.DecimalField(max_digits = 2, decimal_places = 1)
-	# machine vCPU number
+	# instance vCPU number
 	vCPUNumber = models.IntegerField()
-	# machine memory size, unit is GB
+	# instance memory size, unit is GB
 	memorySize = models.IntegerField()
-	# machine storage capacity, unit is GB
+	# instance storage capacity, unit is GB
 	storageCapacity = models.IntegerField()
-	# machine bandwidth, unit is Mb/s
+	# instance bandwidth, unit is Mb/s
 	bandwidth = models.IntegerField()
 
 
-	# machine's purpose type represent
-	# what will user work with this VM
-	VIRTUAL_MACHINE_PURPOSE_TYPE = (
+	# instance's purpose type represent
+	# what will user work with this instance
+	INSTANCE_PURPOSE_TYPE = (
 			('G', 'General'),
 			('C', 'Compute'),
 			('M', 'Memory'),
 			('S', 'Storage'),
 		)
 	purpose_type = models.CharField(max_length = 1, 
-					choices = VIRTUAL_MACHINE_PURPOSE_TYPE)
+					choices = INSTANCE_PURPOSE_TYPE)
 
-	# machine's sclae represent
-	# how big the VM it is
-	VIRTUAL_MACHINE_SCALE = (
+	# instance's sclae represent
+	# how big the instance it is
+	INSTANCE_SCALE = (
 			('T', 'Tiny'),
 			('S', 'Small'),
 			('M', 'Medium'),
@@ -57,36 +56,46 @@ class Machine(models.Model):
 			('H', 'Huge'),
 		)
 	scale = models.CharField(max_length = 1,
-	 		choices = VIRTUAL_MACHINE_SCALE)
+	 		choices = INSTANCE_SCALE)
 
-	# return machine's information
+	# return instance's information
 	def __unicode__(self):
-		machineInformation = "\nIaaS Provider:\t\t%s \nMachine Name:\t\t%s" \
+		instanceInformation = "\nIaaS Provider:\t\t%s \nInstance Name:\t\t%s" \
 								% (self.provider, self.name)
-		machineHardware = "vCPU Frequency:\t\t%s \nvCPU Number:\t\t%s \nmemory size:\t\t%s \
+		instanceHardware = "vCPU Frequency:\t\t%s \nvCPU Number:\t\t%s \nmemory size:\t\t%s \
 								\nstorage capacity:\t%s \nbandwidth:\t\t%s" \
 								% (self.vCPUFrequency, self.vCPUNumber, \
 								self.memorySize, self.storageCapacity, self.bandwidth)
-		return "%s\n%s\n" % (machineInformation, machineHardware)
+		return "%s\n%s\n" % (instanceInformation, instanceHardware)
 
 
 # create model Price to represent
-# virtual machine's price
+# instance's price
 class Price(models.Model):
-	# many to one relationship with machine
-	machine = models.ForeignKey(Machine)
+	# many to one relationship with Instance Type
+	instanceType = models.ForeignKey(InstanceType)
+
+
+# create model Instance to represent
+# single instance
+class Instance(models.Model):
+	# many to one relationship with Instance Type
+	instanceType = models.ForeignKey(InstanceType)
+
+	# using md5 encryption to identify instance
+	key = models.CharField(max_length = 32)
 
 
 # create model UnixBench to represent
 # this benchmark's detail
 class UnixBench(models.Model):
-	# many to one relationship with machine
-	machine = models.ForeignKey(Machine)
+	# many to one relationship with Instance
+	instance = models.ForeignKey(Instance)
 
-	# machine score for serail test
+	# instance score for serail test
 	serialScore = models.IntegerField()
 	
-	# machine score for parallel test
+	# instance score for parallel test
 	parallelScore = models.IntegerField()
 
 	# timestamps for single test
@@ -96,8 +105,8 @@ class UnixBench(models.Model):
 # create model Phoronix to represent
 # this benchmark's detail
 class Phoronix(models.Model):
-	# many to one relationship with machine
-	machine = models.ForeignKey(Machine)
+	# many to one relationship with Instance
+	instance = models.ForeignKey(Instance)
 
 	# test result for 7-zip compression
 	# result unit is MIPS

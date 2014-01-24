@@ -19,41 +19,7 @@
     <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" roll="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" id="logo"></a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="navbar-li">
-                        <a href="/">
-                            <span class="icon icon-home"></span>
-                            首页
-                        </a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#">
-                            <span class="icon icon-func"></span>
-                            功能
-                        </a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#">
-                            <span class="icon icon-about"></span>
-                            关于
-                        </a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#">
-                            <span class="icon icon-help"></span>
-                            帮助
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include "pages/includes/header.html" %}
 
     <div class="config">
         <div class="container">    
@@ -76,42 +42,66 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="col-md-3 cpu">
+                        <h4 class="">CPU</h4>
+                        <ul class="list first-li">
+                            <li>
+                                <input tabindex="23" type="radio" id="polaris-radio-19" name="polaris-radio4">                              
+                                <label for="polaris-radio-19">1 vCPU</label>
+                            </li>
+                            <li>
+                                <input tabindex="24" type="radio" id="polaris-radio-20" name="polaris-radio4" checked>                              
+                                <label for="polaris-radio-20">2 vCPU</label>
+                            </li>
+                            <li>
+                                <input tabindex="23" type="radio" id="polaris-radio-21" name="polaris-radio4">                              
+                                <label for="polaris-radio-21">4 vCPU</label>
+                            </li>
+                            <li>
+                                <input tabindex="24" type="radio" id="polaris-radio-22" name="polaris-radio4" checked>                              
+                                <label for="polaris-radio-22">8 vCPU</label>
+                            </li>
+                        </ul>
+                        <ul class="list">
+                            <li>
+                                <input tabindex="23" type="radio" id="polaris-radio-23" name="polaris-radio4">                              
+                                <label for="polaris-radio-23">12 vCPU</label>
+                            </li>
+                            <li>
+                                <input tabindex="24" type="radio" id="polaris-radio-24" name="polaris-radio4" checked>                              
+                                <label for="polaris-radio-24">16 vCPU</label>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="col-md-3 memory">
                         <h4 class="">内存</h4>
                         <ul class="list first-li">
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-3" name="polaris-radio2">                              
-                                <label for="polaris-radio-3">512M</label>
+                                <label for="polaris-radio-3">1 GB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-4" name="polaris-radio2" checked>                              
-                                <label for="polaris-radio-4">1G</label>
+                                <label for="polaris-radio-4">2 GB</label>
                             </li>
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-5" name="polaris-radio2">                              
-                                <label for="polaris-radio-5">2G</label>
+                                <label for="polaris-radio-5">4 GB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-6" name="polaris-radio2" checked>                              
-                                <label for="polaris-radio-6">4G</label>
+                                <label for="polaris-radio-6">8 GB</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-7" name="polaris-radio2">                              
-                                <label for="polaris-radio-7">8G</label>
+                                <label for="polaris-radio-7">16 GB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-8" name="polaris-radio2" checked>                              
-                                <label for="polaris-radio-8">16G</label>
-                            </li>
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-9" name="polaris-radio2">                              
-                                <label for="polaris-radio-9">32G</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-10" name="polaris-radio2" checked>                              
-                                <label for="polaris-radio-10">64G</label>
+                                <label for="polaris-radio-8">32 GB</label>
                             </li>
                         </ul>
 
@@ -121,77 +111,31 @@
                         <ul class="list first-li">
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-11" name="polaris-radio3">                              
-                                <label for="polaris-radio-11">1G</label>
+                                <label for="polaris-radio-11">50 GB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-12" name="polaris-radio3" checked>                              
-                                <label for="polaris-radio-12">2G</label>
+                                <label for="polaris-radio-12">100 GB</label>
                             </li>
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-13" name="polaris-radio3">                              
-                                <label for="polaris-radio-13">5G</label>
+                                <label for="polaris-radio-13">200 GB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-14" name="polaris-radio3" checked>                              
-                                <label for="polaris-radio-14">10G</label>
+                                <label for="polaris-radio-14">500 GB</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
                                 <input tabindex="23" type="radio" id="polaris-radio-15" name="polaris-radio3">                              
-                                <label for="polaris-radio-15">20G</label>
+                                <label for="polaris-radio-15">1 TB</label>
                             </li>
                             <li>
                                 <input tabindex="24" type="radio" id="polaris-radio-16" name="polaris-radio3" checked>                              
-                                <label for="polaris-radio-16">50G</label>
+                                <label for="polaris-radio-16">2 TB</label>
                             </li>
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-17" name="polaris-radio3">                              
-                                <label for="polaris-radio-17">100G</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-18" name="polaris-radio3" checked>                              
-                                <label for="polaris-radio-18">200G</label>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 cpu">
-                        <h4 class="">CPU</h4>
-                        <ul class="list first-li">
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-19" name="polaris-radio4">                              
-                                <label for="polaris-radio-19">1ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-20" name="polaris-radio4" checked>                              
-                                <label for="polaris-radio-20">2ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-21" name="polaris-radio4">                              
-                                <label for="polaris-radio-21">3ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-22" name="polaris-radio4" checked>                              
-                                <label for="polaris-radio-22">4ECU</label>
-                            </li>
-                        </ul>
-                        <ul class="list">
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-23" name="polaris-radio4">                              
-                                <label for="polaris-radio-23">5ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-24" name="polaris-radio4" checked>                              
-                                <label for="polaris-radio-24">6ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-25" name="polaris-radio4">                              
-                                <label for="polaris-radio-25">7ECU</label>
-                            </li>
-                            <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-26" name="polaris-radio4" checked>                              
-                                <label for="polaris-radio-26">8ECU</label>
-                            </li>
+
                         </ul>
                     </div>
                 </form>
@@ -325,15 +269,7 @@
     </div>
 
 
-    <div class="bottom-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-9">
-                    <a href="#" class="text-muted">Copyright © 2013 华中科技大学东五楼</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include "pages/includes/footer.html" %}
 
 </body>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

@@ -16,29 +16,7 @@
     <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" roll="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" id="logo"></a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="navbar-li">
-                        <a href="/"><span class="icon icon-home"></span>首页</a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#"><span class="icon icon-func"></span>功能</a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#"><span class="icon icon-about"></span>关于</a>
-                    </li>
-                    <li class="navbar-li">
-                        <a href="#"><span class="icon icon-help"></span>帮助</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include "pages/includes/header.html" %}
 
     <div class="banner">
         <div class="container">
@@ -212,15 +190,7 @@
         </div>
     </div>
 
-    <div class="bottom-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-9">
-                    <a href="#" class="text-muted">Copyright © 2013 华中科技大学东五楼</a>
-                </div>
-            </div>
-        </div>    
-    </div>
+    {% include "pages/includes/footer.html" %}
 
 </body>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
