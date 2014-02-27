@@ -5,8 +5,6 @@ from benchmark.models import Instance, UnixBench
 def parseUnixBenchResult(request, instanceID):
 	if request.method == 'POST':
 		try:
-			#print request.POST
-
 			key = request.POST['key']
 			instance = Instance.objects.get(pk = instanceID)
 			if instance.key == key:
@@ -15,7 +13,8 @@ def parseUnixBenchResult(request, instanceID):
 
 				ub = UnixBench(instance = instance, serialScore = serialScore, parallelScore = parallelScore)
 				ub.save()
+				return render(request, 'benchmark/succeed.html')
 		except KeyError:
 			print 'Error: can\'t parse UnixBench result'
 
-	return render(request, 'benchmark/result.html')
+	return render(request, 'benchmark/failed.html')
