@@ -3,3 +3,4 @@
 benchmark/benchmark.conf
 benchmark/results
 website/SimpleCloud/database.conf
+website/*/migrations
