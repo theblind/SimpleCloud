@@ -5,9 +5,9 @@ from benchmark.models import Instance, UnixBench
 def parseUnixBenchResult(request, instanceID):
 	if request.method == 'POST':
 		try:
-			key = request.POST['key']
+			hashKey = request.POST['hashKey']
 			instance = Instance.objects.get(pk = instanceID)
-			if instance.key == key:
+			if instance.hashKey == hashKey:
 				serialScore = request.POST['serialScore']
 				parallelScore = request.POST['parallelScore']
 
