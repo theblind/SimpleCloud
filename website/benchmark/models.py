@@ -43,7 +43,7 @@ class InstanceType(models.Model):
 			('M', 'Memory'),
 			('S', 'Storage'),
 		)
-	purpose_type = models.CharField(max_length = 1, 
+	purposeType = models.CharField(max_length = 1, 
 					choices = INSTANCE_PURPOSE_TYPE)
 
 	# instance's sclae represent
@@ -74,6 +74,14 @@ class InstanceType(models.Model):
 class Price(models.Model):
 	# many to one relationship with Instance Type
 	instanceType = models.ForeignKey(InstanceType)
+
+	CHARGE_MODE = (
+			('H', 'Hour'),
+			('M', 'Month')
+		)
+	mode = models.CharField(max_length = 1, 
+			choices = CHARGE_MODE)
+	price = models.DecimalField(max_digits = 6, decimal_places = 2)
 
 
 # create model Instance to represent
