@@ -28,7 +28,7 @@ class InstanceType(models.Model):
 	# instance vCPU number
 	vCPUNumber = models.IntegerField()
 	# instance memory size, unit is GB
-	memorySize = models.IntegerField()
+	memorySize = models.DecimalField(max_digits = 4, decimal_places = 2)
 	# instance storage capacity, unit is GB
 	storageCapacity = models.IntegerField()
 	# instance bandwidth, unit is Mb/s
@@ -91,7 +91,10 @@ class Instance(models.Model):
 	instanceType = models.ForeignKey(InstanceType)
 
 	# using md5 encryption to identify instance
-	key = models.CharField(max_length = 32)
+	hashKey = models.CharField(max_length = 32)
+
+	def generateKey(self):
+		self.hashKey = "12345678901234567890123456789012"
 
 
 # create model UnixBench to represent
