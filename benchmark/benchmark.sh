@@ -88,7 +88,7 @@ function run_unixbench
     log "> UnixBench Finished at "`date +%F\ %T`
 
     result=$(format_result $output_path/UnixBench.log 'System Benchmarks Index Score' 'UnixBench')
-    post_unixbench $result
+    post_unixbench "$result"
     log "> UnixBench data posted at "`date +%F\ %T`
 }
 
