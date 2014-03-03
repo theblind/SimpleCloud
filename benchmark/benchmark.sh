@@ -74,7 +74,9 @@ function post_unixbench
 {
     value=$(echo $1 | awk -F '=' '{print $2}')
     serial_score=$(echo $value | awk '{print $1}')
+    serial_score=${serial_score%.*}
     parallel_score=$(echo $value | awk '{print $2}')
+    parallel_score=${parallel_score%.*}
     curl $BASEURL'unixbench' -d "hashKey=$(get_config $CONFIG_KEY)&serialScore=$serial_score&parallelScore=$parallel_score"
 }
 
