@@ -37,7 +37,9 @@ export -f log
 function format_result
 {
     index=$(($(echo $2 | wc -w)+1))
-    grep -i "$2" $1 | awk "{print \$$index}" | tr "\\n" " " | xargs -I {} bash -c "log \| $3: "{}
+    value=$(grep -i "$2" $1 | awk "{print \$$index}" | tr "\\n" " " )
+    log \| $3: $value
+    echo "$3=$value"
 }
 
 # setup benchmark_name dependencies compressed_file
