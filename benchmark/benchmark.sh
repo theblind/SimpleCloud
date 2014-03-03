@@ -18,6 +18,9 @@ phoronix_compressed_file_path=$2
 export ROOT_DIRECTORY=`pwd`
 export RESULT_DIRECTORY='results'
 CONFIGURATION_FILE="benchmark.conf"
+CONFIG_KEY="key"
+CONFIG_INSTANCE_ID="instance_id"
+CONFIG_INSTALLED_BENCHMARK="installed_benchmark"
 
 export timestamp=`date +%F_%T`
 mkdir -p $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp
@@ -47,7 +50,7 @@ function setup
     cd $ROOT_DIRECTORY
     tar xf $3
 
-    echo $1 >> $CONFIGURATION_FILE
+    sed -i "/^$CONFIG_INSTALLED_BENCHMARK/s/$/$1|/" $CONFIGURATION_FILE
 }
 
 # get_config key
@@ -105,3 +108,4 @@ need_config 'unixbench' && setup_unixbench
 run_unixbench
 need_config 'phoronix' && setup_phoronix
 run_phoronix
+
