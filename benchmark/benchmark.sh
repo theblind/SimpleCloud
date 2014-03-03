@@ -68,6 +68,16 @@ function setup_unixbench
     setup "unixbench" "libx11-dev libgl1-mesa-dev libxext-dev perl perl-modules make" $unixbench_compressed_file_path
 }
 
+# post_unixbench result
+# $result: UnixBench=serialScore parallelScore
+function post_unixbench
+{
+    value=$(echo $1 | awk -F '=' '{print $2}')
+    serial_score=$(echo $value | awk '{print $1}')
+    parallel_score=$(echo $value | awk '{print $2}')
+    curl $BASEURL'unixbench' -d "hashKey=$(get_config $CONFIG_KEY)&serialScore=$serial_score&parallelScore=$parallel_score"
+}
+
 function run_unixbench
 {
     log "Run UnixBench at "`date +%F\ %T`
@@ -75,8 +85,11 @@ function run_unixbench
     output_path=$ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/UnixBench
     mkdir -p $output_path
     ./Run > $output_path/UnixBench.log
-    format_result $output_path/UnixBench.log 'System Benchmarks Index Score' 'UnixBench'
     log "> UnixBench Finished at "`date +%F\ %T`
+
+    result=$(format_result $output_path/UnixBench.log 'System Benchmarks Index Score' 'UnixBench')
+    post_unixbench $result
+    log "> UnixBench data posted at "`date +%F\ %T`
 }
 
 function setup_phoronix
