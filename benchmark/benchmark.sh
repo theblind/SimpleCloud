@@ -50,6 +50,13 @@ function setup
     echo $1 >> $CONFIGURATION_FILE
 }
 
+# get_config key
+# return value
+function get_config
+{
+    grep $1 $CONFIGURATION_FILE | awk -F '=' '{print $2}' | tr -d ' '
+}
+
 function setup_unixbench
 {
     setup "unixbench" "libx11-dev libgl1-mesa-dev libxext-dev perl perl-modules make" $unixbench_compressed_file_path
