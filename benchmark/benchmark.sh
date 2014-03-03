@@ -98,14 +98,14 @@ function run_phoronix
     log "> Phoronix Finished at "`date +%F\ %T`
 }
 
-# need_config benchmark_name
-function need_config
+# need_setup benchmark_name
+function need_setup
 {
-    return $(! grep -q -i $1 $ROOT_DIRECTORY/$CONFIGURATION_FILE)
+    return $(! grep -i $CONFIG_INSTALLED_BENCHMARK $CONFIGURATION_FILE | awk -F '=' '{print $2}' | grep -q -i $1 )
 }
 
-need_config 'unixbench' && setup_unixbench
+need_setup 'unixbench' && setup_unixbench
 run_unixbench
-need_config 'phoronix' && setup_phoronix
+need_setup 'phoronix' && setup_phoronix
 run_phoronix
 
