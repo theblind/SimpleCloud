@@ -50,7 +50,6 @@ function setup
     sudo apt-get -y install $2
 
     log "* Extract compressed file: $3"
-    cd $ROOT_DIRECTORY
     tar xf $3
 
     sed -i "/^$CONFIG_INSTALLED_BENCHMARK/s/$/$1|/" $CONFIGURATION_FILE
@@ -92,6 +91,7 @@ function run_unixbench
     result=$(format_result $output_path/UnixBench.log 'System Benchmarks Index Score' 'UnixBench')
     post_unixbench "$result"
     log "> UnixBench data posted at "`date +%F\ %T`
+    cd $ROOT_DIRECTORY
 }
 
 function setup_phoronix
@@ -100,6 +100,7 @@ function setup_phoronix
     cd phoronix-test-suite
     sudo ./install-sh
     expect -c 'spawn phoronix-test-suite batch-setup; expect "*(Y/n): "; send "y\r"; expect "*(y/N): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "n\r"; expect "*(Y/n): "; send "Y\r"; interact '
+    cd $ROOT_DIRECTORY
 }
 
 function run_phoronix
