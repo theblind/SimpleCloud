@@ -52,14 +52,14 @@ function setup
     log "* Extract compressed file: $3"
     tar xf $3
 
-    sed -i "/^$CONFIG_INSTALLED_BENCHMARK/s/$/$1|/" $CONFIGURATION_FILE
+    sed -i "/^$CONFIG_INSTALLED_BENCHMARK/s/$/$1|/" $ROOT_DIRECTORY/$CONFIGURATION_FILE
 }
 
 # get_config key
 # return value
 function get_config
 {
-    grep $1 $CONFIGURATION_FILE | awk -F '=' '{print $2}' | tr -d ' '
+    grep $1 $ROOT_DIRECTORY/$CONFIGURATION_FILE | awk -F '=' '{print $2}' | tr -d ' '
 }
 
 function setup_unixbench
