@@ -4,3 +4,7 @@ benchmark/benchmark.conf
 benchmark/results
 website/SimpleCloud/database.conf
 website/*/migrations
+
+
+instance_price/node_modules
+instance_price/*/node_modules

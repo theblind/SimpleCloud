@@ -1,0 +1,24 @@
+{
+	"mark_data": {
+		"manufacture": "amazon",
+		"alias_name": "aliasName",
+		"vcpu": "2",
+		"vram": "4096",
+		"os": {
+			"text": "instance"["valueColumns"]["name"],
+			"value": "instance"["valueColumns"]["name"]
+		},
+		"region": "region",
+		"pricing_type": "ondemand/reserve"
+	},
+	"add_config": {
+		"band-width": "",
+		"Storage": ["instance"["storageGB"]],
+	},
+	"core_data":{
+		"prices": "instance"["valueColumns"]["prices"],
+		"duration": "1",
+		"pricing_cycle": "hour",
+		"update_time": "dateTime",
+	}
+};

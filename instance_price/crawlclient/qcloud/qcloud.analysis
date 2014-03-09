@@ -1,0 +1,43 @@
+********************************************************************************************************************************
+*												发送时候的参数格式(GET方法)													   *
+********************************************************************************************************************************
+
+URL: http://manage.qcloud.com/ajax/shoppingcart/queryPrice.php
+
+#1. 4核CPU、8G RAM、云硬盘190G、公网带宽13M、操作系统CentOS 6.2 64位、安装安全加固组建、3台、按月计费，5个月。
+mc_gtk=
+goodsInfoArray[0][goodsCategoryId]=1 		# 意义未知，默认为1
+goodsInfoArray[0][goodsDetail][type]=VSELF 	# 恒置为此默认值
+goodsInfoArray[0][goodsDetail][cpu]=4 		# CPU核数
+goodsInfoArray[0][goodsDetail][mem]=8		# 内存大小，单位G
+goodsInfoArray[0][goodsDetail][storage]=0 	# 本地磁盘大小，必选
+goodsInfoArray[0][goodsDetail][bandwidth]=13 	# 公网带宽
+goodsInfoArray[0][goodsDetail][wanIp]=1 		# 是否分配BGP IP，必选为1
+goodsInfoArray[0][goodsDetail][os]=centos6.2-64bit	# 操作系统类型有 "Xserver+V8.1_64"(Windows2008 64bit)、"centos6.2-64bit"、"ubuntu12-64bit"三个选项
+goodsInfoArray[0][goodsDetail][curDeadline]=0000-00-00   # 未知含义
+goodsInfoArray[0][goodsDetail][timeSpan]=5    			# 时长，单位为月，以年为单位购买时需转换为以月为单位
+goodsInfoArray[0][goodsDetail][hasOnion]=true 			# 是否安装安全加固组建
+goodsInfoArray[0][goodsDetail][cbsSize]=190 			# 云硬盘大小，可选
+goodsInfoArray[0][goodsNum]=3 							# 虚拟机台数
+goodsInfoArray[0][payMode]=1 							# 支付模式，意义未知，恒置1
+magic=1 												# 意义未知，恒置1
+payMode=1 												# 意义未知，恒置1
+
+按年购买仅需10个月费用
+#2. 4核、16G内存、100G本地磁盘、公网带宽11M、Ubuntu12.04 64位。安装安全加固组建、1台、按年计费、1年
+mc_gtk=
+goodsInfoArray[0][goodsCategoryId]=1
+goodsInfoArray[0][goodsDetail][type]=VSELF
+goodsInfoArray[0][goodsDetail][cpu]=4
+goodsInfoArray[0][goodsDetail][mem]=16
+goodsInfoArray[0][goodsDetail][storage]=100
+goodsInfoArray[0][goodsDetail][bandwidth]=11
+goodsInfoArray[0][goodsDetail][wanIp]=1
+goodsInfoArray[0][goodsDetail][os]=ubuntu12-64bit
+goodsInfoArray[0][goodsDetail][curDeadline]=0000-00-00
+goodsInfoArray[0][goodsDetail][timeSpan]=12
+goodsInfoArray[0][goodsDetail][hasOnion]=true
+goodsInfoArray[0][goodsNum]=1
+goodsInfoArray[0][payMode]=1
+magic=1
+payMode=1
