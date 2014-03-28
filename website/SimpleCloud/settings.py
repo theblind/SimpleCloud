@@ -73,6 +73,24 @@ DATABASES = {
     }
 }
 
+"""
+# add database support for mongodb
+import mongoengine
+
+DATABASES = {
+    'default': {
+        'ENGINE': '',
+    },
+}
+
+SESSION_ENGINE = 'mongoengine.django.sessions' # optional
+
+mongoengine.connect("jianyun")
+AUTHENTICATION_BACKENDS = (
+    'mongoengine.django.auth.MongoEngineBackend',
+)
+"""
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
