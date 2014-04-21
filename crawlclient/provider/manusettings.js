@@ -1,22 +1,4 @@
-// filename: settings.js
-/*mysql root: simplecloudisgoingon
-vm jasonniu: kfniuchao88
-*/
-var conf = {
-	// API Server 配置信息
-	apiserver: {
-		port: 6789,
-	},
-
-	// 爬虫配置信息
-	manufacture: ["aliyun", "azure", "amazon", "qcloud"],
-	mongodb:{
-		host: "42.159.133.71",
-		username: "server",
-		password: "simplecloudisgoingon",
-		db: "simplecloud",
-		collection: "vm_price"
-	},
+module.exports = {
 	//  腾讯云配置信息
 	qcloudConf: {
 		operatingSystem: {
@@ -43,5 +25,3 @@ var conf = {
 		
 	},
 }
-
-module.exports = conf;
