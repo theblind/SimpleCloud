@@ -1,87 +1,50 @@
 from django.db import models
 
-# create model Iaas Provider to represent
+# create model Manufacture to represent
 # AWS, Azure, RackSpace etc.
-class IaaSProvider(models.Model):
-	# Iaas Provider name
+class Manufacture(models.Model):
+	# Manufacture name
 	name = models.CharField(max_length = 30)
-
-	# IaaS Provoder description
-	description = models.CharField(max_length = 300)
-
-	# return description as object's string format
-	def __unicode__(self):
-		return self.description
 
 
 # create model Instance Type to represent 
 # instance's hardware information
 class InstanceType(models.Model):
 	# many to one relationship with IaaS Provider
-	provider = models.ForeignKey(IaaSProvider)
+	manufacture = models.ForeignKey(Manufacture)
 
 
 	# instance name
-	name = models.CharField(max_length = 30)
-	# instance vCPU frequency, unit is GHz/s
-	vCPUFrequency = models.DecimalField(max_digits = 2, decimal_places = 1)
+	alias_name = models.CharField(max_length = 30)
+
+
+	# instance hardware info
 	# instance vCPU number
-	vCPUNumber = models.IntegerField()
+	vcpu = models.IntegerField()
 	# instance memory size, unit is GB
-	memorySize = models.DecimalField(max_digits = 4, decimal_places = 2)
+	vram = models.DecimalField(max_digits = 4, decimal_places = 2)
 	# instance storage capacity, unit is GB
-	storageCapacity = models.IntegerField()
+	storage = models.IntegerField()
 	# instance bandwidth, unit is Mb/s
-	bandwidth = models.IntegerField()
+	band_width = models.DecimalField(max_digits = 5, decimal_places = 1)
 
 
-	# instance's purpose type represent
-	# what will user work with this instance
-	INSTANCE_PURPOSE_TYPE = (
-			('G', 'General'),
-			('C', 'Compute'),
-			('M', 'Memory'),
-			('S', 'Storage'),
-		)
-	purposeType = models.CharField(max_length = 1, 
-					choices = INSTANCE_PURPOSE_TYPE)
-
-	# instance's sclae represent
-	# how big the instance it is
-	INSTANCE_SCALE = (
-			('T', 'Tiny'),
-			('S', 'Small'),
-			('M', 'Medium'),
-			('L', 'Large'),
-			('H', 'Huge'),
-		)
-	scale = models.CharField(max_length = 1,
-	 		choices = INSTANCE_SCALE)
-
-	# return instance's information
-	def __unicode__(self):
-		instanceInformation = "\nIaaS Provider:\t\t%s \nInstance Name:\t\t%s" \
-								% (self.provider, self.name)
-		instanceHardware = "vCPU Frequency:\t\t%s \nvCPU Number:\t\t%s \nmemory size:\t\t%s \
-								\nstorage capacity:\t%s \nbandwidth:\t\t%s" \
-								% (self.vCPUFrequency, self.vCPUNumber, \
-								self.memorySize, self.storageCapacity, self.bandwidth)
-		return "%s\n%s\n" % (instanceInformation, instanceHardware)
+	# operation system info
+	os_type = models.CharField(max_length = 30)
+	os_text = models.CharField(max_length = 50)
+	os_value = models.CharField(max_length = 50)
 
 
-# create model Price to represent
-# instance's price
-class Price(models.Model):
-	# many to one relationship with Instance Type
-	instanceType = models.ForeignKey(InstanceType)
+	# instance pricing info
+	pricing_type = models.CharField(max_length = 30)
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	pricing_cycle = models.CharField(max_length = 30)
 
-	CHARGE_MODE = (
-			('H', 'Hour'),
-			('M', 'Month')
-		)
-	mode = models.CharField(max_length = 1, 
-			choices = CHARGE_MODE)
-	price = models.DecimalField(max_digits = 6, decimal_places = 2)
+
+	# update timestamp
+	update_time = models.IntegerField()
 
 
 # create model Instance to represent
