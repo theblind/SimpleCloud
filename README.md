@@ -41,3 +41,25 @@ South用于应用model的改变到数据库。
   如果未出错，则执行下列代码应用更改即可
 
         ./manage.py migrate APP_NAME
+
+## pricing crawler
+
+覆盖的IaaS provider有：
+1. Amazon EC2
+2. Windows Azure
+3. Aliyun
+4. Qcloud
+
+爬虫程序存放数据使用的是MongoDB，和线上数据库是分开的。
+
+爬虫程序运行方式：`node crawlprice.js`，需要安装NodeJS和NPM包管理器。初次运行的时候，需要在crawlclient目录下执行`npm install`命令，安装用到的NodeJS模块。
+
+爬虫任务是定时任务。
+
+## 爬虫同步模块
+
+将MongoDB中的数据上传到线上使用的数据库中，由MongoDB转到MySQL。
+
+## 价格API
+
+价格API部分是包含在Django Web模块中一起的。不另外使用新的服务器和域名。
