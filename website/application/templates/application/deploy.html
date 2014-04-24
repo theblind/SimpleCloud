@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
 
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'pages/css/jRating.jquery.css' %}">
-    <link rel="stylesheet" href="{% static 'pages/css/polaris.css' %}">
-    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/jRating.jquery.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/polaris.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/style.css' %}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the pages via file:// -->
@@ -19,7 +19,7 @@
     <![endif]-->
 </head>
 <body>
-    {% include "pages/includes/header.html" %}
+    {% include "application/includes/header.html" %}
 
     <div class="config">
         <div class="container">    
@@ -158,7 +158,7 @@
                 </div>
             </div>
             <div class="row img-loading" style="display:none"> 
-                <img src="{% static 'pages/images/loading.jpg' %}"/>
+                <img src="{% static 'application/images/loading.jpg' %}"/>
             </div>
             <div class="row data" style="display:none">
                 <table class="table table-bordered">
@@ -178,7 +178,7 @@
                 <tbody>
                     <tr id="tab_aws">
                         <td class="provider">
-                            <img src="{% static 'pages/images/aws.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="AWS">
+                            <img src="{% static 'application/images/aws.jpg' %}" width="150" height="60" data-src="{% static 'application/images/aws.jpg' %}" alt="AWS">
                         </td>
                         <td class="td_type">M1 Medium Instance</td>
                         <td class="td_core">1</td>
@@ -191,7 +191,7 @@
                     </tr>
                     <tr id="tab_azure">
                         <td class="provider">
-                            <img src="{% static 'pages/images/azure.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="Azure">
+                            <img src="{% static 'application/images/azure.jpg' %}" width="150" height="60" data-src="{% static 'application/images/aws.jpg' %}" alt="Azure">
                         </td>
                         <td class="td_type">M1 Medium Instance</td>
                         <td class="td_core">1</td>
@@ -204,7 +204,7 @@
                     </tr>
                     <tr id="tab_ali">
                         <td class="provider">
-                            <img src="{% static 'pages/images/aliyun.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
+                            <img src="{% static 'application/images/aliyun.jpg' %}" width="150" height="60" data-src="{% static 'application/images/aws.jpg' %}" alt="=AWS">
                         </td>
                         <td class="td_type">M1 Medium Instance</td>
                         <td class="td_core">1</td>
@@ -217,7 +217,7 @@
                     </tr>
                     <tr id="tab_rs">
                         <td class="provider">
-                            <img src="{% static 'pages/images/rackspace.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
+                            <img src="{% static 'application/images/rackspace.jpg' %}" width="150" height="60" data-src="{% static 'application/images/aws.jpg' %}" alt="=AWS">
                         </td>
                         <td class="td_type">M1 Medium Instance</td>
                         <td class="td_core">1</td>
@@ -230,7 +230,7 @@
                     </tr>
                     <tr id="tab_gce">
                         <td class="provider">
-                            <img src="{% static 'pages/images/gce.png' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
+                            <img src="{% static 'application/images/gce.png' %}" width="150" height="60" data-src="{% static 'application/images/aws.jpg' %}" alt="=AWS">
                         </td>
                         <td class="td_type">M1 Medium Instance</td>
                         <td class="td_core">1</td>
@@ -258,7 +258,7 @@
                 </div>
             </div>
             <div class="row img-loading" style="display:none"> 
-                <img src="{% static 'pages/images/loading.jpg' %}"/>
+                <img src="{% static 'application/images/loading.jpg' %}"/>
             </div>
             <div class="row data" style="display:none">
                 <div class="col-md-10 col-md-offset-1">
@@ -269,16 +269,16 @@
     </div>
 
 
-    {% include "pages/includes/footer.html" %}
+    {% include "application/includes/footer.html" %}
 
 </body>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<script src="{% static 'pages/js/jRating.jquery.js' %}"></script>
-<script src="{% static 'pages/js/icheck.js' %}"></script>
-<script src="{% static 'pages/js/highcharts.js' %}"></script>
+<script src="{% static 'application/js/jRating.jquery.js' %}"></script>
+<script src="{% static 'application/js/icheck.js' %}"></script>
+<script src="{% static 'application/js/highcharts.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 
