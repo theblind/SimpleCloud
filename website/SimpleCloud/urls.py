@@ -10,5 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^benchmark/', include('benchmark.urls', namespace = 'benchmark')),
-    url(r'', include('pages.urls', namespace = 'pages')),
+    url(r'', include('application.urls', namespace = 'application')),
 )
