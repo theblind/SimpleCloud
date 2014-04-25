@@ -162,14 +162,14 @@ exports.getPrice = function(mongoHnd, updatetime, listener){
 						// informations.data.vm_os = os_choice[ostype][osIndex].value;
 						informations.data.vm_os = "";
 						var instance = new Instance(mongoHnd, {
-							"manufacture": "aliyun", "alias_name": "Virtual Machine",
+							"manufacture": "Aliyun", "alias_name": "Virtual Machine",
 							"vcpu": Number(informations.data.vm_cpu),
-							"vram": Number(informations.data.vm_ram),
+							"vram": Number(informations.data.vm_ram)/1024,
 							"os": os_choice[ostype][osIndex],
 							"region": "qingdao",
 							"pricing_type": rentType,
-							"band_width": null,
-							"storage":[],
+							"band_width": 0,
+							"storage":0,
 							"duration": informations.data.duration,
 							"pricing_cycle": informations.data.pricing_cycle,
 							"update_time": updatetime

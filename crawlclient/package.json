@@ -1,17 +1,18 @@
 {
-"author": "qtgan <qingtiangan@gmail.com>",
-	"name": "price-crawling",
-	"version": "0.0.1",
-	"private": true,
-	"main": "crawlprice.js",
-	"description": "crawl virtual machine pricing information",
-	"engines": {
-		"node": "*"
-	},
-	"dependencies": {
-		"mongodb": "*",
-		"cheerio": "*",
-		"bufferhelper": "*",
-		"iconv-lite": "*"
-	}
+  "author": "qtgan <qingtiangan@gmail.com>",
+  "name": "price-crawling",
+  "version": "0.0.1",
+  "private": true,
+  "main": "crawlprice.js",
+  "description": "crawl virtual machine pricing information",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "mongodb": "*",
+    "cheerio": "*",
+    "bufferhelper": "*",
+    "iconv-lite": "*",
+    "mysql": "~2.1.1"
+  }
 }

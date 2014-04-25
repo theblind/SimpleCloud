@@ -57,4 +57,12 @@ Instance.prototype.update = function(extrainfo){
 	}
 	return;
 }
+
+/*Instance.prototype.find = function(instanceinfo, sortby, callback){
+	this.db.colle.find(instanceinfo).sort(sortby || {"_id": 1}).toArray(err, docs){
+		callback(err, callback);
+	}
+}*/
+
+
 module.exports = Instance;

@@ -39,3 +39,13 @@ MongoHnd.prototype.insertUpdate = function(instanceinfo, callback){
 		}
 	});
 }
+
+/*根据查询条件和排序规则进行查询*/
+MongoHnd.prototype.find = function(criteria, sortby, callback){
+	if(criteria.constructor.name != "Object" || (sortby && sortby.constructor.name != "Object")){
+		return callback("Wrong Object Type!", null);
+	}
+	this.colle.find(criteria).sort(sortby || {"manufacture": 1}).toArray(function(err, docs){
+		return callback(err, docs);
+	});
+}

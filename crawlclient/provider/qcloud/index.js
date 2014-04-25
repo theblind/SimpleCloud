@@ -51,7 +51,7 @@ exports.getPrice = function(mongoHnd, updateTime, listener){
 				};
 				//创建用于插入数据的对象
 				var instance = new Instance(mongoHnd, {
-					manufacture: "Tencent",
+					manufacture: "QCloud",
 					alias_name: "qcloud",
 					vcpu: Number(cpu),
 					vram: Number(mem),
@@ -62,8 +62,9 @@ exports.getPrice = function(mongoHnd, updateTime, listener){
 					},
 					region: null,
 					pricing_type: ["ondemind"],
-					band_width: null,
-					storage: [{type: "localdisk", size: 0}],
+					band_width: 0,
+					// storage: [{type: "localdisk", size: 0}],
+					storage: 0,
 					prices: {"RMB": 0.0},
 					duration: 1,
 					pricing_cycle: "month",
