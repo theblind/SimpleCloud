@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
 
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'pages/css/jRating.jquery.css' %}">
-    <link rel="stylesheet" href="{% static 'pages/css/polaris.css' %}">
-    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/jRating.jquery.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/polaris.css' %}">
+    <link rel="stylesheet" href="{% static 'application/css/style.css' %}">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the pages via file:// -->
@@ -40,7 +40,7 @@
 	</script>
 </head>
 <body>
-    {% include "pages/includes/header.html" %}
+    {% include "application/includes/header.html" %}
 
     <div class="config">
         <div class="container">    
@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div class="row img-loading" style="display:none"> 
-                <img src="{% static 'pages/images/loading.jpg' %}"/>
+                <img src="{% static 'application/images/loading.jpg' %}"/>
             </div>
             <div class="row data" style="display:none">
                 <table class="table table-bordered">
@@ -214,7 +214,7 @@
                 </div>
             </div>
             <div class="row img-loading" style="display:none"> 
-                <img src="{% static 'pages/images/loading.jpg' %}"/>
+                <img src="{% static 'application/images/loading.jpg' %}"/>
             </div>
             <div class="row data" style="display:none">
                 <div class="col-md-10 col-md-offset-1">
@@ -230,7 +230,7 @@
     </div>
 
 
-    {% include "pages/includes/footer.html" %}
+    {% include "application/includes/footer.html" %}
 
 </body>
 </html>
