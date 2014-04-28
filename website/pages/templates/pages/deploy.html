@@ -17,6 +17,27 @@
     <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
     <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+	<script type="text/javascript">
+		var STATIC_URL = "{% static 'pages/' %}";
+	</script>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<script src="{% static 'pages/js/jRating.jquery.js' %}"></script>
+	<script src="{% static 'pages/js/functions.js' %}"></script>
+	<script src="{% static 'pages/js/icheck.js' %}"></script>
+	<script src="{% static 'pages/js/highcharts.js' %}"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		//config checkbox
+		$('input').iCheck({
+			radioClass: 'iradio_polaris',
+			increaseArea: '-10%' // optional
+		});
+	});
+	</script>
 </head>
 <body>
     {% include "pages/includes/header.html" %}
@@ -26,18 +47,18 @@
             <h3 class="text-center">虚拟机配置</h3>
             
             <div class="row">
-                <form class="form-horizontal" role="form">
+                <form id="config_form" action="/static/pages/js/data.json" onSubmit="return false;" class="form-horizontal" role="form">
                     <div class="col-md-3 os">
                         <h4 class="">操作系统</h4>
                         <ul class="list first-li">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-1" name="polaris-radio">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-1" name="os" value="1">                              
                                 <label for="polaris-radio-1">Linux</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-2" name="polaris-radio" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-2" name="os" checked value="0">                              
                                 <label for="polaris-radio-2">Windows</label>
                             </li>
                         </ul>
@@ -46,29 +67,29 @@
                         <h4 class="">CPU</h4>
                         <ul class="list first-li">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-19" name="polaris-radio4">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-19" name="vcpu" value="1">                              
                                 <label for="polaris-radio-19">1 vCPU</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-20" name="polaris-radio4" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-20" name="vcpu" checked value="2">                              
                                 <label for="polaris-radio-20">2 vCPU</label>
                             </li>
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-21" name="polaris-radio4">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-21" name="vcpu" value="4">                              
                                 <label for="polaris-radio-21">4 vCPU</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-22" name="polaris-radio4" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-22" name="vcpu" checked value="8">                              
                                 <label for="polaris-radio-22">8 vCPU</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-23" name="polaris-radio4">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-23" name="vcpu" value="12">                              
                                 <label for="polaris-radio-23">12 vCPU</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-24" name="polaris-radio4" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-24" name="vcpu" checked value="16">                              
                                 <label for="polaris-radio-24">16 vCPU</label>
                             </li>
                         </ul>
@@ -78,29 +99,29 @@
                         <h4 class="">内存</h4>
                         <ul class="list first-li">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-3" name="polaris-radio2">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-3" name="vram" value="1">                              
                                 <label for="polaris-radio-3">1 GB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-4" name="polaris-radio2" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-4" name="vram" checked value="2">                              
                                 <label for="polaris-radio-4">2 GB</label>
                             </li>
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-5" name="polaris-radio2">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-5" name="vram" value="4">                              
                                 <label for="polaris-radio-5">4 GB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-6" name="polaris-radio2" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-6" name="vram" checked value="8">                              
                                 <label for="polaris-radio-6">8 GB</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-7" name="polaris-radio2">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-7" name="vram" value="16">                              
                                 <label for="polaris-radio-7">16 GB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-8" name="polaris-radio2" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-8" name="vram" checked value="32">                              
                                 <label for="polaris-radio-8">32 GB</label>
                             </li>
                         </ul>
@@ -110,29 +131,29 @@
                         <h4 class="">硬盘</h4>
                         <ul class="list first-li">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-11" name="polaris-radio3">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-11" name="storage" value="50">                              
                                 <label for="polaris-radio-11">50 GB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-12" name="polaris-radio3" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-12" name="storage" checked value="100">                              
                                 <label for="polaris-radio-12">100 GB</label>
                             </li>
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-13" name="polaris-radio3">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-13" name="storage" value="200">                              
                                 <label for="polaris-radio-13">200 GB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-14" name="polaris-radio3" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-14" name="storage" checked value="500">                              
                                 <label for="polaris-radio-14">500 GB</label>
                             </li>
                         </ul>
                         <ul class="list">
                             <li>
-                                <input tabindex="23" type="radio" id="polaris-radio-15" name="polaris-radio3">                              
+                                <input tabindex="23" type="radio" id="polaris-radio-15" name="storage" value="1024">                              
                                 <label for="polaris-radio-15">1 TB</label>
                             </li>
                             <li>
-                                <input tabindex="24" type="radio" id="polaris-radio-16" name="polaris-radio3" checked>                              
+                                <input tabindex="24" type="radio" id="polaris-radio-16" name="storage" checked value="2048">                              
                                 <label for="polaris-radio-16">2 TB</label>
                             </li>
 
@@ -141,7 +162,7 @@
                 </form>
             </div>
             <div class="row text-center">
-                <a id="loading" type="button" class="btn btn-gray btn-submit" >确定</a>
+                <a id="loading" onclick="ajax_post($('#config_form'),_config_form_processer, _config_form_before_submit_processer )" type="button" class="btn btn-gray btn-submit" >确定</a>
             </div>
             
         </div>
@@ -175,72 +196,7 @@
                         <th>View Links</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr id="tab_aws">
-                        <td class="provider">
-                            <img src="{% static 'pages/images/aws.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="AWS">
-                        </td>
-                        <td class="td_type">M1 Medium Instance</td>
-                        <td class="td_core">1</td>
-                        <td class="td_mem">3.75G</td>
-                        <td class="td_disk">410G</td>
-                        <td class="td_pph">0.120</td>
-                        <td class="td_ppm">86.40</td>
-                        <td class="td_rate"><div class="ratings" data-average="13" data-id="5"></td>
-                        <td class="td_link"><a href="http://aws.amazon.com/">http://aws.amazon.com/</td>
-                    </tr>
-                    <tr id="tab_azure">
-                        <td class="provider">
-                            <img src="{% static 'pages/images/azure.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="Azure">
-                        </td>
-                        <td class="td_type">M1 Medium Instance</td>
-                        <td class="td_core">1</td>
-                        <td class="td_mem">3.75G</td>
-                        <td class="td_disk">410G</td>
-                        <td class="td_pph">0.120</td>
-                        <td class="td_ppm">86.40</td>
-                        <td class="td_rate"><div class="ratings" data-average="13" data-id="5"></td>
-                        <td class="td_link"><a href="http://aws.amazon.com/">http://aws.amazon.com/</td>
-                    </tr>
-                    <tr id="tab_ali">
-                        <td class="provider">
-                            <img src="{% static 'pages/images/aliyun.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
-                        </td>
-                        <td class="td_type">M1 Medium Instance</td>
-                        <td class="td_core">1</td>
-                        <td class="td_mem">3.75G</td>
-                        <td class="td_disk">410G</td>
-                        <td class="td_pph">0.120</td>
-                        <td class="td_ppm">86.40</td>
-                        <td class="td_rate"><div class="ratings" data-average="13" data-id="5"></td>
-                        <td class="td_link"><a href="http://aws.amazon.com/">http://aws.amazon.com/</td>
-                    </tr>
-                    <tr id="tab_rs">
-                        <td class="provider">
-                            <img src="{% static 'pages/images/rackspace.jpg' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
-                        </td>
-                        <td class="td_type">M1 Medium Instance</td>
-                        <td class="td_core">1</td>
-                        <td class="td_mem">3.75G</td>
-                        <td class="td_disk">410G</td>
-                        <td class="td_pph">0.120</td>
-                        <td class="td_ppm">86.40</td>
-                        <td class="td_rate"><div class="ratings" data-average="13" data-id="5"></td>
-                        <td class="td_link"><a href="http://aws.amazon.com/">http://aws.amazon.com/</td>
-                    </tr>
-                    <tr id="tab_gce">
-                        <td class="provider">
-                            <img src="{% static 'pages/images/gce.png' %}" width="150" height="60" data-src="{% static 'pages/images/aws.jpg' %}" alt="=AWS">
-                        </td>
-                        <td class="td_type">M1 Medium Instance</td>
-                        <td class="td_core">1</td>
-                        <td class="td_mem">3.75G</td>
-                        <td class="td_disk">410G</td>
-                        <td class="td_pph">0.120</td>
-                        <td class="td_ppm">86.40</td>
-                        <td class="td_rate"><div class="ratings" data-average="13" data-id="5"></td>
-                        <td class="td_link"><a href="http://aws.amazon.com/">http://aws.amazon.com/</td>
-                    </tr>
+                <tbody id="tb_info">
                 </tbody>
                 </table>
             </div>
@@ -262,7 +218,12 @@
             </div>
             <div class="row data" style="display:none">
                 <div class="col-md-10 col-md-offset-1">
-                    <div id="performance" style="width:100%; height:320px;"></div>
+                    <div id="performance_unixbench" style="width:100%; height:320px;"></div>
+                </div>
+            </div>
+            <div class="row data" style="display:none">
+                <div class="col-md-10 col-md-offset-1">
+                    <div id="performance_cloudsuite" style="width:100%; height:320px;"></div>
                 </div>
             </div>
         </div>
@@ -272,114 +233,4 @@
     {% include "pages/includes/footer.html" %}
 
 </body>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<script src="{% static 'pages/js/jRating.jquery.js' %}"></script>
-<script src="{% static 'pages/js/icheck.js' %}"></script>
-<script src="{% static 'pages/js/highcharts.js' %}"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-
-    //config checkbox
-    $('input').iCheck({
-        radioClass: 'iradio_polaris',
-        increaseArea: '-10%' // optional
-    });
-
-    //pricing table ratings
-    $(".ratings").jRating({
-      isDisabled : true
-    });
-
-    
-
-    //ajax loading
-    // $('.td_type, .td_core, .td_mem, .td_disk, .td_pph, .td_ppm, .td_rate, .td_link').html();
-
-    $('#loading').click(function(){
-        $.ajax({
-            url : "./data.json",
-            type : 'GET',
-            contentType:"application/json", 
-            dataType : 'json',
-            beforeSend : function(){
-                $('#loading').text('加载中');
-                $('.intro, .data').hide();
-                $('.img-loading').show();    
-            },
-            success : function(data){
-                $('#loading').text('确定');
-                //show data area             
-                $('.img-loading').fadeOut(300, function(){
-                    $('.data').fadeIn(300, function(){
-                        //performance charts
-                        $('#performance').highcharts({
-                            chart: {
-                                type: 'spline'
-                            },
-                            title: {
-                                //text: 'Monthly Average Temperature',
-                                //x: -5 //center
-                                text: null
-                            },
-                            // subtitle: {
-                            //     text: 'Source: WorldClimate.com',
-                            //     x: -8
-                            // },
-                            xAxis: {
-                                categories: ['2013-12-30', '2013-12-31', '2014-01-01', '2014-01-02', '2014-01-03']
-                            },
-                            yAxis: {
-                                title: {
-                                    text: 'Unixbench Scores'
-                                },
-                                labels:{
-                                    format: '{value}'
-                                },
-                                plotLines: [{
-                                    value: 0,
-                                    width: 1,
-                                    color: '#808080'
-                                }]
-                            },
-                            tooltip: {
-                                //valueSuffix: '°C'
-                            },
-                            // legend: {
-                            //     layout: 'vertical',
-                            //     align: 'right',
-                            //     verticalAlign: 'middle',
-                            //     borderWidth: 0
-                            // },
-                            series: [{
-                                name: 'Amazon EC2',
-                                data: [694, 606, 601, 594, 605]
-                            }, {
-                                name: 'Windows Azure',
-                                data: [2109, 2148, 2075, 2052, 2099]
-                            }, {
-                                name: 'Aliyun',
-                                data: [1139, 1140, 1144, 1137, 1136]
-                            }, {
-                                name: 'GCE',
-                                data: [2062, 2045, 2053, 2079, 3337]
-                            }, {
-                                name: 'Rackspace',
-                                data: [721, 719, 720, 722, 719]
-                            }]
-                        });
-                    });
-                });
-            },
-            error : function(){
-                console.log(arguments);
-            }
-        });
-        
-    });
-
-});
-</script>
 </html>
