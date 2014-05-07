@@ -3,8 +3,10 @@ from django.db import models
 # create model Manufacture to represent
 # AWS, Azure, RackSpace etc.
 class Manufacture(models.Model):
-	# Manufacture name
+	# Manufacture name, image and hyperlink
 	name = models.CharField(max_length = 30)
+	#imagePath = models.CharField(max_length = 100)
+	#link = models.CharField(max_length = 100)
 
 
 # create model Instance Type to represent 
@@ -89,6 +91,18 @@ class Phoronix(models.Model):
 	# test result for postgreSQL benchmark
 	# result unit is TPS
 	pgbenchResult = models.IntegerField()
+
+	# timestamps for single test
+	createdAt = models.DateField(auto_now_add = True)
+
+# create model NetworkStatistics to represent
+# the vm's network status
+class NetworkStatistics(models.Model):
+	# many to one relationship with Instance
+	instance = models.ForeignKey(Instance)
+
+	# measured bandwidth in a short peroid
+	bandWidth = models.DecimalField(max_digits = 5, decimal_places = 1)
 
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
