@@ -1,4 +1,6 @@
 from django.db import models
+import hashlib
+import datetime
 
 # create model Manufacture to represent
 # AWS, Azure, RackSpace etc.
@@ -55,11 +57,14 @@ class Instance(models.Model):
 	# many to one relationship with Instance Type
 	instanceType = models.ForeignKey(InstanceType)
 
-	# using md5 encryption to identify instance
-	hashKey = models.CharField(max_length = 32)
+	# using ripemd-160 encryption to identify instance
+	hashKey = models.CharField(max_length = 40)
 
-	def generateKey(self):
-		self.hashKey = "12345678901234567890123456789012"
+	# generat hash key by using given identity
+	def generateKey(self, identity):
+		hashGenerator = hashlib.new("ripemd160")
+		hashGenerator.update(identity)
+		self.hashKey = hashGenerator.hexdigest()
 
 
 # create model UnixBench to represent

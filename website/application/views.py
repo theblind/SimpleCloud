@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 import json
 import pprint
 
@@ -13,15 +13,18 @@ def deploy(request):
 
 def search(request):
 	if request.method == 'GET':
-		os = str(request.GET['os'])
-		vcpu = int(request.GET['vcpu'])
-		vram = float(request.GET['vram'])
-		storage = int(request.GET['storage'])
+		os = request.GET.get('os')
+		vcpu = request.GET.get('vcpu')
+		vram = request.GET.get('vram')
+		storage = request.GET.get('storage')
+
+		if (os is None) or (vcpu is None) or (vram is None):
+			return HttpResponseBadRequest()
 
 		# query virtual machine's info from database by given condition
-		queryResult = InstanceType.objects.filter(os_type = os,
-											vcpu = vcpu,
-											vram__range = [vram - 1, vram + 1])
+		queryResult = InstanceType.objects.filter(os_type = str(os),
+											vcpu = int(vcpu),
+											vram__range = [float(vram) - 1, float(vram) + 1])
 
 		# fill up responseData in json format and return
 		responseData = {}
@@ -41,10 +44,9 @@ def search(request):
 		pp = pprint.PrettyPrinter(indent=4)
 		pp.pprint(responseData)
 
-
 		return HttpResponse(json.dumps(responseData), content_type="application/json")
 	else:
-		return None
+		return HttpResponseBadRequest()
 
 # extract general info from specific instance
 def parseInstanceInfo(instance):
