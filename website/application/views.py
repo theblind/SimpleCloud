@@ -60,8 +60,8 @@ def parseInstanceInfo(instance):
 	info["pricing"] = parseInstancePrice(instance)
 
 	info["provider"] = instance.manufacture.name
-	info["link"] = ""#instance.manufacture.link
-	info["image"] = ""#instance.manufacture.imagePath
+	info["link"] = instance.manufacture.link
+	info["image"] = instance.manufacture.image
 
 	return info
 

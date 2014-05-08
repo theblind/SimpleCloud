@@ -7,8 +7,8 @@ import datetime
 class Manufacture(models.Model):
 	# Manufacture name, image and hyperlink
 	name = models.CharField(max_length = 30)
-	#imagePath = models.CharField(max_length = 100)
-	#link = models.CharField(max_length = 100)
+	image = models.CharField(max_length = 100)
+	link = models.CharField(max_length = 100)
 
 
 # create model Instance Type to represent 
