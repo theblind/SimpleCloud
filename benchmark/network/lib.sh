@@ -1,10 +1,10 @@
-# lib.sh
+#!/bin/bash
 
 # check the ssh public key and copy the ssh public key to destination machine
 # $1 username
 # $2 password
 # $3 hostip
-function copy_pubkey
+function copy_publickey
 {
 	if [[ $# -ne 3 ]]; then
 		echo "copy_pubkey need 3 params, but $# given"
@@ -14,8 +14,19 @@ function copy_pubkey
 	if [[ ${#pubkey} -eq 0 ]]; then
 		return "pubkey notexist"
 	fi
-
-	expect ./setpubkey.exp $1 $2 $3 $pubkey
-
+	homepath=$HOME
+	expect ./setpubkey.exp $1 $2 $3 $homepath
+	echo "exiting..."
 	return "ok"
 }
+
+# copy bash file to destination machine
+# $1: username
+# $2: destination machine ip
+function copy_script
+{
+	username=$1
+	host=$2
+	scp -r ./remotescript ${username}@${host}:/home/${username}/netbenchmark
+}
+
