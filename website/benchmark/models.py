@@ -1,12 +1,14 @@
 from django.db import models
+import hashlib
+import datetime
 
 # create model Manufacture to represent
 # AWS, Azure, RackSpace etc.
 class Manufacture(models.Model):
 	# Manufacture name, image and hyperlink
 	name = models.CharField(max_length = 30)
-	#imagePath = models.CharField(max_length = 100)
-	#link = models.CharField(max_length = 100)
+	image = models.CharField(max_length = 100)
+	link = models.CharField(max_length = 100)
 
 
 # create model Instance Type to represent 
@@ -55,11 +57,14 @@ class Instance(models.Model):
 	# many to one relationship with Instance Type
 	instanceType = models.ForeignKey(InstanceType)
 
-	# using md5 encryption to identify instance
-	hashKey = models.CharField(max_length = 32)
+	# using ripemd-160 encryption to identify instance
+	hashKey = models.CharField(max_length = 40)
 
-	def generateKey(self):
-		self.hashKey = "12345678901234567890123456789012"
+	# generat hash key by using given identity
+	def generateKey(self, identity):
+		hashGenerator = hashlib.new("ripemd160")
+		hashGenerator.update(identity)
+		self.hashKey = hashGenerator.hexdigest()
 
 
 # create model UnixBench to represent
