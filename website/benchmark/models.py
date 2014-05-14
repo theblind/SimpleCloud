@@ -113,16 +113,17 @@ class Phoronix(models.Model):
 # the vm's network status
 class BandwidthNetbench(models.Model):
 	# iperf client instance
-	iperf_client = models.ForeignKey(InstanceType)
+	# iperf_client = models.ForeignKey(InstanceType)
+	iperf_client = models.ForeignKey(InstanceType, null=True, default=None)
 
 	# result: bandwidth
-	max_bandwidth = models.IntegerField(null=True, default=None)
+	max_bandwidth = models.IntegerField()
 
 	# result: delay
-	delay = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=None)
+	delay = models.DecimalField(max_digits=10, decimal_places=2)
 
 	# result: loss_rate
-	loss_rate = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
+	loss_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
 	# timestamp of this benchmark task
 	createdAt = models.DateField(auto_now=True,auto_now_add=True)

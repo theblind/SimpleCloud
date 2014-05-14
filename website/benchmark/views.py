@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from benchmark.models import Instance, UnixBench, Phoronix, BandwidthNetbench
 
 import random
@@ -48,13 +49,19 @@ def parseIperfResult(request):
 		delay = request.POST["dl"]
 		lossrate = request.POST["lr"]
 
-		netbench = BandwidthNetbench.objects.get(token=token)
+		instance = Instance.objects.get(token = token)
 
-		netbench.bandwidth = bandwidth
-		netbench.delay = delay
-		netbench.lossrate = lossrate
+		netbench = BandwidthNetbench(iperf_client=instance.instanceType, max_bandwidth=bandwidth, delay=delay,\
+					loss_rate=lossrate)
 		netbench.save()
 	except Exception, e:
-		print "fail to save iperf benchmark result: token %s" % (token,)
+		print "miss match with token %s" % (token,)
+		print "new record will be created with instancetype set to be null"
+
+		bandwidth = request.POST["bw"]
+		delay = request.POST["dl"]
+		lossrate = request.POST["lr"]
+		netbench = BandwidthNetbench(max_bandwidth=bandwidth, delay=delay, loss_rate=lossrate)
+		netbench.save()
 	finally:
 		return HttpResponse("Accepted")

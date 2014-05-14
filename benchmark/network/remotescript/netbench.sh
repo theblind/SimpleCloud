@@ -8,7 +8,7 @@
 # $2: password
 # $3: serverip
 
-apiserver="http://simplecloud.chinacloudapp.cn/benchmark/bandwidth"
+apiserver="http://203.195.187.64/benchmark/bandwidth"
 # POST
 # benchmark_type=sss&token=xxx&bandwidth=xxx&delay=xxx&lossrate=xxxx
 
