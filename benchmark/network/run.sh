@@ -30,6 +30,12 @@ if [[ ${copy_result} != "ok" ]]; then
 	echo "copy_publickey result infomation: ${copy_result}"
 fi
 
+# delete old file on remote instance
+ssh -tt ${username}@${host} <<SSHEND
+rm -rfv netbenchmark
+exit 1
+SSHEND
+
 # copy the benchmark autorun script to destination machine
 copy_script $username $host
 

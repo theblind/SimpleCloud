@@ -3,6 +3,11 @@
 ### 依赖
 #### 自动交互脚本，需要使用`expect`
 安装方式：`sudo apt-get install expect`
+#### ssh public key nedded
+```
+ssh-keygen -t rsa
+```
+
 
 ### run.sh  parameters
 #### bwhen run as iperf server:
