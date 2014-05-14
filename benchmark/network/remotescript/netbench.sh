@@ -8,7 +8,9 @@
 # $2: password
 # $3: serverip
 
-webserver="www.webserver.com/api/netbench"
+apiserver="http://simplecloud.chinacloudapp.cn/benchmark/bandwidth"
+# POST
+# benchmark_type=sss&token=xxx&bandwidth=xxx&delay=xxx&lossrate=xxxx
 
 # install iperf under debian like linux
 # $1: password
@@ -27,19 +29,22 @@ function redhat_setup
 function upload_result
 {
 	echo "uploading result to server...."
-	if [[ $# -ne 6 ]]; then
+	if [[ $# -ne 7 ]]; then
 		echo "invalid params in upload_result"
 		echo $@
+		exit 0
 	fi
-	bandwidth=$1
-	bandwidth_unit=$2
-	delay=$3
-	lossrate=$5
-	lossrate_percentage=$6
-
+	token=$1
+	bandwidth=$2
+	bandwidth_unit=$3
+	delay=$4
+	lossrate=$6
+	lossrate_percentage=$7
+	# echo "$token $bandwidth $bandwidth_unit $delay ms $lossrate $lossrate_percentage"
+	# exit 1
 	for (( i = 0; i < 3; i++ )); do
 		# try for 3 times is failed
-		result=`curl http://$webserver?bw=${bandwidth}&bwu=${bandwidth_unit}&dl=$delay&lr=${lossrate_percentage}`
+		result=`curl -d "bt=iperf&tk=${token}bw=${bandwidth}&bwu=${bandwidth_unit}&dl=$delay&lr=${lossrate_percentage}" "${apiserver}"`
 		if [[ $result == "success" ]]; then
 			break
 		fi
@@ -51,6 +56,7 @@ function upload_result
 function extract_result
 {
 	line=$1
+	token=$2
 	# example of $line is+
 	# [ 3] 0.0-30.0 sec 357 MBytes 99.9 Mbits/sec 0.057 ms 223/255020 (0.087%)
 	INDEX_A=$(expr match "$line" ".*MBytes")
@@ -67,7 +73,7 @@ function extract_result
 	delay=`echo ${line:$INDEX_B:delay_length}`
 	lossrate=`echo ${line:$INDEX_C:lossrate_length}`
 
-	upload_result $receive_bandwidth $delay $lossrate
+	upload_result $token $receive_bandwidth $delay $lossrate
 }
 # install iperf and run benchmark as client
 # $1: password
@@ -75,7 +81,9 @@ function run_client
 {
 	echo "installing iperf on destination machine"
 	debian_setup $1
-	iperf_server=$2
+	token=$2
+	iperf_server=$3
+	echo "$1 $2 $3....."
 	echo "running iperf benchmark...."
 	filename="iperfclient_result.log"
 	iperf -c ${iperf_server} -u -b 100M -t 60 > ${filename}
@@ -86,7 +94,7 @@ function run_client
 		# check the flag
 		if [[ $flag -eq 200 ]]; then
 			# deal with the result
-			extract_result $line
+			extract_result "$line" $token
 		fi
 		# flag is not ready, go on matching the line
 		index=$(expr match "$line" ".*Server Report")
@@ -115,7 +123,7 @@ fi
 if [[ $1 == "runserver" ]]; then
 	run_server $2
 elif [[ $1 == "runclient" ]]; then
-	run_client $2 "${3}"
+	run_client $2 $3 "${4}"
 else
 	echo "invalid parameter, first parameter should be  runclient/runserver"
 fi

@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from benchmark.models import Instance, UnixBench, Phoronix
+from benchmark.models import Instance, UnixBench, Phoronix, BandwidthNetbench
+
+import random
 
 # save vm's unixbench result into database
 def parseUnixBenchResult(request, instanceID):
@@ -36,3 +38,23 @@ def parsePhoronixResult(request, instanceID):
 			print 'Error: can\'t parse UnixBench result'
 
 	return render(request, 'benchmark/failed.html')
+
+def parseIperfResult(request):
+	if request.method != "POST":
+		return HttpResponse("InvalidMethod")
+	try:
+		token = request.POST["tk"]
+		bandwidth = request.POST["bw"]
+		delay = request.POST["dl"]
+		lossrate = request.POST["lr"]
+
+		netbench = BandwidthNetbench.objects.get(token=token)
+
+		netbench.bandwidth = bandwidth
+		netbench.delay = delay
+		netbench.lossrate = lossrate
+		netbench.save()
+	except Exception, e:
+		print "fail to save iperf benchmark result: token %s" % (token,)
+	finally:
+		return HttpResponse("Accepted")
