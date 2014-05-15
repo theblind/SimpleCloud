@@ -21,7 +21,7 @@ CONFIGURATION_FILE="benchmark.conf"
 CONFIG_KEY="key"
 CONFIG_INSTANCE_ID="instance_id"
 CONFIG_INSTALLED_BENCHMARK="installed_benchmark"
-BASEURL="http://simplecloud.chinacloudapp.cn/benchmark/instance/{instance_id}/"
+BASEURL="http://203.195.187.64/benchmark/instance/{instance_id}/"
 
 export timestamp=`date +%F_%T`
 mkdir -p $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp
