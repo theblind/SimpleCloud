@@ -19,9 +19,8 @@ export ROOT_DIRECTORY=`pwd`
 export RESULT_DIRECTORY='results'
 CONFIGURATION_FILE="benchmark.conf"
 CONFIG_KEY="key"
-CONFIG_INSTANCE_ID="instance_id"
 CONFIG_INSTALLED_BENCHMARK="installed_benchmark"
-BASEURL="http://203.195.187.64/benchmark/instance/{instance_id}/"
+BASEURL="http://203.195.187.64/benchmark/instance/"
 
 export timestamp=`date +%F_%T`
 mkdir -p $ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp
@@ -123,7 +122,6 @@ function need_setup
     return $(! grep -i $CONFIG_INSTALLED_BENCHMARK $CONFIGURATION_FILE | awk -F '=' '{print $2}' | grep -q -i $1 )
 }
 
-BASEURL=`echo $BASEURL | sed "s/{instance_id}/$(get_config $CONFIG_INSTANCE_ID)/"`
 need_setup 'unixbench' && setup_unixbench
 run_unixbench
 need_setup 'phoronix' && setup_phoronix

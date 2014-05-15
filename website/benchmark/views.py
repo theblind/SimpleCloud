@@ -15,7 +15,7 @@ def failView(request):
 	return render(request, 'benchmark/fail.html')
 
 # save vm's unixbench result into database
-def parseUnixBenchResult(request, instanceID):
+def parseUnixBenchResult(request):
 	if request.method == 'POST':
 		try:
 			# get hashKey to identify a vm
@@ -35,7 +35,7 @@ def parseUnixBenchResult(request, instanceID):
 	return HttpResponseRedirect('/benchmark/fail')
 
 # save vm's phoronix result into database
-def parsePhoronixResult(request, instanceID):
+def parsePhoronixResult(request):
 	if request.method == 'POST':
 		try:
 			# get hashKey to identify a vm
@@ -108,4 +108,4 @@ def parseIperfResult(request):
 		netbench = BandwidthNetbench(max_bandwidth=bandwidth, delay=delay, loss_rate=lossrate)
 		netbench.save()
 	finally:
-		return HttpResponseRedirect('/benchmark/success')
+		return HttpResponse("Accepted")
