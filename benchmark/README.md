@@ -26,13 +26,14 @@ ssh-keygen -t rsa
 
 ### benchmark running flow
 1. **prepare the needed tools**
-```
-ssh-keygen -t rsa		#generate the public key
+```bash
+ssh-keygen -t rsa		#generate the public key 	
 sudo apt-get install except			#we need expect to run the interactive script automatically
 ```
 2. **run.sh:this can be called by other script or in commandline**
-> this script will execute following operations
-> + copy localhost's ssh public key using `ssh-copy-id`
+
+> this script will execute following operations 	
+> + copy localhost's ssh public key using `ssh-copy-id`	
 > + login to destination machine using `ssh` and delete the old files(foldername:simplecloudbenchmark)
 > + copy ./remotescript to destination machine using `scp`
 > + login to destination machine and `cd ./simplecloudbenchmark/bandwidth` to run the benchmark automatically
