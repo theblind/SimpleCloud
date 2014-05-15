@@ -10,7 +10,6 @@ class Manufacture(models.Model):
 	image = models.CharField(max_length = 100)
 	link = models.CharField(max_length = 100)
 
-
 # create model Instance Type to represent 
 # instance's hardware information
 class InstanceType(models.Model):
@@ -46,7 +45,6 @@ class InstanceType(models.Model):
 	duration = models.IntegerField()
 	pricing_cycle = models.CharField(max_length = 30)
 
-
 	# update timestamp
 	update_time = models.IntegerField()
 
@@ -60,6 +58,17 @@ class Instance(models.Model):
 	# using ripemd-160 encryption to identify instance
 	hashKey = models.CharField(max_length = 40)
 
+	# ip address of public network address
+	publicAddress = models.CharField(max_length=15)
+
+	# ip address inner network
+	innerAddress = models.CharField(max_length=15)
+
+	# username on the instance
+	username = models.CharField(max_length=100)
+	# password of this user
+	password = models.CharField(max_length=100)
+
 	# generat hash key by using given identity
 	def generateKey(self, identity):
 		hashGenerator = hashlib.new("ripemd160")
@@ -71,7 +80,7 @@ class Instance(models.Model):
 # this benchmark's detail
 class UnixBench(models.Model):
 	# many to one relationship with Instance
-	instance = models.ForeignKey(Instance)
+	instance = models.ForeignKey(InstanceType)
 
 	# instance score for serail test
 	serialScore = models.IntegerField()
@@ -87,7 +96,7 @@ class UnixBench(models.Model):
 # this benchmark's detail
 class Phoronix(models.Model):
 	# many to one relationship with Instance
-	instance = models.ForeignKey(Instance)
+	instance = models.ForeignKey(InstanceType)
 
 	# test result for 7-zip compression
 	# result unit is MIPS
@@ -100,14 +109,21 @@ class Phoronix(models.Model):
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
 
-# create model NetworkStatistics to represent
+# create model BandwidthNetbench to represent
 # the vm's network status
-class NetworkStatistics(models.Model):
-	# many to one relationship with Instance
-	instance = models.ForeignKey(Instance)
+class BandwidthNetbench(models.Model):
+	# iperf client instance
+	# iperf_client = models.ForeignKey(InstanceType)
+	iperf_client = models.ForeignKey(InstanceType, null=True, default=None)
 
-	# measured bandwidth in a short peroid
-	bandWidth = models.DecimalField(max_digits = 5, decimal_places = 1)
+	# result: bandwidth
+	max_bandwidth = models.IntegerField()
 
-	# timestamps for single test
-	createdAt = models.DateField(auto_now_add = True)
+	# result: delay
+	delay = models.DecimalField(max_digits=10, decimal_places=2)
+
+	# result: loss_rate
+	loss_rate = models.DecimalField(max_digits=5, decimal_places=2)
+
+	# timestamp of this benchmark task
+	createdAt = models.DateField(auto_now=True,auto_now_add=True)

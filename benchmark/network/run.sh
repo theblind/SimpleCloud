@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# four parameters needed
+# at least four parameters needed
 # $1: runclient/runserver
 # $2: username
 # $3: password
 # $4: host ip
-# $5: iperf_server ip, not nedded when run as server, 
+
 . lib.sh
 
 if [[ $# -lt 4 ]];then
@@ -18,7 +18,8 @@ run_model=$1
 username=$2
 password=$3
 host=$4
-iperf_server=$5
+token=$5
+iperf_server=$6
 
 # copy pub key to destination machine using scp and expect
 copy_publickey ${username} ${password} ${host}
@@ -29,6 +30,12 @@ if [[ ${copy_result} != "ok" ]]; then
 	echo "copy_publickey result infomation: ${copy_result}"
 fi
 
+# delete old file on remote instance
+ssh -tt ${username}@${host} <<SSHEND
+rm -rfv netbenchmark
+exit 1
+SSHEND
+
 # copy the benchmark autorun script to destination machine
 copy_script $username $host
 
@@ -36,6 +43,6 @@ copy_script $username $host
 ssh -tt ${username}@${host} <<SSHCMD
 echo $(date "+%Y-%m-%d %H:%M %p") >> record.txt
 cd netbenchmark
-bash ./netbench.sh ${run_model} ${password} ${iperf_server}
+bash ./netbench.sh ${run_model} ${password} ${token} ${iperf_server}
 exit
 SSHCMD

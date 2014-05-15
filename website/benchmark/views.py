@@ -1,9 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from benchmark.models import InstanceType, Instance, UnixBench, Phoronix
+from benchmark.models import InstanceType, Instance, UnixBench, Phoronix, BandwidthNetbench
 
 import traceback
+import random
+
+# return succeed page
+def successView(request):
+	return render(request, 'benchmark/success.html')
+
+# return failed page
+def failView(request):
+	return render(request, 'benchmark/fail.html')
 
 # save vm's unixbench result into database
 def parseUnixBenchResult(request, instanceID):
@@ -75,8 +84,28 @@ def createInstance(request):
 
 	return render(request, 'benchmark/createInstanceForm.html')
 
-def successView(request):
-	return render(request, 'benchmark/success.html')
+def parseIperfResult(request):
+	if request.method != "POST":
+		return HttpResponse("InvalidMethod")
+	try:
+		token = request.POST["tk"]
+		bandwidth = request.POST["bw"]
+		delay = request.POST["dl"]
+		lossrate = request.POST["lr"]
 
-def failView(request):
-	return render(request, 'benchmark/fail.html')
+		instance = Instance.objects.get(token = token)
+
+		netbench = BandwidthNetbench(iperf_client=instance.instanceType, max_bandwidth=bandwidth, delay=delay,\
+					loss_rate=lossrate)
+		netbench.save()
+	except Exception, e:
+		print "miss match with token %s" % (token,)
+		print "new record will be created with instancetype set to be null"
+
+		bandwidth = request.POST["bw"]
+		delay = request.POST["dl"]
+		lossrate = request.POST["lr"]
+		netbench = BandwidthNetbench(max_bandwidth=bandwidth, delay=delay, loss_rate=lossrate)
+		netbench.save()
+	finally:
+		return HttpResponseRedirect('/benchmark/success')

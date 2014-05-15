@@ -5,6 +5,9 @@ urlpatterns = patterns('',
 	url(r'^success/$', views.successView, name = 'success'),
 	url(r'^fail/$', views.failView, name = 'fail'),
 	url(r'^instance/new/$', views.createInstance, name = 'createInstance'),
-	url(r'^instance/(?P<instanceID>\d+)/unixbench$', views.parseUnixBenchResult, name = 'unixbench'),
-	url(r'^instance/(?P<instanceID>\d+)/phoronix$', views.parsePhoronixResult, name = 'phoronix'),
+
+	# parse benchmark's result
+	url(r'^instance/unixbench$', views.parseUnixBenchResult, name = 'unixbench'),
+	url(r'^instance/phoronix$', views.parsePhoronixResult, name = 'phoronix'),
+	url(r'^instance/bandwidth$', views.parseIperfResult, name = 'bandwidth')
 )
