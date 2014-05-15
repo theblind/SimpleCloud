@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
 def iperf_benchmark(instance):
 	current_path = os.path.dirname(os.path.realpath(__file__))
-	script_dir = os.path.join(current_path, "../../../../benchmark/network")
+	script_dir = os.path.join(current_path, "../../../../benchmark")
 	os.chdir(script_dir)
 	command = "bash ./run.sh runclient %s %s %s %s %s" % (instance.username, instance.password, \
 			instance.publicAddress, "42.159.158.39", instance.hashKey)

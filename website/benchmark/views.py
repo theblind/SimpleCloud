@@ -49,7 +49,7 @@ def parseIperfResult(request):
 		delay = request.POST["dl"]
 		lossrate = request.POST["lr"]
 
-		instance = Instance.objects.get(token = token)
+		instance = Instance.objects.get(hashKey = token)
 
 		netbench = BandwidthNetbench(iperf_client=instance.instanceType, max_bandwidth=bandwidth, delay=delay,\
 					loss_rate=lossrate)

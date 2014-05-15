@@ -27,6 +27,6 @@ function copy_script
 {
 	username=$1
 	host=$2
-	scp -r ./remotescript ${username}@${host}:/home/${username}/netbenchmark
+	scp -r ./remotescript ${username}@${host}:/home/${username}/simplecloudbenchmark
 }
 

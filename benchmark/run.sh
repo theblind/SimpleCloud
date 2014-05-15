@@ -32,7 +32,7 @@ fi
 
 # delete old file on remote instance
 ssh -tt ${username}@${host} <<SSHEND
-rm -rfv netbenchmark
+rm -rfv simplecloudbenchmark
 exit 1
 SSHEND
 
@@ -42,7 +42,7 @@ copy_script $username $host
 # $1 is the username and $2 is the password, $3 is the destination ip address
 ssh -tt ${username}@${host} <<SSHCMD
 echo $(date "+%Y-%m-%d %H:%M %p") >> record.txt
-cd netbenchmark
+cd simplecloudbenchmark/bandwidth
 bash ./netbench.sh ${run_model} ${password} ${token} ${iperf_server}
 exit
 SSHCMD

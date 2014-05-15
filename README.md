@@ -45,6 +45,7 @@ South用于应用model的改变到数据库。
 ## pricing crawler
 
 覆盖的IaaS provider有：
+
 1. Amazon EC2
 2. Windows Azure
 3. Aliyun
