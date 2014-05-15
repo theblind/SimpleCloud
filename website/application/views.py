@@ -18,7 +18,7 @@ def search(request):
 		vram = request.GET.get('vram')
 		storage = request.GET.get('storage')
 
-		if (os is None) or (vcpu is None) or (vram is None):
+		if (not os) or (not vcpu) or (not vram):
 			return HttpResponseBadRequest()
 
 		# query virtual machine's info from database by given condition

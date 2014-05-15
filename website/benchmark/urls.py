@@ -2,7 +2,12 @@ from django.conf.urls import patterns, url
 from benchmark import views
 
 urlpatterns = patterns('',
-	url(r'^instance/(?P<instanceID>\d+)/unixbench$', views.parseUnixBenchResult, name = 'unixbench'),
-	url(r'^instance/(?P<instanceID>\d+)/phoronix$', views.parsePhoronixResult, name = 'phoronix'),
-	url(r'^instance/bandwidth$', views.parseIperfResult)
+	url(r'^success/$', views.successView, name = 'success'),
+	url(r'^fail/$', views.failView, name = 'fail'),
+	url(r'^instance/new/$', views.createInstance, name = 'createInstance'),
+
+	# parse benchmark's result
+	url(r'^instance/unixbench$', views.parseUnixBenchResult, name = 'unixbench'),
+	url(r'^instance/phoronix$', views.parsePhoronixResult, name = 'phoronix'),
+	url(r'^instance/bandwidth$', views.parseIperfResult, name = 'bandwidth')
 )

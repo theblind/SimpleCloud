@@ -1,14 +1,26 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from benchmark.models import Instance, UnixBench, Phoronix, BandwidthNetbench
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from benchmark.models import InstanceType, Instance, UnixBench, Phoronix, BandwidthNetbench
 
+import traceback
 import random
 
+# return succeed page
+def successView(request):
+	return render(request, 'benchmark/success.html')
+
+# return failed page
+def failView(request):
+	return render(request, 'benchmark/fail.html')
+
 # save vm's unixbench result into database
-def parseUnixBenchResult(request, instanceID):
+def parseUnixBenchResult(request):
 	if request.method == 'POST':
 		try:
-			hashKey = request.POST['hashKey']
+			# get hashKey to identify a vm
+			hashKey = request.POST.get('hashKey')
+
 			instance = Instance.objects.get(pk = instanceID)
 			if instance.hashKey == hashKey:
 				serialScore = request.POST['serialScore']
@@ -16,17 +28,19 @@ def parseUnixBenchResult(request, instanceID):
 
 				ub = UnixBench(instance = instance, serialScore = serialScore, parallelScore = parallelScore)
 				ub.save()
-				return render(request, 'benchmark/succeed.html')
-		except KeyError:
-			print 'Error: can\'t parse UnixBench result'
+				return HttpResponseRedirect('/benchmark/success')
+		except ObjectDoesNotExist:
+			return HttpResponseRedirect('/benchmark/fail')
 
-	return render(request, 'benchmark/failed.html')
+	return HttpResponseRedirect('/benchmark/fail')
 
 # save vm's phoronix result into database
-def parsePhoronixResult(request, instanceID):
+def parsePhoronixResult(request):
 	if request.method == 'POST':
 		try:
-			hashKey = request.POST['hashKey']
+			# get hashKey to identify a vm
+			hashKey = request.POST.get('hashKey')
+
 			instance = Instance.objects.get(pk = instanceID)
 			if instance.hashKey == hashKey:
 				compressionResult = request.POST['compressionResult']
@@ -34,11 +48,41 @@ def parsePhoronixResult(request, instanceID):
 
 				phoronix = Phoronix(instance = instance, compressionResult = compressionResult, pgbenchResult = pgbenchResult)
 				phoronix.save()
-				return render(request, 'benchmark/succeed.html')
-		except KeyError:
-			print 'Error: can\'t parse UnixBench result'
+				return HttpResponseRedirect('/benchmark/success')
+		except ObjectDoesNotExist:
+			return HttpResponseRedirect('/benchmark/fail')
 
-	return render(request, 'benchmark/failed.html')
+	return HttpResponseRedirect('/benchmark/fail')
+
+
+def createInstance(request):
+	if request.method == 'POST':
+		try:
+			alias_name = request.POST.get('instanceType')
+			name = request.POST.get('instanceName')
+			ip = request.POST.get('instanceIP')
+
+			# Because of get method will raise MultiObjects Exception,
+			# we use filter method for temporary
+			instanceType = InstanceType.objects.get(alias_name = alias_name)
+
+			instance = Instance(instanceType = instanceType)
+			instance.generateKey(name+ip)
+			#instance.save()
+			'''
+			except ObjectDoesNotExist:
+				pass
+			except MultipleObjectsReturned:
+				pass
+			'''
+		except:
+			tb = traceback.format_exc()
+         	return HttpResponse(tb)
+			#return HttpResponseRedirect('/benchmark/fail')
+		
+		return HttpResponseRedirect('/benchmark/success')
+
+	return render(request, 'benchmark/createInstanceForm.html')
 
 def parseIperfResult(request):
 	if request.method != "POST":

@@ -37,17 +37,22 @@ class InstanceType(models.Model):
 	os_text = models.CharField(max_length = 50)
 	os_value = models.CharField(max_length = 50)
 
-
-	# instance pricing info
-	pricing_type = models.CharField(max_length = 30)
-	monetary_unit = models.CharField(max_length = 30)
-	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
-	duration = models.IntegerField()
-	pricing_cycle = models.CharField(max_length = 30)
-
 	# update timestamp
 	update_time = models.IntegerField()
 
+# instance type pricing info
+class Price(models.Model):
+	# one to one relationship with Instance Type
+	instanceType = models.OneToOneField(InstanceType)
+
+	# on-demand, reserved or audition
+	pricing_type = models.CharField(max_length = 30)
+	# RMB or USD
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	# hour or month
+	pricing_cycle = models.CharField(max_length = 30)
 
 # create model Instance to represent
 # single instance
@@ -79,8 +84,8 @@ class Instance(models.Model):
 # create model UnixBench to represent
 # this benchmark's detail
 class UnixBench(models.Model):
-	# many to one relationship with Instance
-	instance = models.ForeignKey(InstanceType)
+	# many to one relationship with InstanceType
+	instanceType = models.ForeignKey(InstanceType)
 
 	# instance score for serail test
 	serialScore = models.IntegerField()
@@ -95,16 +100,8 @@ class UnixBench(models.Model):
 # create model Phoronix to represent
 # this benchmark's detail
 class Phoronix(models.Model):
-	# many to one relationship with Instance
-	instance = models.ForeignKey(InstanceType)
-
-	# test result for 7-zip compression
-	# result unit is MIPS
-	compressionResult = models.IntegerField()
-
-	# test result for postgreSQL benchmark
-	# result unit is TPS
-	pgbenchResult = models.IntegerField()
+	# many to one relationship with InstanceType
+	instanceType = models.ForeignKey(InstanceType)
 
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
