@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from benchmark.models import InstanceType, Instance, UnixBench, Phoronix, BandwidthNetbench
+from benchmark.forms import InstanceForm
 
 import traceback
 import random
@@ -10,9 +11,41 @@ import random
 def successView(request):
 	return render(request, 'benchmark/success.html')
 
+
 # return failed page
 def failView(request):
 	return render(request, 'benchmark/fail.html')
+
+# add new instance
+def createInstance(request):
+	if request.method == 'POST':
+		try:
+			# get instance info
+			alias_name = request.POST.get('instanceType')
+			publicAddress = request.POST.get('publicAddress')
+			innerAddress = request.POST.get('innerAddress')
+			username = request.POST.get('username')
+			password = request.POST.get('password')
+
+			instanceType = InstanceType.objects.get(alias_name = alias_name)
+
+			instance = Instance(instanceType = instanceType, publicAddress = publicAddress,
+								innerAddress = innerAddress, username = username,
+								password = password)
+			instance.generateKey(alias_name+publicAddress)
+			instance.save()
+		except:
+			tb = traceback.format_exc()
+			request.session['error'] = tb
+			return HttpResponseRedirect('/benchmark/fail')
+		
+		return HttpResponseRedirect('/benchmark/success')
+
+	form = InstanceForm()
+	return render(request, 'benchmark/createInstanceForm.html', {
+        'form': form,
+    })
+
 
 # save vm's unixbench result into database
 def parseUnixBenchResult(request):
@@ -21,18 +54,19 @@ def parseUnixBenchResult(request):
 			# get hashKey to identify a vm
 			hashKey = request.POST.get('hashKey')
 
-			instance = Instance.objects.get(pk = instanceID)
-			if instance.hashKey == hashKey:
-				serialScore = request.POST['serialScore']
-				parallelScore = request.POST['parallelScore']
+			instance = Instance.objects.get(hashKey = hashKey)
+			serialScore = request.POST.get('serialScore', 0)
+			parallelScore = request.POST.get('parallelScore', 0)
 
-				ub = UnixBench(instance = instance, serialScore = serialScore, parallelScore = parallelScore)
-				ub.save()
-				return HttpResponseRedirect('/benchmark/success')
+			ub = UnixBench(instance = instance, serialScore = serialScore, parallelScore = parallelScore)
+			ub.save()
+			return HttpResponseRedirect('/benchmark/success')
 		except ObjectDoesNotExist:
-			return HttpResponseRedirect('/benchmark/fail')
+			tb = traceback.format_exc()
+         	return HttpResponse(tb)
 
 	return HttpResponseRedirect('/benchmark/fail')
+
 
 # save vm's phoronix result into database
 def parsePhoronixResult(request):
@@ -41,48 +75,19 @@ def parsePhoronixResult(request):
 			# get hashKey to identify a vm
 			hashKey = request.POST.get('hashKey')
 
-			instance = Instance.objects.get(pk = instanceID)
-			if instance.hashKey == hashKey:
-				compressionResult = request.POST['compressionResult']
-				pgbenchResult = request.POST['pgbenchResult']
+			instance = Instance.objects.get(hashKey = hashKey)
+			compressionResult = request.POST.get('compressionResult', 0)
+			pgbenchResult = request.POST.get('pgbenchResult', 0)
 
-				phoronix = Phoronix(instance = instance, compressionResult = compressionResult, pgbenchResult = pgbenchResult)
-				phoronix.save()
-				return HttpResponseRedirect('/benchmark/success')
+			phoronix = Phoronix(instance = instance, compressionResult = compressionResult, pgbenchResult = pgbenchResult)
+			phoronix.save()
+			return HttpResponseRedirect('/benchmark/success')
 		except ObjectDoesNotExist:
-			return HttpResponseRedirect('/benchmark/fail')
+			tb = traceback.format_exc()
+         	return HttpResponse(tb)
 
 	return HttpResponseRedirect('/benchmark/fail')
 
-
-def createInstance(request):
-	if request.method == 'POST':
-		try:
-			alias_name = request.POST.get('instanceType')
-			name = request.POST.get('instanceName')
-			ip = request.POST.get('instanceIP')
-
-			# Because of get method will raise MultiObjects Exception,
-			# we use filter method for temporary
-			instanceType = InstanceType.objects.get(alias_name = alias_name)
-
-			instance = Instance(instanceType = instanceType)
-			instance.generateKey(name+ip)
-			#instance.save()
-			'''
-			except ObjectDoesNotExist:
-				pass
-			except MultipleObjectsReturned:
-				pass
-			'''
-		except:
-			tb = traceback.format_exc()
-         	return HttpResponse(tb)
-			#return HttpResponseRedirect('/benchmark/fail')
-		
-		return HttpResponseRedirect('/benchmark/success')
-
-	return render(request, 'benchmark/createInstanceForm.html')
 
 def parseIperfResult(request):
 	if request.method != "POST":
