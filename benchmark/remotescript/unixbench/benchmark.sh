@@ -6,19 +6,19 @@ if [ $# -ne 2 ];
 then
     echo 'Illegal number of parameters'
     echo
-    echo './benchmark.sh UnixBench_compressed_file_path Phoronix_compressed_file_path'
+    echo './benchmark.sh Hash_key UnixBench_compressed_file_path Phoronix_compressed_file_path'
     echo
     echo 'NOTE: Compressed file will be extracted with option "x"'
     exit
 fi
 
-unixbench_compressed_file_path=$1
-phoronix_compressed_file_path=$2
+hash_key=$1
+unixbench_compressed_file_path=$2
+phoronix_compressed_file_path=$3
 
 export ROOT_DIRECTORY=`pwd`
 export RESULT_DIRECTORY='results'
 CONFIGURATION_FILE="benchmark.conf"
-CONFIG_KEY="key"
 CONFIG_INSTALLED_BENCHMARK="installed_benchmark"
 BASEURL="http://203.195.187.64/benchmark/instance/"
 
@@ -75,7 +75,7 @@ function post_unixbench
     serial_score=${serial_score%.*}
     parallel_score=$(echo $value | awk '{print $2}')
     parallel_score=${parallel_score%.*}
-    curl $BASEURL'unixbench' -d "hashKey=$(get_config $CONFIG_KEY)&serialScore=$serial_score&parallelScore=$parallel_score"
+    curl $BASEURL'unixbench' -d "hashKey=$hash_key&serialScore=$serial_score&parallelScore=$parallel_score"
 }
 
 function run_unixbench
