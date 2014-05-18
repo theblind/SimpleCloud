@@ -1,6 +1,7 @@
 /*deal with the uploaded benchmark result*/
-var mongodb = new require("../lib/mongodb");
-
+var MongoDB = new require("../lib/mongodb");
+var mongodb = new MongoDB();
+mongodb.__init__();
 exports.index = function(req, res) {
 	if(req.method == "GET") {
 		return res.send({

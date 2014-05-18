@@ -9,7 +9,7 @@ var bench_buffersize = [1, 128, 256, 512, 1024, 2048, 4096, 6144, 8192, 10240, 1
 			16384, 18432, 20480];
 
 function websocketBench(){
-	var ws = new WebSocket("ws://localhost:3000/");
+	var ws = new WebSocket("ws://42.159.158.39:3000/");
 	ws.binaryType = "arraybuffer";
 	ws.bufferindex = 0;
 	ws.lastclock = Date.now();
