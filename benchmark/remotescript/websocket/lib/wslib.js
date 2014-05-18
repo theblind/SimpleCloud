@@ -1,10 +1,18 @@
+var BenchmarkToken = require("./tokenstack");
+
+global.wstoken = new BenchmarkToken(100);
+wstoken.init();
+
 exports.wsinteractive = function(message, flags, ws){
 	console.log("received data from client: %s", message);
 	try{
 		var data = JSON.parse(message);
 		var buffsize = data.buffsize;
 		var buffer = generate_string(buffsize);
-		return ws.send(buffer);
+		/* add the token ad prifix part, 32 bytes totally */
+		var block = wstoken.getCurrent();
+		block = block + buffer;
+		return ws.send(block);
 	}
 	catch(err){
 		console.log("exception happened while interacting with websocket client:");

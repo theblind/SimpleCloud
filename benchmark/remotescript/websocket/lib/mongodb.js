@@ -9,7 +9,7 @@ function MongoDB(){
 
 MongoDB.prototype.__init__ = function(){
 	var rawthis = this;
-	MongoClient.connct("mongodb://127.0.0.1:27017/rttbench", function(err, db){
+	MongoClient.connct("mongodb://127.0.0.1:27017/benchmark", function(err, db){
 		if(err)
 			throw err;
 		rawthis.db = db;
@@ -21,7 +21,7 @@ MongoDB.prototype.pickout = function(){
 	var rawthis = this;
 	rawthis.queue.forEach(function(query, index){
 		if(query.operate == "save")
-			rawthis.save(query.colle, query.params[0], callback);
+			rawthis.save(query.colle, query.params[0], query.callback);
 	});
 };
 
@@ -31,21 +31,25 @@ MongoDB.prototype.save = function(collection, criteria, callback){
 		rawthis.queue.push({
 			operate: "save",
 			colle: collection,
-			params: [criteria,]
+			params: [criteria,],
+			callback: callback
 		});
+		console.log("mongodb query has been stored");
 		return;
 	}
 	var colle  = rawthis.db.collection(collection);
-	colle.insert(criteria, callback);
+	return colle.insert(criteria, callback);
 }
 
 MongoDB.prototype.getall = function(collection, criteria,callback){
 	var rawthis = this;
 	if(rawthis == null){
+		console.log("mongodb query has been stored");
 		return rawthis.queue.push({
 			operate: "getall",
 			colle: collection,
-			params: [criteria,]
+			params: [criteria,],
+			callback: callback
 		});
 	}
 	var colle = rawthis.db.collection(collection);
