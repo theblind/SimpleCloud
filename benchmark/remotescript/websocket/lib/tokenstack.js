@@ -34,7 +34,7 @@ BenchmarkToken.prototype.addTokenPool = function(){
 	var token = rawthis.tokens.pop();
 	rawthis.currentsize--;
 	rawthis.tokenpool.push(token);
-	process.nextTick(rawthis.addTokenStack);
+	rawthis.addTokenStack();
 	return rawthis.currentsize;
 }
 
