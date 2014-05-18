@@ -11,7 +11,7 @@ function MongoDB(){
 MongoDB.prototype.__init__ = function(){
 	var rawthis = this;
 	console.log("connecting to mongodb...");
-	MongoClient.connct("mongodb://127.0.0.1:27017/benchmark", function(err, db){
+	MongoClient.connect("mongodb://127.0.0.1:27017/benchmark", function(err, db){
 		if(err)
 			throw err;
 		rawthis.db = db;
