@@ -12,7 +12,8 @@ exports.wsinteractive = function(message, flags, ws){
 		/* add the token ad prifix part, 32 bytes totally */
 		var block = wstoken.getCurrent();
 		block = block + buffer;
-		return ws.send(block);
+		ws.send(block);
+		wstoken.addTokenPool();
 	}
 	catch(err){
 		console.log("exception happened while interacting with websocket client:");

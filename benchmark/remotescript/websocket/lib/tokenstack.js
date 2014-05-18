@@ -9,16 +9,18 @@ function BenchmarkToken(stacksize){
 	this.stacksize = stacksize;
 }
 
+BenchmarkToken.prototype.tokenpool = [];
+
 BenchmarkToken.prototype.init = function(){
 	var rawthis = this;
 	rawthis.tokens = [];
 	for(var index = 0; index < rawthis.stacksize; index++){
-		rawthis.addToken();
+		rawthis.addTokenStack();
 	}
 	rawthis.currentsize = rawthis.stacksize;
 }
 
-BenchmarkToken.prototype.addToken = function(){
+BenchmarkToken.prototype.addTokenStack = function(){
 	var rawthis = this;
 	var md5 = crypto.createHash("md5");
 	md5.update(Date.now().toString());
@@ -27,10 +29,12 @@ BenchmarkToken.prototype.addToken = function(){
 	rawthis.currentsize++;
 }
 
-BenchmarkToken.prototype.deleteToken = function(){
+BenchmarkToken.prototype.addTokenPool = function(){
 	var rawthis = this;
-	rawthis.tokens.pop();
+	var token = rawthis.tokens.pop();
 	rawthis.currentsize--;
+	rawthis.tokenpool.push(token);
+	process.nextTick(rawthis.addTokenStack);
 	return rawthis.currentsize;
 }
 
@@ -38,4 +42,3 @@ BenchmarkToken.prototype.getCurrent = function(){
 	return this.tokens[this.currentsize-1];
 }
 
-BenchmarkToken.prototype.tokenpool = [];

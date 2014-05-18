@@ -21,6 +21,7 @@ function websocketBench(){
 
 	ws.onmessage = function(event){
 		console.log("got message from websocket server, index is: %d.....", ws.bufferindex);
+		console.log("content length is %d", event.data.length-32);
 		var resultobj = {
 			"type": "websocket",
 			"buffsize": bench_buffersize[ws.bufferindex],
