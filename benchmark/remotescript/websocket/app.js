@@ -11,7 +11,7 @@ var WebSocketServer = require("ws").Server;
 
 var uploadresult = require("./routes/uploadresult");
 var ajaxbench = require("./routes/ajaxbench");
-
+var constwebsocket = require("./routes/constantwebsocket");
 var wslib = require("./lib/wslib");
 var setting = require("./setting");
 
@@ -40,7 +40,9 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.post("/uploadresult", uploadresult.index);
-app.get("ajaxbench", ajaxbench.index);
+app.get("/ajaxbench", ajaxbench.index);
+app.get("/websocket", constwebsocket.index);
+
 
 var wsapp = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
