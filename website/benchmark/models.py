@@ -37,14 +37,14 @@ class InstanceType(models.Model):
 	os_text = models.CharField(max_length = 50)
 	os_value = models.CharField(max_length = 50)
 
+	# One to One relationship with price
+	price = models.OneToOneField(Price)
+
 	# update timestamp
 	update_time = models.IntegerField()
 
 # instance type pricing info
 class Price(models.Model):
-	# one to one relationship with Instance Type
-	instanceType = models.OneToOneField(InstanceType)
-
 	# on-demand, reserved or audition
 	pricing_type = models.CharField(max_length = 30)
 	# RMB or USD
@@ -64,10 +64,10 @@ class Instance(models.Model):
 	hashKey = models.CharField(max_length = 40)
 
 	# ip address of public network address
-	publicAddress = models.CharField(max_length=15)
+	publicAddress = models.IPAddressField()
 
 	# ip address inner network
-	innerAddress = models.CharField(max_length=15)
+	innerAddress = models.IPAddressField()
 
 	# username on the instance
 	username = models.CharField(max_length=100)
@@ -123,4 +123,25 @@ class BandwidthNetbench(models.Model):
 	loss_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
 	# timestamp of this benchmark task
-	createdAt = models.DateField(auto_now=True,auto_now_add=True)
+	createdAt = models.DateField(auto_now=True, auto_now_add=True)
+
+
+# create model Bonnie to represent
+# this benchmark's detail
+class Bonnie(models.Model):
+	# many to one relationship with InstanceType
+	instanceType = models.ForeignKey(InstanceType)
+
+	# Writing with putc(), a.k.a, by character
+	writeCharaterSpeed = models.IntegerField()
+	# Writing with block
+	writeBlockSpeed = models.IntegerField()
+	# Reading with getc(), a.k.a, by character
+	readCharacerSpeed = models.IntegerField()
+	# Reading with block
+	readBlcokSpeed = models.IntegerField()
+	# Random Seek per second
+	randomSeek = models.DecimalField(max_digits=5, decimal_places=1)
+
+	# timestamps for single test
+	createdAt = models.DateField(auto_now_add = True)

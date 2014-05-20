@@ -57,7 +57,8 @@ def parseInstanceInfo(instance):
 	info["vcpu"] = instance.vcpu
 	info["vram"] = str(instance.vram)
 	info["storage"] = instance.storage
-	info["pricing"] = parseInstancePrice(instance)
+
+	info["pricing"] = parseInstancePrice(instance.price)
 
 	info["provider"] = instance.manufacture.name
 	info["link"] = instance.manufacture.link
@@ -66,15 +67,15 @@ def parseInstanceInfo(instance):
 	return info
 
 # extract price info from specific instance
-def parseInstancePrice(instance):
+def parseInstancePrice(instancePrice):
 	price = {}
 
-	if instance.pricing_cycle == "hour":
-		price["pph"] = str(instance.prices)
-		price["ppm"] = str(instance.prices * 24 * 30)
-	elif instance.pricing_cycle == "month":
-		price["pph"] = str(instance.prices / (24 * 30))
-		price["ppm"] = str(instance.prices)
-	price["unit"] = instance.monetary_unit
+	if instancePrice.pricing_cycle == "hour":
+		price["pph"] = str(instancePrice.prices)
+		price["ppm"] = str(instancePrice.prices * 24 * 30)
+	elif instancePrice.pricing_cycle == "month":
+		price["pph"] = str(instancePrice.prices / (24 * 30))
+		price["ppm"] = str(instancePrice.prices)
+	price["unit"] = instancePrice.monetary_unit
 
 	return price
