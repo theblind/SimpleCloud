@@ -20,21 +20,6 @@ function log
 }
 export -f log
 
-function run_bonnie
-{
-	log "Run Bonnie++ at "`date +%F\ %T`
-    cd $ROOT_DIRECTORY/Bonnie    
-    output_path=$ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/Bonnie
-    mkdir -p $output_path
-    ./Run > $output_path/Bonnie.log
-    log "> Bonnie++ Finished at "`date +%F\ %T`
-
-    result=$(tail -n 1 $output_path/UnixBench.log)
-    post_Bonnie "$result"
-    log "> Bonnie++ data posted at "`date +%F\ %T`
-    cd $ROOT_DIRECTORY
-}
-
 function post_bonnie
 {
 	result=$1
@@ -44,6 +29,20 @@ function post_bonnie
     write_blcok_speed=$(echo $result | awk -F ',' '{print $16}')
     random_seek=$(echo $result | awk -F ',' '{print $18}')
     curl $BASEURL'bonnie' -d "hashKey=$hash_key&readCharacterSpeed=$read_character_speed&readBlockSpeed=$read_block_speed&writeCharacterSpeed=$write_character_speed&writeBlcokSpeed=$write_blcok_speed&randomSeek=$random_seek"
+}
+
+function run_bonnie
+{
+	log "Run Bonnie++ at "`date +%F\ %T` 
+    output_path=$ROOT_DIRECTORY/$RESULT_DIRECTORY/$timestamp/Bonnie
+    mkdir -p $output_path
+    bonnie >& $output_path/Bonnie.log
+    log "> Bonnie++ Finished at "`date +%F\ %T`
+
+    result=$(tail -n 1 $output_path/Bonnie.log)
+    post_bonnie "$result"
+    log "> Bonnie++ data posted at "`date +%F\ %T`
+    cd $ROOT_DIRECTORY
 }
 
 run_bonnie

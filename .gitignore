@@ -1,7 +1,8 @@
 *.pyc
 
-benchmark/benchmark.conf
-benchmark/results
+benchmark/remotescript/bonnie/results
+benchmark/remotescript/unixbench/results
+benchmark/remotescript/unixbench/benchmark.conf
 website/SimpleCloud/database.conf
 website/*/migrations
 
