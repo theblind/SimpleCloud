@@ -10,6 +10,19 @@ class Manufacture(models.Model):
 	image = models.CharField(max_length = 100)
 	link = models.CharField(max_length = 100)
 
+
+# instance type pricing info
+class Price(models.Model):
+	# on-demand, reserved or audition
+	pricing_type = models.CharField(max_length = 30)
+	# RMB or USD
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	# hour or month
+	pricing_cycle = models.CharField(max_length = 30)
+
+
 # create model Instance Type to represent 
 # instance's hardware information
 class InstanceType(models.Model):
@@ -43,16 +56,6 @@ class InstanceType(models.Model):
 	# update timestamp
 	update_time = models.IntegerField()
 
-# instance type pricing info
-class Price(models.Model):
-	# on-demand, reserved or audition
-	pricing_type = models.CharField(max_length = 30)
-	# RMB or USD
-	monetary_unit = models.CharField(max_length = 30)
-	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
-	duration = models.IntegerField()
-	# hour or month
-	pricing_cycle = models.CharField(max_length = 30)
 
 # create model Instance to represent
 # single instance
@@ -105,6 +108,7 @@ class Phoronix(models.Model):
 
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
+
 
 # create model BandwidthNetbench to represent
 # the vm's network status
