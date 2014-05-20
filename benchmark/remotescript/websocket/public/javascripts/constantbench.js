@@ -88,7 +88,8 @@ function onWsClose(event){
 
 function onWsError(event){
 	console.log("error happened in websocket....");
-	console.log("eerror detail: ", event);
+	console.error("error detail: ", event);
+	setTimeout(websocketBench, 800);
 }
 
 function runWsBench(ws){
