@@ -58,8 +58,10 @@ def parseUnixBenchResult(request):
 			serialScore = request.POST.get('serialScore', 0)
 			parallelScore = request.POST.get('parallelScore', 0)
 
-			ub = UnixBench(instance = instance, serialScore = serialScore, parallelScore = parallelScore)
-			ub.save()
+			unixbench = UnixBench(instanceType = instance.instanceType,
+									serialScore = serialScore,
+									parallelScore = parallelScore)
+			unixbench.save()
 			return HttpResponseRedirect('/benchmark/success')
 		except ObjectDoesNotExist:
 			tb = traceback.format_exc()
@@ -79,7 +81,9 @@ def parsePhoronixResult(request):
 			compressionResult = request.POST.get('compressionResult', 0)
 			pgbenchResult = request.POST.get('pgbenchResult', 0)
 
-			phoronix = Phoronix(instance = instance, compressionResult = compressionResult, pgbenchResult = pgbenchResult)
+			phoronix = Phoronix(instanceType = instance.instanceType,
+								compressionResult = compressionResult,
+								pgbenchResult = pgbenchResult)
 			phoronix.save()
 			return HttpResponseRedirect('/benchmark/success')
 		except ObjectDoesNotExist:
@@ -91,7 +95,7 @@ def parsePhoronixResult(request):
 
 def parseIperfResult(request):
 	if request.method != "POST":
-		return HttpResponse("InvalidMethod")
+		HttpResponseRedirect('/benchmark/fail')
 	try:
 		token = request.POST["tk"]
 		bandwidth = request.POST["bw"]
@@ -113,4 +117,31 @@ def parseIperfResult(request):
 		netbench = BandwidthNetbench(max_bandwidth=bandwidth, delay=delay, loss_rate=lossrate)
 		netbench.save()
 	finally:
-		return HttpResponse("Accepted")
+		return HttpResponseRedirect('/benchmark/success')
+
+def parseBonnieResult(request):
+	if request.method == 'POST':
+		try:
+			# get hashKey to identify a vm
+			hashKey = request.POST.get('hashKey')
+
+			instance = Instance.objects.get(hashKey = hashKey)
+			writeCharaterSpeed = request.POST.get('writeCharaterSpeed', 0)
+			writeBlockSpeed = request.POST.get('writeBlockSpeed', 0)
+			readCharacerSpeed = request.POST.get('readCharacerSpeed', 0)
+			readBlcokSpeed = request.POST.get('readBlcokSpeed', 0)
+			randomSeek = request.POST.get('randomSeek', 0)
+
+			bonnie = Bonnie(instanceType = instance.instanceType,
+							writeCharaterSpeed = writeCharaterSpeed,
+							writeBlockSpeed = writeBlockSpeed,
+							readCharacerSpeed = readCharacerSpeed,
+							readBlcokSpeed = readBlcokSpeed,
+							randomSeek = randomSeek)
+			bonnie.save()
+			return HttpResponseRedirect('/benchmark/success')
+		except ObjectDoesNotExist:
+			tb = traceback.format_exc()
+         	return HttpResponse(tb)
+
+	return HttpResponseRedirect('/benchmark/fail')

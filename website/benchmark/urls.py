@@ -9,5 +9,6 @@ urlpatterns = patterns('',
 	# parse benchmark's result
 	url(r'^instance/unixbench$', views.parseUnixBenchResult, name = 'unixbench'),
 	url(r'^instance/phoronix$', views.parsePhoronixResult, name = 'phoronix'),
-	url(r'^instance/bandwidth$', views.parseIperfResult, name = 'bandwidth')
+	url(r'^instance/bandwidth$', views.parseIperfResult, name = 'bandwidth'),
+	url(r'^instance/bonnie$', views.parseBonnieResult, name = 'bonnie')
 )
