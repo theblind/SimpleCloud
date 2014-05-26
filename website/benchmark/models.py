@@ -10,6 +10,19 @@ class Manufacture(models.Model):
 	image = models.CharField(max_length = 100)
 	link = models.CharField(max_length = 100)
 
+
+# instance type pricing info
+class Price(models.Model):
+	# on-demand, reserved or audition
+	pricing_type = models.CharField(max_length = 30)
+	# RMB or USD
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	# hour or month
+	pricing_cycle = models.CharField(max_length = 30)
+
+
 # create model Instance Type to represent 
 # instance's hardware information
 class InstanceType(models.Model):
@@ -37,22 +50,12 @@ class InstanceType(models.Model):
 	os_text = models.CharField(max_length = 50)
 	os_value = models.CharField(max_length = 50)
 
+	# One to One relationship with price
+	price = models.OneToOneField(Price)
+
 	# update timestamp
 	update_time = models.IntegerField()
 
-# instance type pricing info
-class Price(models.Model):
-	# one to one relationship with Instance Type
-	instanceType = models.OneToOneField(InstanceType)
-
-	# on-demand, reserved or audition
-	pricing_type = models.CharField(max_length = 30)
-	# RMB or USD
-	monetary_unit = models.CharField(max_length = 30)
-	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
-	duration = models.IntegerField()
-	# hour or month
-	pricing_cycle = models.CharField(max_length = 30)
 
 # create model Instance to represent
 # single instance
@@ -64,10 +67,10 @@ class Instance(models.Model):
 	hashKey = models.CharField(max_length = 40)
 
 	# ip address of public network address
-	publicAddress = models.CharField(max_length=15)
+	publicAddress = models.IPAddressField()
 
 	# ip address inner network
-	innerAddress = models.CharField(max_length=15)
+	innerAddress = models.IPAddressField()
 
 	# username on the instance
 	username = models.CharField(max_length=100)
@@ -106,6 +109,7 @@ class Phoronix(models.Model):
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
 
+
 # create model BandwidthNetbench to represent
 # the vm's network status
 class BandwidthNetbench(models.Model):
@@ -123,4 +127,25 @@ class BandwidthNetbench(models.Model):
 	loss_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
 	# timestamp of this benchmark task
-	createdAt = models.DateField(auto_now=True,auto_now_add=True)
+	createdAt = models.DateField(auto_now=True, auto_now_add=True)
+
+
+# create model Bonnie to represent
+# this benchmark's detail
+class Bonnie(models.Model):
+	# many to one relationship with InstanceType
+	instanceType = models.ForeignKey(InstanceType)
+
+	# Writing with putc(), a.k.a, by character
+	writeCharaterSpeed = models.IntegerField()
+	# Writing with block
+	writeBlockSpeed = models.IntegerField()
+	# Reading with getc(), a.k.a, by character
+	readCharacerSpeed = models.IntegerField()
+	# Reading with block
+	readBlcokSpeed = models.IntegerField()
+	# Random Seek per second
+	randomSeek = models.DecimalField(max_digits=5, decimal_places=1)
+
+	# timestamps for single test
+	createdAt = models.DateField(auto_now_add = True)
