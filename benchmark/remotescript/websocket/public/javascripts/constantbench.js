@@ -1,7 +1,8 @@
 /* this file should be run in web browser*/
 $(document).ready(function(){
 	console.log("javascript loaded");
-	setTimeout(websocketBench, 1000*5);
+	// setTimeout(websocketBench, 1000*5);
+	setTimeout(ajaxBench, 1000*5);
 });
 
 var bench_buffersize = 10240;
@@ -44,42 +45,38 @@ function ajaxBench(){
 		bufferindex: 0,
 		lastclock: Date.now()
 	});
-
 	runAjaxBench(ajaxBenchObj);
 }
 
 function runAjaxBench(ajaxBenchObj) {
-	if(ajaxBenchObj.bufferindex >= bench_buffersize.length){
-		return;
-	}
-	var rawcallee = this.arguments.callee;
-	var recordTime = function(jqxhr){
-		ajaxBenchObj.lastclock = Date.now();
-	}
+	ajaxBenchObj.lastclock = Date.now();
 	var jqhrx = $.ajax({
 		"url": "/ajaxbench",
 		"method": 'GET',
-		"data": bench_buffersize[ajaxBenchObj.bufferindex],
-		"beforeSend": recordTime
+		"data": {
+			buffsize: 10240
+		}
 	});
-	jqhrx.done = function(data, status){
+
+	jqhrx.done(function(data, status){
 		var receivedTime = Date.now();
-		ajaxBenchObj.bufferindex++;
-		if(status == 200 && data.length == bench_buffersize[ajaxBenchObj.bufferindex]){
-			console.log("ajax benchmark ok, buffer size: %d", ajaxBenchObj.bufferindex);
+		console.log("textStatus is ", status);
+		if(status == "success" && data.length == 10272){
+			console.log("ajax benchmark ok, buffer size: 10240...");
 			var resultobj = {
 				"type": "ajax",
-				"buffsize": ajaxBenchObj.bufferindex,
+				"buffsize": 10240,
 				"rtt": receivedTime - ajaxBenchObj.lastclock
 			}
 			uploadresult(resultobj);
-			ajaxBenchObj.bufferindex++;
-			rawcallee(ajaxBenchObj);
+			console.log("uploading result....")
 		}
 		else {
-			console.log("round-trip data not matched, http status: %d, data length: %d", status, ajaxBenchObj.bufferindex);
+			console.log("round-trip data not matched, http status: %s, data length: %d", status, data.length);
 		}
-	}
+		setTimeout(ajaxBench, 1000);
+		return;
+	})
 }
 
 function onWsClose(event){
