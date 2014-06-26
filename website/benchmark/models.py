@@ -83,6 +83,31 @@ class Instance(models.Model):
 		hashGenerator.update(identity)
 		self.hashKey = hashGenerator.hexdigest()
 
+# create UnixBench Manager to add table-level method
+class UnixBenchManager(models.Manager):
+	# reutrn all score records for specific instance type
+	def getScoresByInstanceType(self, instanceType):
+		recordsList = self.filter(instanceType = instanceType)
+		result = []
+		for record in recordsList:
+			if record.parallelScore != 0:
+				result.append(record.parallelScore)
+			else:
+				result.append(record.serialScore)
+		return result
+
+	# return average score of records for specific instance type
+	def averageScore(self, instanceType):
+		recordsList = self.filter(instanceType = instanceType)
+		amounts = 0.0
+		for record in recordsList:
+			if record.parallelScore != 0:
+				amounts += record.parallelScore
+			else:
+				amounts += record.serialScore
+
+		result = amounts / len(recordsList)
+		return result
 
 # create model UnixBench to represent
 # this benchmark's detail
@@ -90,7 +115,7 @@ class UnixBench(models.Model):
 	# many to one relationship with InstanceType
 	instanceType = models.ForeignKey(InstanceType)
 
-	# instance score for serail test
+	# instance score for serial test
 	serialScore = models.IntegerField()
 	
 	# instance score for parallel test
@@ -98,6 +123,10 @@ class UnixBench(models.Model):
 
 	# timestamps for single test
 	createdAt = models.DateField(auto_now_add = True)
+
+	# set objects manager to be UnixBench Manager
+	objects = UnixBenchManager()
+
 
 
 # create model Phoronix to represent

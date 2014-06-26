@@ -16,6 +16,7 @@ def successView(request):
 def failView(request):
 	return render(request, 'benchmark/fail.html')
 
+
 # add new instance
 def createInstance(request):
 	if request.method == 'POST':
@@ -29,8 +30,10 @@ def createInstance(request):
 
 			instanceType = InstanceType.objects.get(alias_name = alias_name)
 
-			instance = Instance(instanceType = instanceType, publicAddress = publicAddress,
-								innerAddress = innerAddress, username = username,
+			instance = Instance(instanceType = instanceType,
+								publicAddress = publicAddress,
+								innerAddress = innerAddress,
+								username = username,
 								password = password)
 			instance.generateKey(alias_name+publicAddress)
 			instance.save()
@@ -41,10 +44,11 @@ def createInstance(request):
 		
 		return HttpResponseRedirect('/benchmark/success')
 
-	form = InstanceForm()
-	return render(request, 'benchmark/createInstanceForm.html', {
-        'form': form,
-    })
+	if request.method == 'GET':
+		form = InstanceForm()
+		return render(request, 'benchmark/createInstanceForm.html', {
+	        'form': form,
+	    })
 
 
 # save vm's unixbench result into database
