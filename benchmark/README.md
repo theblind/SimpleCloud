@@ -1,15 +1,13 @@
-## use iperf as the network benchmark
-
 ### 依赖
 #### 自动交互脚本，需要使用`expect`
 安装方式：`sudo apt-get install expect`
-#### ssh public key nedded
+
+#### ssh public key needed
 ```
 ssh-keygen -t rsa
 ```
 
-
-### run.sh  parameters
+### parameters specification
 #### bwhen run as iperf server:
 - $1: runserver
 - $2: username
