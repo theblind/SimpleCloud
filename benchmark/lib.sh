@@ -23,10 +23,12 @@ function copy_publickey
 # copy bash file to destination machine
 # $1: username
 # $2: destination machine ip
+# $3: benchmark dir name
 function copy_script
 {
 	username=$1
 	host=$2
-	scp -r ./remotescript ${username}@${host}:/home/${username}/simplecloudbenchmark
+	benchmark_dir=$3
+	scp -r ./remotescript/${benchmark_dir} ${username}@${host}:/home/${username}/jianyun-benchmark
 }
 

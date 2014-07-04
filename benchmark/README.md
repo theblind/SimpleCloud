@@ -8,19 +8,18 @@ ssh-keygen -t rsa
 ```
 
 ### parameters specification
-#### bwhen run as iperf server:
-- $1: runserver
-- $2: username
-- $3: password
-- $4: hostip
 
-#### when run as client:
-- $1: runclient/runserver
-- $2: username
-- $3: password
-- $4: host ip
-- $5: token created by master
-- $6: iperf_server ip, not nedded when run as server, 
+#### public parameters
+* -u: username
+* -p: password
+* -h: ip address
+* -t: instance token/hask key
+* -b: indicate the benchmark script to run, run all benchmark in default. split by ',' while including multiple benchmark script
+
+#### private parameters
+* -c: run as client, used by iperf benchmark
+* -s: run as server, used by iperf benchmark
+* -d: destination ip address, server's ip address should be indicated when iperf run as client
 
 ### benchmark running flow
 1. **prepare the needed tools**

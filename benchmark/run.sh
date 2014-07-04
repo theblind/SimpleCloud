@@ -1,48 +1,125 @@
 #!/bin/bash
 
-# at least four parameters needed
-# $1: runclient/runserver
-# $2: username
-# $3: password
-# $4: host ip
 
 . lib.sh
 
-if [[ $# -lt 4 ]];then
-	echo need at least for params, but $# is given!
-	echo existing....
-	exit 0
+while [[ getopts "u:p:h:t:b:" arg]]; do
+	case $arg in
+		# public parameters
+		u)
+			unset username
+			username=$OPTARG
+			;;
+		p)
+			unset password
+			password=$OPTARG
+			;;
+		h)
+			unset hostip
+			hostip=$OPTARG
+			;;
+		t)
+			unset token
+			token=$OPTARG
+			;;
+		b)
+			unset benchlist
+			benchlist=$OPTARG
+			;;
+# private parameters
+		c)
+			unset role
+			role=0
+			;;
+		s)
+			role=1
+			;;
+		d)
+			unset destination
+			destination=$OPTARG
+	esac
+done
+
+# check the public parameters
+if [[ -z "$username" || -z "$password" || -z "$hostip" || "$token"]]; then
+	echo "lack of public parameters: -u, -p, -h, -t"
 fi
 
-run_model=$1
-username=$2
-password=$3
-host=$4
-token=$5
-iperf_server=$6
+# chech benchmark list
+echo "following benchmark script will be copy to remote instance: "
+if [[ -z "$benchlist" ]]; then
+	input_list=("iperf" "bonnie" "unixbench" "delay")
+	echo "iperf,bonnie,unixbench,delay"
+else
+	OLD_IFS=$IFS
+	IFS=","
+	input_list=(benchlist)
+	IFS=$OLD_IFS
+	echo benchlist
+fi
+
+
+# invalidate the parameters, check which benchmark can be executed
+declear -a benchmark_list
+index=0
+for input_item in ${input_list[@]}; do
+	case $input_item in
+		iperf )
+			if [[ role -eq 0 && -z "${destination}" ]]; then
+				echo "lack the destination parameters while iperf benchmark runs as client"
+			else
+				benchmark_list[index]="iperf"
+			fi
+			let "index=$idnex+1"
+			;;
+		bonnie | unixbench | delay )
+			benchmark_list[index]="$input_item"
+			let "index=$idnex+1"
+			;;
+	esac
+done
 
 # copy pub key to destination machine using scp and expect
-copy_publickey ${username} ${password} ${host}
+copy_publickey ${username} ${password} ${hostip}
+copy_result=$?	# get the result of the 
 
-copy_result=$?
 echo ${copy_result}
 if [[ ${copy_result} != "ok" ]]; then
 	echo "copy_publickey result infomation: ${copy_result}"
 fi
 
 # delete old file on remote instance
-ssh -tt ${username}@${host} <<SSHEND
-rm -rfv simplecloudbenchmark
+ssh -tt ${username}@${hostip} <<SSHEND
+rm -rfv ./jianyun-benchmark
+mkdir jianyun-benchmark
 exit 1
 SSHEND
 
 # copy the benchmark autorun script to destination machine
-copy_script $username $host
+for benchmark_dir in ${benchmark_list[@]}; do
+	copy_script $username $hostip $benchmark_dir
+done
 
-# $1 is the username and $2 is the password, $3 is the destination ip address
-ssh -tt ${username}@${host} <<SSHCMD
+# login to the destination instance and run the benchmarks one by one
+ssh -tt ${username}@${hostip} <<SSHCMD
 echo $(date "+%Y-%m-%d %H:%M %p") >> record.txt
-cd simplecloudbenchmark/bandwidth
-bash ./netbench.sh ${run_model} ${password} ${token} ${iperf_server}
+cd ./jianyun-benchmark
+
+for bm_item in $benchmark_list[@]; do
+	cd ./${bm_item}
+	case $bm_item in
+		 "unixbench" | "bonnie" | "delay" )
+			bash ./run.sh -u $username -p $password -t $token
+			;;
+		"iperf" )
+			if [[ $role -eq 0 ]]; then
+				bash ./run.sh -u $username -p $password -t $token -d $destination
+			elif [[ $role -eq 1 ]]; then
+				bash ./run.sh -u $username -p $password -t $token
+			fi
+			;;
+	esac
+	cd ../
+done
 exit
 SSHCMD
