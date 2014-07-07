@@ -99,6 +99,9 @@ class UnixBenchManager(models.Manager):
 	# return average score of records for specific instance type
 	def averageScore(self, instanceType):
 		recordsList = self.filter(instanceType = instanceType)
+		if len(recordsList) == 0:
+			return 0
+		
 		amounts = 0.0
 		for record in recordsList:
 			if record.parallelScore != 0:
