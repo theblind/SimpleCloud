@@ -5,7 +5,7 @@ vm jasonniu: kfniuchao88
 var conf = {
 	// 爬虫配置信息
 	// manufacture: ["aliyun", "azure", "amazon", "qcloud"],
-	manufacture: ["aliyun", "qcloud"],
+	manufacture: [ "aliyun"],
 	mongodb:{
 		/*腾讯云*/
 		host: "203.195.187.64",
@@ -28,7 +28,7 @@ var conf = {
 		// username: "serverUser", 
 		// password: "U2ltcGxlQ2xvdWQ=",
 		db: "simplecloud",
-		table_inuse: "benchmark_inuseinstancetype",
+		table_inuse: "benchmark_instancetype",
 		table_history: "benchmark_instancetype"
 	}
 }

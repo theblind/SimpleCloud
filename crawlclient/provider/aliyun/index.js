@@ -197,14 +197,33 @@ function CrawlPrice(instance, pre_data, listener){
 		"Content-Type": "application/x-www-form-urlencoded",
 		"Content-Length": contents.length
 	};
+	var retry_times = 5;
+	sendrequest(instance, options, contents, retry_times, function(status){
+		module.counter--;
+		if(status == true)
+			module.success++;
+		else if(status == false){
+			console.log("retry timeout, instance is %s!", instance.instanceInfo.os.text);
+			module.fail++;
+		}
+		if(module.counter <= 0){
+			listener.emit("finished", "aliyun", module.success, module.fail);
+		}
+	});
+}
 
+
+function sendrequest(instance, options, contents, retry_times, callback) {
+	/* retry timeout */
+	if(retry_times < 0)
+		return callback(false);
+	var rawthis = this;
 	var req = http.request(options, function(res) {
 		var bufferHelper = new BufferHelper();
 		res.on("data", function(chunk) {
 			bufferHelper.concat(chunk);
 		});
 		res.on("end", function(){
-			module.counter--;
 			if(res.statusCode == 200){
 				try{
 					var bodyContent = JSON.parse(iconv.decode(bufferHelper.toBuffer(), "utf8"));
@@ -212,41 +231,40 @@ function CrawlPrice(instance, pre_data, listener){
 					if(!bodyContent["data"]["order"]){
 						throw new Error("Wrong body content!");
 					}
-					/*正常*/
+					/* 正常 */
 					instance.instanceInfo.prices = {"RMB": bodyContent["data"]["order"]["tradeAmount"]};
 					instance.save(function(err){
-						console.log(err ? "[Fail]" : "[Success]" + pre_data);
 						console.log(instance.instanceInfo.os.text);
-						module.counter--;
-						err ? modole.fail++ : module.success++;
-						if(module.counter <= 0){
-							listener.emit("finished", "aliyun", module.success, module.fail);
+						/* if error happened, recall the sendrequest function */
+						if(err){
+							console.log("send request failed, %d times retry remain", retry_times);
+							return sendrequest(instance, options, contents, retry_times-1, callback);
+						}
+						/* if send request successfully, then call the callback function */
+						else {
+							console.log("done!");
+							return callback(true);
 						}
 					});
 				}
 				catch(err){
 					/*爬虫获取的数据有问题*/
-					console.dir({"Error": "ErrorPriceContent","Module": "Aliyun", "Message": bodyContent});
-					console.log("query content: ", pre_data);
-					module.counter--;
-					module.fail++;
-					if(module.counter <= 0){
-						listener.emit("finished", "aliyun", module.success, module.fail);
-					}
+					console.dir({"Error": "ErrorPriceContent","Module": "Aliyun", "Message": bodyContent, "exception": err});
+					return sendrequest(instance, options, contents, retry_times-1, callback);
 				}
 			}else {
 				console.log("HTTP error status code is : "+res.statusCode);
 				// console.log("Head is", res.headers);
+				return sendrequest(instance, options, contents, retry_times-1, callback);
 			}
 		});
-		res.on("error", function(err) {
-			module.counter--;
-			module.fail++;
-			console.dir({"Error": "CrawlingException", "Area":"Aliyun", "Message": err});
-			if(module.counter <= 0){
-				listener.emit("finished", "aliyun", module.success, modole.fail);
-			}
-		});
+	});
+	req.on("error", function(err) {
+		console.dir({"Error": "CrawlingException", "Area":"Aliyun", "Message": err.message});
+		// if(module.counter <= 0){
+		// 	listener.emit("finished", "aliyun", module.success, module.fail);
+		// }
+		return sendrequest(instance, options, contents, retry_times-1, callback);
 	});
 	req.write(contents);
 	req.end();

@@ -34,7 +34,7 @@ settings.manufacture.forEach(function(manu, index, array){
 	provider_list[index] = require("./provider/"+manu);
 });
 
-/*初始化数据库连接，然后进行后续操作。*/
+/* 初始化数据库连接，然后进行后续操作。*/
 var updateTime = Math.round(Date.now()/1000);
 var listener = new Listener(provider_list.length, updateTime);
 dbhandle.initdb(function(err, mongoHnd){

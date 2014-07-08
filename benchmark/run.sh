@@ -43,6 +43,7 @@ done
 # check the public parameters
 if [[ -z "$username" || -z "$password" || -z "$hostip" || "$token"]]; then
 	echo "lack of public parameters: -u, -p, -h, -t"
+	exit 0
 fi
 
 # chech benchmark list
@@ -67,6 +68,7 @@ for input_item in ${input_list[@]}; do
 		iperf )
 			if [[ role -eq 0 && -z "${destination}" ]]; then
 				echo "lack the destination parameters while iperf benchmark runs as client"
+				exit 0
 			else
 				benchmark_list[index]="iperf"
 			fi

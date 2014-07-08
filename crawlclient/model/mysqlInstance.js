@@ -24,7 +24,6 @@ function SyncInstance(instance, mysqlHnd){
 		"pricing_cycle": instance.pricing_cycle,
 		"update_time": instance.update_time
 	};
-
 }
 SyncInstance.prototype.init = function(callback){
 	var str = util.format("select * from benchmark_manufacture where name = '%s';", this.rawinstance.manufacture);

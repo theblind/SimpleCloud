@@ -100,6 +100,23 @@ function CrawlPrice(instance, paramsString, listener){
 		}
 	};
 	options.path = path+"?"+paramsString;
+	sendrequest(instance, options, 5, function(status){
+		module.counter--;
+		if(status == true)
+			module.success++;
+		else if(status == false){
+			console.log("retry timeout, instance is %s!", instance.instanceInfo.os.text);
+			module.fail++;
+		}
+		if(module.counter <= 0){
+			listener.emit("finished", "aliyun", module.success, module.fail);
+		}
+	});
+}
+
+function sendrequest(instance, options, retry_times, callback){
+	if(retry_times < 0)
+		return callback(false);
 	var instanceDesc = "Qcloud instance: CPU:"+instance.instanceInfo.vcpu
 			+" RAM:"+instance.instanceInfo.vram
 			+" OS:"+instance.instanceInfo.os.text;
@@ -120,34 +137,24 @@ function CrawlPrice(instance, paramsString, listener){
 					}
 					instance.instanceInfo.prices["RMB"] = contentObj["data"][0]["realCost"] / 100;
 					instance.save(function(err){
-						module.counter --;
-						if(err)
-							module.fail++;
-						else
-							module.success++;
-						if(module.counter <=0 && listener)
-							listener.emit("finished", "qcloud", module.success, module.fail);
+						if(err){
+							console.log("send request failed, %d times retry remain..", retry_times-1);
+							return sendrequest(instance, options, retry_times-1, callback);
+						}
+						else{
+							console.log("[Success] "+instanceDesc);
+							return callback(true);
+						}
 					});
-					/*输出正确结果日志*/
-					console.log("[Success] "+instanceDesc);
 				}catch(err) {
 					/*输出错误日志*/
 					console.log("[Fail] "+instanceDesc+err+" bodyContent:"+JSON.stringify(contentObj));
-					module.counter --;
-					module.fail++;
-					if(module.counter <= 0 && listener){
-						listener.emit("finished", "qcloud", module.success, module.fail);
-					}
+					return sendrequest(instance, options, retry_times-1, callback);
 				}
 			}
 		});
-		res.on("error", function(error){
-			console.log("Crawl qcloud failed! Error is: "+error);
-			module.fail++;
-			module.counter--;
-			if(module.counter <= 0 && listener){
-				listener.emit("finished", "qcloud", module.success, module.fail);
-			}
-		});
+	}).on("error", function(error){
+		console.log("Crawl qcloud failed! Error is: "+error.message);
+		return sendrequest(instance, options, retry_times-1, callback);
 	});
 }
