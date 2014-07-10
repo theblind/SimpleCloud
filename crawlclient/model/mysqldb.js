@@ -3,7 +3,10 @@
 var mysql = require("mysql");
 var mysqlConf = require("../settings").mysql;
 
-exports.initdb = function(callback){
+exports.initdb = initdb;
+function initdb(callback, timeout){
+	if(timeout == null)
+		timeout = 3;
 	var conn = mysql.createConnection({
 		host: mysqlConf.host,
 		user: mysqlConf.username,
@@ -11,6 +14,13 @@ exports.initdb = function(callback){
 		database: mysqlConf.db,
 	});
 	conn.connect(function(err){
-		return callback(err, conn);
+		if(err){
+			if(timeout <= 0)
+				return callback(err, null);	/* failed, timeout */
+			else
+				return initdb(callback, timeout-1); /* failed, and retry */
+		}
+		else
+			return callback(null, conn);	/* connect successfully */
 	});
 }

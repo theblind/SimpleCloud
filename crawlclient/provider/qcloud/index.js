@@ -5,17 +5,12 @@ var http = require("http")
 	util = require("util");
 
 var Instance = require("../../model/instance.js");
-
+var metadata = require("./metadata.js");
 /*准备虚拟机配置信息*/
-var operatingSystem = {
-	"CentOS": "centos6.2-64bit",
-	"SUSE": "SUSE Linux Enterprise Server 10 (x86_64)",
-	"Ubuntu": "ubuntu12-64bit",
-	"Windows": "Xserver V8.1_64"
-}
-var CPUNumber = [1, 2, 4, 8, 12];
-var RAMSize = [1, 2, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60];
+var operatingSystem = metadata.operatingSystem;
 
+var CPUNumber = metadata.CPUNumber;
+var RAMSize = metadata.RAMSize;
 // var paramsString = querystring.stringify(queryContent);
 // console.log(paramsString);
 module.counter = 0;		/*记录的计数器*/
@@ -109,7 +104,7 @@ function CrawlPrice(instance, paramsString, listener){
 			module.fail++;
 		}
 		if(module.counter <= 0){
-			listener.emit("finished", "aliyun", module.success, module.fail);
+			listener.emit("finished", "qcloud", module.success, module.fail);
 		}
 	});
 }

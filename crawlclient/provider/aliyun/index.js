@@ -4,125 +4,10 @@ var http = require("http"),
 	iconv = require("iconv-lite"),
 	BufferHelper = require("bufferhelper");
 var Instance = require("../../model/instance.js");
+var metadata = require("./metadata.js");
+var CPU_RAM_LIST = metadata.config.CPU_RAM_LIST;
 
-var CPU_RAM_LIST = {
-	"reserve": [
-		{
-			"vm_cpu": "1",
-			"vm_ram":["512", "1024", "1536", "2048", "4096"],
-		},
-		{
-			"vm_cpu": "2",
-			"vm_ram":["2048", "4096", "8192"],
-		},
-		{
-			"vm_cpu": "4",
-			"vm_ram": ["4096", "8192", "16384"],
-		},
-		{
-			"vm_cpu": "8",
-			"vm_ram": ["8192", "16384", "32768"],
-		},
-		{
-			"vm_cpu": "16",
-			"vm_ram": ["65536"]
-		}
-	],
-	"ondemand": [
-		{
-			"vm_cpu": "1",
-			"vm_ram": ["512"]
-		},
-		{
-			"vm_cpu": "2",
-			"vm_ram": ["2048", "4096", "8192"]
-		},
-		{
-			"vm_cpu": "4",
-			"vm_ram": ["8192", "16384"]
-		}
-	]
-}
-
-
-
-var os_choice = {
-	"linux":[
-		{
-			"type": "linux",
-            "text": "CentOS  6.3 64位 安全加固版",
-            "value": "centos6u3_64_20G_aliaegis_20130816.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Ubuntu  12.04 64位 安全加固版",
-            "value": "ubuntu1204_64_20G_aliaegis_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "CentOS  5.7 64位",
-            "value": "centos5u7_64_20G_alibase_20130816.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "CentOS  5.8 64位",
-            "value": "centos5u8_64_20G_alibase_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "CentOS  6.3 64位",
-            "value": "centos6u3_64_20G_alibase_20130816.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Debian  6.0.6 64位",
-            "value": "debian606_64_20G_alibase_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Ubuntu  12.04 64位",
-            "value": "ubuntu1204_64_20G_alibase_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Aliyun Linux  5.4 64位",
-            "value": "rhel5u4_64_20G_alibase_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Aliyun Linux  5.4 64位 安全加固版",
-            "value": "rhel5u4_64_20G_aliaegis_20131121.vhd"
-        },
-        {
-        	"type": "linux",
-            "text": "Aliyun Linux  5.7 64位",
-            "value": "rhel5u7_64_20G_alibase_20131121.vhd"
-        },
-
-    ],
-	"windows":[
-        {
-        	"type": "windows",
-            "text": "Windows Server  2003 R2 标准版 SP2 64位 中文版 已激活",
-            "value": "win2003_64_stand_r2_cn_40G_alibase_v02.vhd"
-        },
-        {
-        	"type": "windows",
-            "text": "Windows Server  2003 R2 标准版 SP2 64位英文版 已激活",
-            "value": "win2003_64_stand_r2_en_40G_alibase_v01.vhd"
-        },
-        {
-        	"type": "windows",
-            "text": "Windows Server  2008 R2 标准版 SP1 64位中文版 自动激活",
-            "value": "win2008_64_stand_r2_cn_40G_alibase_v01.vhd"
-        },
-        {
-        	"type": "windows",
-            "text": "Windows Server  2008 R2 标准版 SP1 64位中文版 已加固激活",
-            "value": "win2008_64_stand_r2_cn_40G_aliaegis_20130816.vhd"
-        },
-	]
-};
+var os_choice = metadata.config.os_choice;
 
 exports.description = "The module make way to get aliyun pricing.";
 module.counter = 0;
@@ -154,30 +39,28 @@ exports.getPrice = function(mongoHnd, updatetime, listener){
 						"vm_yundun_service": "1"
 					}
 				};
-				for(var ostype in os_choice){
-					for(var osIndex in os_choice[ostype]){
-						if(Number(informations.data.vm_ram) <= 512 && ostype === "windows"){
-							break;
-						}
-						// informations.data.vm_os = os_choice[ostype][osIndex].value;
-						informations.data.vm_os = "";
-						var instance = new Instance(mongoHnd, {
-							"manufacture": "Aliyun", "alias_name": "Virtual Machine",
-							"vcpu": Number(informations.data.vm_cpu),
-							"vram": Number(informations.data.vm_ram)/1024,
-							"os": os_choice[ostype][osIndex],
-							"region": "qingdao",
-							"pricing_type": rentType,
-							"band_width": 0,
-							"storage":0,
-							"duration": informations.data.duration,
-							"pricing_cycle": informations.data.pricing_cycle,
-							"update_time": updatetime
-						});
-						module.counter++;
-						var pre_data = JSON.stringify([informations]);
-						CrawlPrice(instance, pre_data, listener);
+				for(var osIndex in os_choice){
+					if(Number(informations.data.vm_ram) <= 512 && os_choice[osIndex].type === "windows"){
+						continue;
 					}
+					// informations.data.vm_os = os_choice[ostype][osIndex].value;
+					informations.data.vm_os = "";
+					var instance = new Instance(mongoHnd, {
+						"manufacture": "Aliyun", "alias_name": "Virtual Machine",
+						"vcpu": Number(informations.data.vm_cpu),
+						"vram": Number(informations.data.vm_ram)/1024,
+						"os": os_choice[osIndex],
+						"region": "cn-qingdao-cm5-a01",
+						"pricing_type": rentType,
+						"band_width": 0,
+						"storage":0,
+						"duration": informations.data.duration,
+						"pricing_cycle": informations.data.pricing_cycle,
+						"update_time": updatetime
+					});
+					module.counter++;
+					var pre_data = JSON.stringify([informations]);
+					CrawlPrice(instance, pre_data, listener);
 				}
 			}
 		}

@@ -6,21 +6,9 @@ import datetime
 # AWS, Azure, RackSpace etc.
 class Manufacture(models.Model):
 	# Manufacture name, image and hyperlink
-	name = models.CharField(max_length = 30)
+	name = models.CharField(max_length = 30, primary_key=True)
 	image = models.CharField(max_length = 100)
 	link = models.CharField(max_length = 100)
-
-
-# instance type pricing info
-class Price(models.Model):
-	# on-demand, reserved or audition
-	pricing_type = models.CharField(max_length = 30)
-	# RMB or USD
-	monetary_unit = models.CharField(max_length = 30)
-	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
-	duration = models.IntegerField()
-	# hour or month
-	pricing_cycle = models.CharField(max_length = 30)
 
 
 # create model Instance Type to represent 
@@ -29,33 +17,55 @@ class InstanceType(models.Model):
 	# many to one relationship with IaaS Provider
 	manufacture = models.ForeignKey(Manufacture)
 
-
 	# instance name
 	alias_name = models.CharField(max_length = 30)
 
-
 	# instance hardware info
 	# instance vCPU number
-	vcpu = models.IntegerField()
+	vcpu = models.DecimalField()
 	# instance memory size, unit is GB
 	vram = models.DecimalField(max_digits = 4, decimal_places = 2)
 	# instance storage capacity, unit is GB
 	storage = models.IntegerField()
 	# instance bandwidth, unit is Mb/s
 	band_width = models.DecimalField(max_digits = 5, decimal_places = 1)
-
-
+	# the region of instance
+	region = models.CharField(max_length=100)
 	# operation system info
 	os_type = models.CharField(max_length = 30)
 	os_text = models.CharField(max_length = 50)
 	os_value = models.CharField(max_length = 50)
 
-	# One to One relationship with price
-	price = models.OneToOneField(Price)
-
 	# update timestamp
 	update_time = models.IntegerField()
 
+# store the pricing information of specified instancetype
+class InstancePriceAll(models.Model):
+	"""docstring for InstancePriceAll"""
+	instanceType = models.ForeignKey(InstanceType)
+	# on-demand, reserved or audition
+	pricing_type = models.CharField(max_length = 30)
+	# RMB or USD
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	# hour or month
+	pricing_cycle = models.CharField(max_length = 30)
+	update_time = models.IntegerField()
+
+# keep the latest instance price information of all manumfactures
+class InstancePriceLatest(models.Model):
+	"""docstring for InstancePriceCurrent"""
+	instanceType = models.ForeignKey(InstanceType)
+	# on-demand, reserved or audition
+	pricing_type = models.CharField(max_length = 30)
+	# RMB or USD
+	monetary_unit = models.CharField(max_length = 30)
+	prices = models.DecimalField(max_digits = 8, decimal_places = 2)
+	duration = models.IntegerField()
+	# hour or month
+	pricing_cycle = models.CharField(max_length = 30)
+	update_time = models.IntegerField()
 
 # create model Instance to represent
 # single instance

@@ -59,7 +59,7 @@ function updatetoMySQL(freshedInst, conn, listener){
 			module.fail++;
 		}
 		else{
-			console.log("CC history "+freshedInst.instanceInfo.manufacture_id);
+			console.log("CC history "+freshedInst.instanceInfo.instancetype_id);
 			module.success++;
 		}
 		/*替换线上的数据*/
@@ -69,12 +69,12 @@ function updatetoMySQL(freshedInst, conn, listener){
 				module.onlineCC++;
 			}
 			else{
-				console.log("CC inuse "+freshedInst.instanceInfo.manufacture_id);
+				console.log("CC inuse "+freshedInst.instanceInfo.instancetype_id);
 				module.onlineFail++;
 			}
 			/*检查是否完成*/
 			if(module.counter == 0){
-				var querystring = util.format("delete from %s where update_time <> %d", mysqlConf.table_inuse, updateTime);
+				var querystring = util.format("delete from %s where update_time <> %d;", mysqlConf.table_inuse, updateTime);
 				conn.query(querystring, function(err){
 					/*end*/
 					if(err)
