@@ -40,8 +40,8 @@ INSTALLED_APPS = (
     #'south',
     'application',
     'benchmark',
-    'cloudmanagers',
-    'clients'
+    'clients',
+    'cloudmanagers'
 )
 
 MIDDLEWARE_CLASSES = (

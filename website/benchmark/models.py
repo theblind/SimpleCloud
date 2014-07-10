@@ -22,13 +22,13 @@ class InstanceType(models.Model):
 
 	# instance hardware info
 	# instance vCPU number
-	vcpu = models.DecimalField()
+	vcpu = models.DecimalField(default=0)
 	# instance memory size, unit is GB
-	vram = models.DecimalField(max_digits = 4, decimal_places = 2)
+	vram = models.DecimalField(max_digits = 4, decimal_places = 2, default = 0)
 	# instance storage capacity, unit is GB
-	storage = models.IntegerField()
+	storage = models.IntegerField(default = 0)
 	# instance bandwidth, unit is Mb/s
-	band_width = models.DecimalField(max_digits = 5, decimal_places = 1)
+	band_width = models.DecimalField(max_digits = 5, decimal_places = 1, default=0)
 	# the region of instance
 	region = models.CharField(max_length=100)
 	# operation system info
@@ -37,7 +37,7 @@ class InstanceType(models.Model):
 	os_value = models.CharField(max_length = 50)
 
 	# update timestamp
-	update_time = models.IntegerField()
+	update_time = models.IntegerField(default = 0)
 
 # store the pricing information of specified instancetype
 class InstancePriceAll(models.Model):
@@ -77,10 +77,10 @@ class Instance(models.Model):
 	hashKey = models.CharField(max_length = 40)
 
 	# ip address of public network address
-	publicAddress = models.IPAddressField()
+	publicAddress = models.GenericIPAddressField(null = True)
 
 	# ip address inner network
-	innerAddress = models.IPAddressField()
+	innerAddress = models.GenericIPAddressField(null = True)
 
 	# username on the instance
 	username = models.CharField(max_length=100)
@@ -92,6 +92,7 @@ class Instance(models.Model):
 		hashGenerator = hashlib.new("ripemd160")
 		hashGenerator.update(identity)
 		self.hashKey = hashGenerator.hexdigest()
+
 
 # create UnixBench Manager to add table-level method
 class UnixBenchManager(models.Manager):
@@ -129,13 +130,13 @@ class UnixBench(models.Model):
 	instanceType = models.ForeignKey(InstanceType)
 
 	# instance score for serial test
-	serialScore = models.IntegerField()
+	serialScore = models.IntegerField(default = 0)
 	
 	# instance score for parallel test
-	parallelScore = models.IntegerField()
+	parallelScore = models.IntegerField(default = 0)
 
 	# timestamps for single test
-	createdAt = models.DateField(auto_now_add = True)
+	createdAt = models.DateTimeField(auto_now_add = True)
 
 	# set objects manager to be UnixBench Manager
 	objects = UnixBenchManager()
@@ -149,7 +150,7 @@ class Phoronix(models.Model):
 	instanceType = models.ForeignKey(InstanceType)
 
 	# timestamps for single test
-	createdAt = models.DateField(auto_now_add = True)
+	createdAt = models.DateTimeField(auto_now_add = True)
 
 
 # create model BandwidthNetbench to represent
@@ -160,16 +161,16 @@ class BandwidthNetbench(models.Model):
 	iperf_client = models.ForeignKey(InstanceType, null=True, default=None)
 
 	# result: bandwidth
-	max_bandwidth = models.IntegerField()
+	max_bandwidth = models.IntegerField(default = 0)
 
 	# result: delay
-	delay = models.DecimalField(max_digits=10, decimal_places=2)
+	delay = models.DecimalField(max_digits=10, decimal_places=2, default = 0)
 
 	# result: loss_rate
-	loss_rate = models.DecimalField(max_digits=5, decimal_places=2)
+	loss_rate = models.DecimalField(max_digits=5, decimal_places=2, default = 0)
 
 	# timestamp of this benchmark task
-	createdAt = models.DateField(auto_now=True, auto_now_add=True)
+	createdAt = models.DateTimeField(auto_now=True, auto_now_add=True)
 
 
 # create model Bonnie to represent
@@ -179,15 +180,15 @@ class Bonnie(models.Model):
 	instanceType = models.ForeignKey(InstanceType)
 
 	# Writing with putc(), a.k.a, by character
-	writeCharaterSpeed = models.IntegerField()
+	writeCharaterSpeed = models.IntegerField(default = 0)
 	# Writing with block
-	writeBlockSpeed = models.IntegerField()
+	writeBlockSpeed = models.IntegerField(default = 0)
 	# Reading with getc(), a.k.a, by character
-	readCharacerSpeed = models.IntegerField()
+	readCharacerSpeed = models.IntegerField(default = 0)
 	# Reading with block
-	readBlcokSpeed = models.IntegerField()
+	readBlcokSpeed = models.IntegerField(default = 0)
 	# Random Seek per second
-	randomSeek = models.DecimalField(max_digits=5, decimal_places=1)
+	randomSeek = models.DecimalField(max_digits = 5, decimal_places = 1, default = 0)
 
 	# timestamps for single test
-	createdAt = models.DateField(auto_now_add = True)
+	createdAt = models.DateTimeField(auto_now_add = True)
