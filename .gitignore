@@ -4,7 +4,6 @@ benchmark/remotescript/bonnie/results
 benchmark/remotescript/unixbench/results
 benchmark/remotescript/unixbench/benchmark.conf
 website/SimpleCloud/database.conf
-website/application/models.py
 website/*/migrations
 
 crawlclient/node_modules
