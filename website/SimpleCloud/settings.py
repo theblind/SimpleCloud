@@ -70,8 +70,8 @@ DATABASES = {
         'NAME': config.get('database', 'name'),
         'USER': config.get('database', 'user'),
         'PASSWORD': config.get('database', 'password'),
-        'HOST': '',
-        'PORT': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
