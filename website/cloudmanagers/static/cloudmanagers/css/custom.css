@@ -101,7 +101,7 @@ img.x-icon-osfamily-small {
 .x-icon-platform {
 	width: 42px;
 	height: 42px;
-	background-image: url("/static/assets/img/icon/platforms-sprite.png")!important;
+	background-image: url("../img/icon/platforms-sprite.png")!important;
 }
 .x-icon-platform-ec2 {
 	background-position: 0 0;
@@ -115,7 +115,7 @@ img.x-icon-platform-small {
 .x-icon-platform-small {
 	width: 18px;
 	height: 18px;
-	background-image: url("/static/assets/img/icon/platforms-sprite-small.png") !important;
+	background-image: url("../img/icon/platforms-sprite-small.png") !important;
 	background-position: 0 18px !important;
 	background-repeat: no-repeat
 }
