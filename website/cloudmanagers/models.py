@@ -76,7 +76,6 @@ class Server(models.Model):
 	# which instance type
 	instanceType = models.ForeignKey(InstanceType)
 
-
 	# use server status to represent server's current status
 	STOP = 0
 	START = 1
@@ -86,8 +85,6 @@ class Server(models.Model):
 	)
 	status = models.SmallIntegerField(choices = SERVER_STATUS, default = STOP)
 
-	name = models.CharField(max_length = 255)
-	value = models.TextField()
 	replaceServerID = models.CharField(max_length = 36)
 	location = models.CharField(max_length = 50)
 	secretGroup = models.CharField(max_length = 50)
@@ -170,30 +167,30 @@ class Server(models.Model):
 		return self.operations.all()
 
 
-	# get basic information of this server
-	def getServerBasicInfo(self):
-		basicInfo = {}
-
-		basicInfo["manufacture"] = self.instanceType.manufacture.name
-		basicInfo["role"] = self.role.name
-		basicInfo["serverID"] = self.replaceServerID
-		basicInfo["status"] = self.SERVER_STATUS[self.status][1]
-		basicInfo["publicIP"] = self.publicIPAddress
-		basicInfo["instanceType"] = self.instanceType.alias_name
-		basicInfo["location"] = self.location
-		basicInfo["launchTime"] = str(self.dtLaunched)
-
-		return basicInfo
-
 	# get all details of this server
-	def getServerExtendedInfo(self):
-		extendedInfo = self.getServerBasicInfo()
+	def getDetails(self):
+		info = {}
 
-		extendedInfo["publicDNS"] = self.publicDNS
-		extendedInfo["innerIPAddress"] = self.innerIPAddress
-		extendedInfo["secretGroup"] = self.secretGroup
+		info["manufacture"] = self.instanceType.manufacture.name
+		info["role"] = self.role.name
+		info["serverID"] = self.replaceServerID
+		info["status"] = self.SERVER_STATUS[self.status][1]
+		info["publicIP"] = self.publicIPAddress
+		info["instanceType"] = self.instanceType.alias_name
+		info["location"] = self.location
+		info["launchTime"] = str(self.dtLaunched)
+		info["publicDNS"] = self.publicDNS
+		info["innerIPAddress"] = self.innerIPAddress
+		info["secretGroup"] = self.secretGroup
 
-		return extendedInfo
+		return info
+
+
+class ServerProperty(models.Model):
+	server = models.ForeignKey(Server, related_name = 'properties')
+
+	name = models.CharField(max_length = 255)
+	value = models.TextField()
 
 
 class ServerEvent(models.Model):
@@ -299,30 +296,58 @@ class Message(models.Model):
 
 # Role represent a server's functionality in a farm
 class Role(models.Model):
-	origin = models.CharField(max_length = 30)
 	name = models.CharField(max_length = 100)
 	rule = models.CharField(max_length = 100)
 	description = models.TextField()
 	behaviors = models.CharField(max_length = 90)
-	histroy = models.TextField()
 
-	generation = models.SmallIntegerField(default = 0)
+	generation = models.SmallIntegerField(default = 1)
 	os = models.CharField(max_length = 60)
 	osFamily = models.CharField(max_length = 30)
 	osGeneration = models.CharField(max_length = 10)
 	osVersion = models.CharField(max_length = 10)
 
-	dtAdded = models.DateTimeField(null = True)
+	dtAdded = models.DateTimeField(auto_now_add = True)
 	addedByClientID = models.IntegerField(default = 0)
 	addedByEmail = models.EmailField()
 
+	def getDetails(self):
+		info = {}
+
+		info["name"] = self.name
+		info["rule"] = self.rule
+		info["description"] = self.description
+		info["behaviors"] = self.behaviors
+		info["generation"] = self.generation
+		info["os"] = self.os
+		info["osFamily"] = self.osFamily
+		info["osGeneration"] = self.osGeneration
+		info["osVersion"] = self.osVersion
+
+		return info
+
+	def getAllSoftwares(self):
+		return list(self.softwares.all())
+
+	def getImage(self):
+		return self.image
+
 
 class RoleSoftware(models.Model):
-	role = models.ForeignKey(Role, related_name = 'software')
+	role = models.ForeignKey(Role, related_name = 'softwares')
 
-	softwareName = models.CharField(max_length = 45)
-	softwareVersion = models.CharField(max_length = 20)
-	softwareKey = models.CharField(max_length = 20)
+	name = models.CharField(max_length = 45)
+	version = models.CharField(max_length = 20)
+	key = models.CharField(max_length = 20)
+
+	def getDetails(self):
+		info = {}
+
+		info["name"] = self.name
+		info["version"] = self.version
+		info["key"] = self.key
+
+		return info
 
 
 class RoleImage(models.Model):
@@ -336,5 +361,18 @@ class RoleImage(models.Model):
 	osFamily = models.CharField(max_length = 30)
 	osGeneration = models.CharField(max_length = 10)
 	osVersion = models.CharField(max_length = 10)
+
+	def getDetails(self):
+		info = {}
+
+		info["name"] = self.name
+		info["platform"] = self.platform
+		info["location"] = self.cloudLocation
+		info["architecture"] = self.architecture
+		info["osFamily"] = self.osFamily
+		info["osGeneration"] = self.osGeneration
+		info["osVersion"] = self.osVersion
+
+		return info
 
 # --------------- Role End ---------------

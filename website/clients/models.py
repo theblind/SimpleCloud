@@ -30,6 +30,16 @@ class Client(models.Model):
 	dtLastLoginAttempt = models.DateTimeField(null = True)
 
 
+	# create farm for this client
+	def createFarm(self, name = "", region = "", comments = ""):
+		import cloudmanagers.models as cloudmanagers
+		newFarm = cloudmanagers.Farm(client=self, createdByEmail=self.email, name=name, region=region, comments=comments)
+		newFarm.save()
+		return newFarm
+
+	def getAllFarms(self):
+		return list(self.farm_set.all())
+
 	# get all environments which is active
 	def getAllEnvironments(self):
 		result = []
