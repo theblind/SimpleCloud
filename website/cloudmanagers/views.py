@@ -10,22 +10,42 @@ from django.core.urlresolvers import reverse
 
 # Create your views here.
 def index(request):
+	return render(request, 'cloudmanagers/index.html')
+
+def login(request):
+	login_message = None
 	email = request.POST.get('email')
 	if email is not None:
 		password = request.POST.get('password')
 		auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
 		user = auth.authenticate(username = email, password = password)
 		if user is None:
-			request.session['login_message'] = "Invalid E-mail or wrong password."
+			login_message = "Invalid E-mail or wrong password."
 		else:
 			auth.login(request, user)
-	return render(request, 'cloudmanagers/index.html')
-
-def login(request):
-	return render(request, 'cloudmanagers/login.html')
+			return HttpResponseRedirect(reverse('cloudmanagers:index'))
+	context = {'login_message': login_message}
+	return render(request, 'cloudmanagers/login.html', context)
 
 def logout(request):
 	auth.logout(request)
+	return HttpResponseRedirect(reverse('cloudmanagers:index'))
+
+def signup(request):
+	email = request.POST.get('email')
+	name = request.POST.get('name')
+	password = request.POST.get('password')
+	fullname = request.POST.get('fullname')
+	address = request.POST.get('address')
+	city = request.POST.get('city')
+	country = request.POST.get('country')
+	user = Client.objects.create_user(email=email, password=password, name=name, fullName=fullname)
+	user.country = country
+	user.city = city
+	user.save()
+	auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
+	loguser = auth.authenticate(username = email, password = password)
+	auth.login(request, loguser)
 	return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
 def platforms(request):
