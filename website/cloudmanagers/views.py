@@ -28,6 +28,23 @@ def logout(request):
 	auth.logout(request)
 	return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
+def signup(request):
+	email = request.POST.get('email')
+	name = request.POST.get('name')
+	password = request.POST.get('password')
+	fullname = request.POST.get('fullname')
+	address = request.POST.get('address')
+	city = request.POST.get('city')
+	country = request.POST.get('country')
+	user = Client.objects.create_user(email=email, password=password, name=name, fullName=fullname)
+	user.country = country
+	user.city = city
+	user.save()
+	auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
+	loguser = auth.authenticate(username = email, password = password)
+	auth.login(request, loguser)
+	return HttpResponseRedirect(reverse('cloudmanagers:index'))
+
 def platforms(request):
 	return render(request, 'cloudmanagers/platforms.html')
 
