@@ -10,19 +10,22 @@ from django.core.urlresolvers import reverse
 
 # Create your views here.
 def index(request):
+	return render(request, 'cloudmanagers/index.html')
+
+def login(request):
+	login_message = None
 	email = request.POST.get('email')
 	if email is not None:
 		password = request.POST.get('password')
 		auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
 		user = auth.authenticate(username = email, password = password)
 		if user is None:
-			request.session['login_message'] = "Invalid E-mail or wrong password."
+			login_message = "Invalid E-mail or wrong password."
 		else:
 			auth.login(request, user)
-	return render(request, 'cloudmanagers/index.html')
-
-def login(request):
-	return render(request, 'cloudmanagers/login.html')
+			return HttpResponseRedirect(reverse('cloudmanagers:index'))
+	context = {'login_message': login_message}
+	return render(request, 'cloudmanagers/login.html', context)
 
 def logout(request):
 	auth.logout(request)
