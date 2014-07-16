@@ -48,7 +48,7 @@ def settings(request):
 def sshkey(request):
 	return render(request, 'cloudmanagers/sshkey.html')
 
-def render_to_json_response(self, context, **response_kwargs):
+def render_to_json_response(context, **response_kwargs):
     data = simplejson.dumps(context)
     response_kwargs['content_type'] = 'application/json'
     return HttpResponse(data, **response_kwargs)
@@ -56,20 +56,20 @@ def render_to_json_response(self, context, **response_kwargs):
 def ajax_create_project(request):
 #    if request.is_ajax() and request.method == 'POST':
     if request.method == 'POST':
-        client = Client.objects.get(email = request.user.get_username())
+        client = Client.objects.get(id = request.user.id)
         newFarm = client.createFarm(name = request.POST['name'], comments = request.POST['comments'])
 
         result = {}
         if newFarm.id :
-            result['success'] = true
+            result['success'] = True
             result['message'] = "Project Successfully Created"
             result['farm_id'] = newFarm.id
         else :
-            result['success'] = false
+            result['success'] = False
             result['message'] = "Create Project Failed"
-        self.render_to_json_response(result, status = 400)
+        return render_to_json_response(result, status = 200)
     else :
-        HttpResponse("Bad Request")
+        return HttpResponse("Bad Request")
 
 def ajax_create_server(request):
     if request.is_ajax() and request.method == 'POST':
@@ -84,11 +84,11 @@ def ajax_create_server(request):
         result = {}
         if newServer.id :
             ServerProperty.objects.create(newServer, name = 'server_name', value = request.POST['name'] )
-            result['success'] = true
+            result['success'] = True
             result['message'] = "Server Successfully Created"
             result['server_id'] = newServer.id
         else:
-            result['success'] = false
+            result['success'] = False
             result['message'] = "Create Server Faied"
-        self.render_to_json_response(result, status = 400)
+        render_to_json_response(result, status = 400)
 

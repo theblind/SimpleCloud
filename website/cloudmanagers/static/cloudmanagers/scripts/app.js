@@ -210,47 +210,15 @@ var App = function () {
             e.preventDefault();
         });
 
-        // handle ajax links
-        jQuery('.page-sidebar').on('click', ' li > a.ajaxify', function (e) {
-            e.preventDefault();
-            App.scrollTop();
-
-            var url = $(this).attr("href");
-            var menuContainer = jQuery('.page-sidebar ul');
-            var pageContent = $('.page-content');
-            var pageContentBody = $('.page-content .page-content-body');
-
-            menuContainer.children('li.active').removeClass('active');
-            menuContainer.children('arrow.open').removeClass('open');
-
-            $(this).parents('li').each(function () {
-                $(this).addClass('active');
-                $(this).children('a > span.arrow').addClass('open');
-            });
-            $(this).parents('li').addClass('active');
-
-            App.blockUI(pageContent, false);
-
-            $.ajax({
-                type: "GET",
-                cache: false,
-                url: url,
-                dataType: "html",
-                success: function (res) {
-                    App.unblockUI(pageContent);
-                    pageContentBody.html(res);
-                    App.fixContentHeight(); // fix content height
-                    App.initAjax(); // initialize core stuff
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    pageContentBody.html('<h4>Could not load the requested content.</h4>');
-                    App.unblockUI(pageContent);
-                },
-                async: false
-            });
-        });
     }
 
+    var _redirect = function (timeout, url) {
+        window.setTimeout(function(){
+                window.location.href = url;
+            }, timeout
+        );
+        
+    }
     //handle all ajax request
     var handleCreateProjectAjax = function() {
         jQuery('#create_project').on('click', function(e){
@@ -258,7 +226,8 @@ var App = function () {
              var project_name = $('input[name=project_name]').val();
              var comments = $('textarea[name=comments]').val();
             
-             App.blockUI($("#new_project"));
+             var el = jQuery('#newproject > form');
+             App.blockUI(el);
 
              $.ajax({
                 type : "POST",
@@ -267,11 +236,14 @@ var App = function () {
                 dataType : "json",
                 data : {"name" : project_name, "comments" : comments},
                 success : function(res){
-                    App.unblockUI($("#new_project"));
-                    alert(res);
+                    App.unblockUI($(el));
+                    var $toast = toastr["success"]("Server Successfully Created.<br/> The page will Redirect to your new project in 2 seconds.");
+                    var newUrl = '/cloudmanagers/project/' + res.farm_id;
+                    _redirect(2000, newUrl);  
+                    console.log(res);
                 },
                 error : function(xhr, ajaxOptions, thrownError){
-                    App.unblockUI($("#new_project"));
+                    App.unblockUI($(el));
                     alert("Create error!");
                 }
              });
@@ -710,7 +682,7 @@ var App = function () {
 
         // handle theme colors
         var setColor = function (color) {
-            $('#style_color').attr("href", "assets/css/themes/" + color + ".css");
+            $('#style_color').attr("href", "/static/cloudmanagers/css/themes/" + color + ".css");
             $.cookie('style_color', color);
         }
 
@@ -776,6 +748,8 @@ var App = function () {
             handleGoTop(); //handles scroll to top functionality in the footer
             handleTheme(); // handles style customer tool
 
+            //handle ajax
+            handleCreateProjectAjax();
             //ui component handlers
              // handle fancy box
             handleSelect2(); // handle custom Select2 dropdowns
@@ -787,8 +761,6 @@ var App = function () {
             handleAccordions(); //handles accordions 
             handleModals(); // handle modals
 
-            //handle ajax
-            handleCreateProjectAjax();
         },
 
         //main function to initiate core javascript after ajax complete
@@ -848,19 +820,20 @@ var App = function () {
                 centerY = true;
             }
             el.block({
-                message: '<img src="/static/assets/img/ajax-loading.gif" align="">',
+                message: '<img src="/static/cloudmanagers/img/ajax-loading.gif" align="">',
                 centerY: centerY != undefined ? centerY : true,
                 css: {
                     top: '10%',
                     border: 'none',
                     padding: '2px',
-                    backgroundColor: 'none'
+                    backgroundColor: 'none',
                 },
                 overlayCSS: {
                     backgroundColor: '#000',
                     opacity: 0.05,
                     cursor: 'wait'
-                }
+                },
+                baseZ : 10060
             });
         },
 

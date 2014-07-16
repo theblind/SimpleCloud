@@ -70,7 +70,7 @@ var Index = function () {
                 var time_str = time.toString('MMM dd, yyyy hh:mm');
                 var tpl = '';
                 tpl += '<li class="out">';
-                tpl += '<img class="avatar" alt="" src="assets/img/avatar1.jpg"/>';
+                tpl += '<img class="avatar" alt="" src="/static/cloudmanagers/img/avatar1.jpg"/>';
                 tpl += '<div class="message">';
                 tpl += '<span class="arrow"></span>';
                 tpl += '<a href="#" class="name">Bob Nilson</a>&nbsp;';
