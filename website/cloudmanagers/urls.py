@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 urlpatterns = patterns('',
 	url(r'^index/$', views.index, name = 'index'),
 	url(r'^login/$', views.login, name = 'login'),
+	url(r'^logout/$', views.logout, name = 'logout'),
 	url(r'^platforms/$', views.platforms, name = 'platforms'),
 	url(r'^project/(?P<project_id>\d+)$', views.project, name = 'project'),
 	url(r'^rolemarket/$', views.rolemarket, name = 'rolemarket'),
