@@ -85,6 +85,7 @@ class Server(models.Model):
 	)
 	status = models.SmallIntegerField(choices = SERVER_STATUS, default = STOP)
 
+	name = models.CharField(max_length = 50)
 	replaceServerID = models.CharField(max_length = 36)
 	location = models.CharField(max_length = 50)
 	secretGroup = models.CharField(max_length = 50)
@@ -158,15 +159,6 @@ class Server(models.Model):
 		return newOperation
 
 
-	# get all histroy of this server
-	def getAllEvents(self):
-		return self.events.all()
-
-	# get all operations ot this server
-	def getAllOperations(self):
-		return self.operations.all()
-
-
 	# get all details of this server
 	def getDetails(self):
 		info = {}
@@ -184,6 +176,25 @@ class Server(models.Model):
 		info["secretGroup"] = self.secretGroup
 
 		return info
+
+	# get server's manufacture
+	def getManufacture(self):
+		return self.instanceType.manufacture
+
+	# get all histroy of this server
+	def getAllEvents(self):
+		return self.events.all()
+
+	# get all operations of this server
+	def getAllOperations(self):
+		return self.operations.all()
+
+	# get all properties of this server
+	def getAllProperties(self):
+		return list(self.properties)
+
+	def getPropertyByName(self, name):
+		return self.properties.filter(name = name)
 
 
 class ServerProperty(models.Model):
@@ -334,7 +345,7 @@ class Role(models.Model):
 
 
 class RoleSoftware(models.Model):
-	role = models.ForeignKey(Role, related_name = 'softwares')
+	role = models.ManyToManyField(Role, related_name = 'softwares')
 
 	name = models.CharField(max_length = 45)
 	version = models.CharField(max_length = 20)
@@ -357,10 +368,6 @@ class RoleImage(models.Model):
 	platform = models.CharField(max_length = 25)
 	cloudLocation = models.CharField(max_length = 50)
 	architecture = models.CharField(max_length = 6)
-
-	osFamily = models.CharField(max_length = 30)
-	osGeneration = models.CharField(max_length = 10)
-	osVersion = models.CharField(max_length = 10)
 
 	def getDetails(self):
 		info = {}
