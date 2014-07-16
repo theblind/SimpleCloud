@@ -251,6 +251,34 @@ var App = function () {
         });
     }
 
+    //handle all ajax request
+    var handleCreateProjectAjax = function() {
+        jQuery('#create_project').on('click', function(e){
+             e.preventDefault();
+             var project_name = $('input[name=project_name]').val();
+             var comments = $('textarea[name=comments]').val();
+            
+             App.blockUI($("#new_project"));
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/create_project',
+                dataType : "json",
+                data : {"name" : project_name, "comments" : comments},
+                success : function(res){
+                    App.unblockUI($("#new_project"));
+                    alert(res);
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($("#new_project"));
+                    alert("Create error!");
+                }
+             });
+
+        });
+    }
+
     // Helper function to calculate sidebar height for fixed sidebar layout.
     var _calculateFixedSidebarViewportHeight = function () {
         var sidebarHeight = $(window).height() - $('.header').height() + 1;
@@ -758,6 +786,9 @@ var App = function () {
                           // handles bootstrap popovers
             handleAccordions(); //handles accordions 
             handleModals(); // handle modals
+
+            //handle ajax
+            handleCreateProjectAjax();
         },
 
         //main function to initiate core javascript after ajax complete

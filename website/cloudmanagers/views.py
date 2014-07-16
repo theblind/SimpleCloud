@@ -16,8 +16,13 @@ def login(request):
 def platforms(request):
 	return render(request, 'cloudmanagers/platforms.html')
 
-def project(request):
-	return render(request, 'cloudmanagers/project.html')
+def project(request, project_id):
+    context = {}
+    project = Farm.objects.get(id = project_id)
+    servers = project.getAllServers()
+    for server in servers:
+        print server
+	#return render(request, 'cloudmanagers/project.html')
 
 def rolemarket(request):
 	return render(request, 'cloudmanagers/rolemarket.html')
@@ -34,7 +39,8 @@ def render_to_json_response(self, context, **response_kwargs):
     return HttpResponse(data, **response_kwargs)
 
 def ajax_create_project(request):
-    if request.is_ajax() and request.method == 'POST':
+#    if request.is_ajax() and request.method == 'POST':
+    if request.method == 'POST':
         client = Client.objects.get(email = request.user.get_username())
         newFarm = client.createFarm(name = request.POST['name'], comments = request.POST['comments'])
 
@@ -47,6 +53,8 @@ def ajax_create_project(request):
             result['success'] = false
             result['message'] = "Create Project Failed"
         self.render_to_json_response(result, status = 400)
+    else :
+        HttpResponse("Bad Request")
 
 def ajax_create_server(request):
     if request.is_ajax() and request.method == 'POST':
