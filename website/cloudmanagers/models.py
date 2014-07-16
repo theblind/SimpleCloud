@@ -307,7 +307,29 @@ class Message(models.Model):
 
 # Role represent a server's functionality in a farm
 class Role(models.Model):
-	name = models.CharField(max_length = 100)
+	name = models.CharField(max_length = 100, unique = True)
+
+	# role categories
+	BASE = 0
+	DATABASES = 1
+	APPLICATION_SERVERS = 2
+	LOAD_BALANCERS = 3
+	MESSAGE_QUEUES = 4
+	CACHES = 5
+	CLOUD_FOUNDRY = 6
+	MIXED = 7
+	CATEGORY = (
+		(BASE, 'Base'),
+		(DATABASES, 'Databases'),
+		(APPLICATION_SERVERS, 'Application Servers'),
+		(LOAD_BALANCERS, 'Load Balancers'),
+		(MESSAGE_QUEUES, 'Message Queues'),
+		(CACHES, 'Caches'),
+		(CLOUD_FOUNDRY, 'Cloud Foundry'),
+		(MIXED, 'Mixed'),
+	)
+	category = models.SmallIntegerField(choices = CATEGORY, default = BASE)
+
 	rule = models.CharField(max_length = 100)
 	description = models.TextField()
 	behaviors = models.CharField(max_length = 90)
@@ -326,6 +348,7 @@ class Role(models.Model):
 		info = {}
 
 		info["name"] = self.name
+		info["category"] = self.CATEGORY[self.category][1]
 		info["rule"] = self.rule
 		info["description"] = self.description
 		info["behaviors"] = self.behaviors
@@ -335,13 +358,25 @@ class Role(models.Model):
 		info["osGeneration"] = self.osGeneration
 		info["osVersion"] = self.osVersion
 
+		info["platforms"] = self.getAllPlatforms()
+
 		return info
 
 	def getAllSoftwares(self):
 		return list(self.softwares.all())
 
-	def getImage(self):
-		return self.image
+	def getImages(self):
+		return list(self.images.all())
+
+	# get all paltforms for this role 
+	def getAllPlatforms(self):
+		result = []
+
+		images = self.getImages()
+		for i in images:
+			result.append(i.platform)
+
+		return result
 
 
 class RoleSoftware(models.Model):
@@ -362,11 +397,11 @@ class RoleSoftware(models.Model):
 
 
 class RoleImage(models.Model):
-	role = models.OneToOneField(Role, related_name = 'image')
+	role = models.OneToOneField(Role, related_name = 'images')
 
 	name = models.CharField(max_length = 255)
 	platform = models.CharField(max_length = 25)
-	cloudLocation = models.CharField(max_length = 50)
+	location = models.CharField(max_length = 50)
 	architecture = models.CharField(max_length = 6)
 
 	def getDetails(self):

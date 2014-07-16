@@ -7,8 +7,20 @@ import datetime
 class Manufacture(models.Model):
 	# Manufacture name, image and hyperlink
 	name = models.CharField(max_length = 30, primary_key=True)
+	description = models.TextField()
+
 	image = models.CharField(max_length = 100)
 	link = models.CharField(max_length = 100)
+
+	def getDetails():
+		info = {}
+
+		info["name"] = self.name
+		info["description"] = self.description
+		info["image"] = self.image
+		info["link"] = self.link
+
+		return info
 
 
 # create model Instance Type to represent 
