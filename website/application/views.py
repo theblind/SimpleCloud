@@ -46,12 +46,6 @@ def search(request):
 
 		responseData["rsm"]["Performance"] = parsePerformanceInfo(queryResult)
 
-		responseData["errno"] = 1
-		responseData["err"] = ""
-
-		pp = pprint.PrettyPrinter(indent=4)
-		pp.pprint(responseData)
-
 		return HttpResponse(json.dumps(responseData), content_type="application/json")
 	else:
 		return HttpResponseBadRequest()
@@ -107,6 +101,6 @@ def parseUnixBenchResult(queryResult):
 	result["os"] = "linux"
 
 	for instance in queryResult:
-		result["series"][instance.id] = str(UnixBench.objects.getScoresByInstanceType(instance))
+		result["series"][instance.id] = str(UnixBench.objects.getRecordsByInstanceType(instance))
 		result["average"][instance.id] = str(UnixBench.objects.averageScore(instance))
 	return result

@@ -380,24 +380,22 @@ class Role(models.Model):
 
 
 class RoleSoftware(models.Model):
-	role = models.ManyToManyField(Role, related_name = 'softwares')
+	role = models.ForeignKey(Role, related_name = 'softwares')
 
 	name = models.CharField(max_length = 45)
 	version = models.CharField(max_length = 20)
-	key = models.CharField(max_length = 20)
 
 	def getDetails(self):
 		info = {}
 
 		info["name"] = self.name
 		info["version"] = self.version
-		info["key"] = self.key
 
 		return info
 
 
 class RoleImage(models.Model):
-	role = models.OneToOneField(Role, related_name = 'images')
+	role = models.ForeignKey(Role, related_name = 'images')
 
 	name = models.CharField(max_length = 255)
 	platform = models.CharField(max_length = 25)
@@ -411,9 +409,6 @@ class RoleImage(models.Model):
 		info["platform"] = self.platform
 		info["location"] = self.cloudLocation
 		info["architecture"] = self.architecture
-		info["osFamily"] = self.osFamily
-		info["osGeneration"] = self.osGeneration
-		info["osVersion"] = self.osVersion
 
 		return info
 

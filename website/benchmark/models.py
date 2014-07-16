@@ -53,6 +53,40 @@ class InstanceType(models.Model):
 	# update timestamp
 	update_time = models.IntegerField(default = 0)
 
+	def getDetails(self):
+		info = {}
+
+		info
+		info["manufacture"] = self.manufacture.name
+		info["alias_name"] = self.alias_name
+		info["vcpu"] = self.vcpu
+		info["frequency"] = self.frequency
+		info["vram"] = self.vram
+		info["storage"] = self.storage
+		info["band_width"] = self.band_width
+		info["region"] = self.region
+		info["os_type"] = self.os_type
+		info["os_text"] = self.os_text
+		info["os_value"] = self.os_value
+
+		return info
+
+	def getDetailsUgly(self):
+		info = {}
+
+		info["id"] = self.id
+		info["instance"] = self.alias_name
+		info["vcpu"] = self.vcpu
+		info["vram"] = str(self.vram)
+		info["storage"] = self.storage
+		info["pricing"] = parseInstancePrice(instance.price)
+		info["provider"] = self.manufacture.name
+		info["link"] = self.manufacture.link
+		info["image"] = self.manufacture.image
+
+		return info
+
+
 # store the pricing information of specified instancetype
 class InstancePriceAll(models.Model):
 	"""docstring for InstancePriceAll"""
@@ -67,6 +101,7 @@ class InstancePriceAll(models.Model):
 	pricing_cycle = models.CharField(max_length = 30)
 	update_time = models.IntegerField()
 
+
 # keep the latest instance price information of all manumfactures
 class InstancePriceLatest(models.Model):
 	"""docstring for InstancePriceCurrent"""
@@ -80,6 +115,18 @@ class InstancePriceLatest(models.Model):
 	# hour or month
 	pricing_cycle = models.CharField(max_length = 30)
 	update_time = models.IntegerField()
+
+	def getDetails(self):
+		info = {}
+
+		info["pricing_type"] = self.pricing_type
+		info["monetary_unit"] = self.monetary_unit
+		info["prices"] = self.prices
+		info["duration"] = self.duration
+		info["pricing_cycle"] = self.pricing_cycle
+
+		return info
+
 
 # create model Instance to represent
 # single instance
@@ -111,7 +158,7 @@ class Instance(models.Model):
 # create UnixBench Manager to add table-level method
 class UnixBenchManager(models.Manager):
 	# reutrn all score records for specific instance type
-	def getScoresByInstanceType(self, instanceType):
+	def getRecordsByInstanceType(self, instanceType):
 		recordsList = self.filter(instanceType = instanceType)
 		result = []
 		for record in recordsList:
@@ -136,6 +183,7 @@ class UnixBenchManager(models.Manager):
 
 		result = amounts / len(recordsList)
 		return result
+
 
 # create model UnixBench to represent
 # this benchmark's detail
@@ -187,6 +235,42 @@ class BandwidthNetbench(models.Model):
 	createdAt = models.DateTimeField(auto_now=True, auto_now_add=True)
 
 
+# create UnixBench Manager to add table-level method
+class BonnieManager(models.Manager):
+	# reutrn all score records for specific instance type
+	def getRecordsByInstanceType(self, instanceType):
+		recordsList = self.filter(instanceType = instanceType)
+		result = []
+		for record in recordsList:
+			result.append(record.getDetails())
+		return result
+
+	def getAveragePerformanceByInstancetType(self, instanceType):
+		recordsList = self.filter(instanceType = instanceType)
+		result = {
+			"writeCharaterSpeed": 0,
+			"writeBlockSpeed": 0,
+			"readCharacerSpeed": 0,
+			"readBlcokSpeed": 0,
+			"randomSeek": 0,
+		}
+
+		for record in recordsList:
+			result["writeCharaterSpeed"] += record.writeCharaterSpeed
+			result["writeBlockSpeed"] += record.writeBlockSpeed
+			result["readCharacerSpeed"] += record.readCharacerSpeed
+			result["readBlcokSpeed"] += record.readBlcokSpeed
+			result["randomSeek"] += record.randomSeek
+
+		result["writeCharaterSpeed"] /= len(recordsList)
+		result["writeBlockSpeed"] /= len(recordsList)
+		result["readCharacerSpeed"] /= len(recordsList)
+		result["readBlcokSpeed"] /= len(recordsList)
+		result["randomSeek"] /= len(recordsList)
+
+		return result
+
+
 # create model Bonnie to represent
 # this benchmark's detail
 class Bonnie(models.Model):
@@ -206,3 +290,17 @@ class Bonnie(models.Model):
 
 	# timestamps for single test
 	createdAt = models.DateTimeField(auto_now_add = True)
+
+	# set objects manager to be Bonnie Manager
+	objects = BonnieManager()
+
+	def getDetails(self):
+		info = {}
+
+		info["writeCharaterSpeed"] = self.writeCharaterSpeed
+		info["writeBlockSpeed"] = self.writeBlockSpeed
+		info["readCharacerSpeed"] = self.readCharacerSpeed
+		info["readBlcokSpeed"] = self.readBlcokSpeed
+		info["randomSeek"] = self.randomSeek
+
+		return info
