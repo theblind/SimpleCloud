@@ -1,17 +1,32 @@
 from django.shortcuts import render_to_response,render,get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.template.context import RequestContext
 from django.utils import simplejson
 from cloudmanagers.models import Farm, Server, ServerProperty, Role
 from benchmark.models import InstanceType
-from clients.models import Client
+from clients.models import Client, ClientBackend
+from django.contrib import auth
+from django.core.urlresolvers import reverse
 
 # Create your views here.
 def index(request):
+	email = request.POST.get('email')
+	if email is not None:
+		password = request.POST.get('password')
+		auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
+		user = auth.authenticate(username = email, password = password)
+		if user is None:
+			request.session['login_message'] = "Invalid E-mail or wrong password."
+		else:
+			auth.login(request, user)
 	return render(request, 'cloudmanagers/index.html')
 
 def login(request):
 	return render(request, 'cloudmanagers/login.html')
+
+def logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
 def platforms(request):
 	return render(request, 'cloudmanagers/platforms.html')
