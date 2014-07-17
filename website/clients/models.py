@@ -228,7 +228,7 @@ class ClientEnvironment(models.Model):
 
 		result = []
 		for r in roles:
-			result.append(r.getAllPlatforms())
+			result.extend(r.getAllPlatforms())
 
 		return result
 

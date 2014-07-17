@@ -409,7 +409,7 @@ class RoleImage(models.Model):
 
 		info["name"] = self.name
 		info["manufacture"] = self.manufacture.name
-		info["location"] = self.cloudLocation
+		info["location"] = self.location
 		info["architecture"] = self.architecture
 
 		return info
