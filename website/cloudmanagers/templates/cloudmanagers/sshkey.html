@@ -12,7 +12,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
 <!-- BEGIN HEAD -->
 <head>
    <meta charset="utf-8" />
-   <title>Conquer | Admin Dashboard Template</title>
+   <title>SimpleCloud Management</title>
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
    <meta content="" name="description" />
@@ -409,18 +409,11 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                <span class="arrow open"></span>
                </a>
                <ul class="sub-menu">
-                  <li class="">
-                     <a href="/cloudmanagers/project">
-                     Project 1</a>
-                  </li>
-                  <li >
-                     <a href="/cloudmanagers/project">
-                     Project 2</a>
-                  </li>
-                  <li >
-                     <a href="/cloudmanagers/project">
-                     Project 3</a>
-                  </li>
+                {% for project in projects_list %}
+                <li class="{% ifequal project.id project_id %}active{% endifequal %}">
+                  <a href="/cloudmanagers/project/{{ project.id }}">{{ project.name }}</a>
+                 </li>
+                 {% endfor %}
                   <li >
                      <a data-toggle="modal" href="#newproject">
                         <span class="badge badge-success">new</span>Create Project

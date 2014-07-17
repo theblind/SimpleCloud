@@ -516,7 +516,8 @@ h7 .label {
 }
 
 .label-success, 
-.badge-success {
+.badge-success,
+.label-start {
   background-color: #3cc051;
   background-image: none !important;
 }
@@ -528,7 +529,8 @@ h7 .label {
 }
 
 .label-danger, 
-.badge-danger {
+.badge-danger,
+.label-stop {
   background-color: #ed4e2a;
   background-image: none !important;
 }

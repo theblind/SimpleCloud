@@ -12,7 +12,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
 <!-- BEGIN HEAD -->
 <head>
    <meta charset="utf-8" />
-   <title>Conquer | Admin Dashboard Template</title>
+   <title>SimpleCloud Management</title>
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
    <meta content="" name="description" />
@@ -23,6 +23,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
    <link href="{% static 'cloudmanagers/css/plugins/font-awesome/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
    <link href="{% static 'cloudmanagers/css/plugins/bootstrap/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
    <link href="{% static 'cloudmanagers/css/plugins/uniform/uniform.default.css' %}" rel="stylesheet" type="text/css"/>
+   <link href="{% static 'cloudmanagers/css/plugins/bootstrap-toastr/toastr.min.css' %}" rel="stylesheet" type="text/css"/>
    <!-- END GLOBAL MANDATORY STYLES -->
    <!-- BEGIN PAGE LEVEL STYLES -->
    <link rel="stylesheet" type="text/css" href="{% static 'cloudmanagers/css/plugins/select2/select2_conquer.css' %}" />
@@ -408,18 +409,11 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                <span class="arrow open"></span>
                </a>
                <ul class="sub-menu">
-                  <li class="">
-                     <a href="/cloudmanagers/project">
-                     Project 1</a>
-                  </li>
-                  <li >
-                     <a href="/cloudmanagers/project">
-                     Project 2</a>
-                  </li>
-                  <li >
-                     <a href="/cloudmanagers/project">
-                     Project 3</a>
-                  </li>
+                {% for project in projects_list %}
+                <li class="{% ifequal project.id project_id %}active{% endifequal %}">
+                  <a href="/cloudmanagers/project/{{ project.id }}">{{ project.name }}</a>
+                 </li>
+                 {% endfor %}
                   <li >
                      <a data-toggle="modal" href="#newproject">
                         <span class="badge badge-success">new</span>Create Project
@@ -476,45 +470,45 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
       <div class="page-content">
          <!-- BEGIN MODAL-->  
          <div id="newproject" class="modal fade" tabindex="-1" data-width="70%">
-            <div class="modal-header">
-               <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-               <h4 class="modal-title">New Project</h4>
-            </div>
-            <div class="modal-body">
-               <div class="portlet">
-                  <div class="portlet-body form">
-                     <!-- BEGIN FORM-->
-                     <form action="#" class="form-horizontal">
-                        <div class="form-body">
-                           <h3 class="form-section">New Project Info</h3>
-                           <div class="form-group">
-                              <label class="control-label col-md-3">Name</label>
-                              <div class="col-md-6">
-                                 <input type="text" class="form-control" placeholder="projec tname">
-                              </div>
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label col-md-3">TimeZone</label>
-                              <div class="col-md-6">
-                                 <input type="text" class="form-control" placeholder="projec tname">
-                              </div>
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label col-md-3">General Info</label>
-                              <div class="col-md-6">
-                                 <textarea class="form-control" rows="5"></textarea>
-                              </div>
-                           </div>
-                        </div>
-                     </form>
-                     <!-- END FORM-->                
-                  </div>
-               </div>
-            </div>
-            <div class="modal-footer">
-               <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-               <button type="button" class="btn btn-info">Save changes</button>
-            </div>
+            <!-- BEGIN FORM-->
+            <form action="{% url 'cloudmanagers:xCreateProject' %}" method="post" class="form-horizontal" onSubmit="return false;">
+                <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                   <h4 class="modal-title">New Project</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="portlet">
+                      <div class="portlet-body form">
+                            <div class="form-body">
+                               <h3 class="form-section">New Project Info</h3>
+                               <div class="form-group">
+                                  <label class="control-label col-md-3">Name</label>
+                                  <div class="col-md-6">
+                                     <input type="text" name="project_name" class="form-control" placeholder="project name">
+                                  </div>
+                               </div>
+                               <div class="form-group">
+                                  <label class="control-label col-md-3">TimeZone</label>
+                                  <div class="col-md-6">
+                                     <input type="text" class="form-control" placeholder="time zone">
+                                  </div>
+                               </div>
+                               <div class="form-group">
+                                  <label class="control-label col-md-3">General Info</label>
+                                  <div class="col-md-6">
+                                     <textarea name="comments" class="form-control" rows="5"></textarea>
+                                  </div>
+                               </div>
+                            </div>
+                      </div>
+                   </div>
+                </div>
+                <div class="modal-footer">
+                   <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                   <button id="create_project" type="submit" class="btn btn-info">Save changes</button>
+                </div>
+            </form>
+            <!-- END FORM -->
          </div>
          <!-- END MODAL--> 
          <!-- BEGIN PAGE HEADER-->
@@ -717,13 +711,16 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
    <script src="{% static 'cloudmanagers/scripts/plugins/bootstrap-modal/js/bootstrap-modal.js' %}" type="text/javascript" ></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/select2/select2.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/jquery-mixitup/jquery.mixitup.min.js' %}"></script>
+   <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/bootstrap-toastr/toastr.min.js' %}"></script>
 
    <!-- END PAGE LEVEL PLUGINS -->
    <!-- BEGIN PAGE LEVEL SCRIPTS -->
    <script src="{% static 'cloudmanagers/scripts/app.js' %}"></script>
    <script src="{% static 'cloudmanagers/scripts/portfolio.js' %}"></script>
+   <script src="{% static 'cloudmanagers/scripts/ui-toastr.js' %}"></script>
    <script>
-      jQuery(document).ready(function() {       
+      jQuery(document).ready(function() {
+         UIToastr.init();       
          App.init();
          Portfolio.init();
       });

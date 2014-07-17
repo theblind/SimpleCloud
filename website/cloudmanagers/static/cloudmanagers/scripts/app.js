@@ -237,7 +237,7 @@ var App = function () {
                 data : {"name" : project_name, "comments" : comments},
                 success : function(res){
                     App.unblockUI($(el));
-                    var $toast = toastr["success"]("Server Successfully Created.<br/> The page will Redirect to your new project in 2 seconds.");
+                    var $toast = toastr["success"]("Project Successfully Created.<br/> The page will Redirect to your new project in 2 seconds.");
                     var newUrl = '/cloudmanagers/project/' + res.farm_id;
                     _redirect(2000, newUrl);  
                     console.log(res);
@@ -245,6 +245,47 @@ var App = function () {
                 error : function(xhr, ajaxOptions, thrownError){
                     App.unblockUI($(el));
                     alert("Create error!");
+                }
+             });
+
+        });
+    }
+
+    var handleAddServerAjax = function() {
+        //handle Map location select
+        jQuery('.map > .location').on('click', function(){
+            $(this).addClass('selected').siblings('.selected').removeClass('selected');
+        });
+
+        //handle Add Server Ajax request
+        jQuery('#create_server').on('click', function(e){
+             e.preventDefault();
+             var project_id = $('input[name=newserver_projectid]').val();
+             var server_name = $('input[name=newserver_name]').val();
+             var role_id = $('select[name=newserver_role]').val();
+             var instance_type = $('select[name=newserver_instancetype]').val();
+             var platform = $('.create-server.x-icon-platform.x-btn-pressed').data('platform');
+             var server_location = $('.location.selected').data('location');
+
+             var el = jQuery('#addserver > form');
+             App.blockUI(el);
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/create_server',
+                dataType : "json",
+                data : {"project_id" : project_id, "role_id" : role_id, "server_name" : server_name, "instance_type" : instance_type, "platform" : platform, "server_location" : server_location},
+                success : function(res){
+                    App.unblockUI($(el));
+                    var $toast = toastr["success"]("Server Successfully Created.<br/>The page will refresh in 2 seconds.");
+                    var newUrl = '/cloudmanagers/project/' +  project_id;
+                    _redirect(2000, newUrl);  
+                    console.log(res);
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    alert("Create Server error!");
                 }
              });
 
@@ -750,6 +791,8 @@ var App = function () {
 
             //handle ajax
             handleCreateProjectAjax();
+            handleAddServerAjax();
+
             //ui component handlers
              // handle fancy box
             handleSelect2(); // handle custom Select2 dropdowns

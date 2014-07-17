@@ -23,7 +23,7 @@ class Manufacture(models.Model):
 		return info
 
 
-# create model Instance Type to represent 
+# create model Instance Type to represent
 # instance's hardware information
 class InstanceType(models.Model):
 	# many to one relationship with IaaS Provider
@@ -56,7 +56,6 @@ class InstanceType(models.Model):
 	def getDetails(self):
 		info = {}
 
-		info
 		info["manufacture"] = self.manufacture.name
 		info["alias_name"] = self.alias_name
 		info["vcpu"] = self.vcpu
@@ -173,7 +172,7 @@ class UnixBenchManager(models.Manager):
 		recordsList = self.filter(instanceType = instanceType)
 		if len(recordsList) == 0:
 			return 0
-		
+
 		amounts = 0.0
 		for record in recordsList:
 			if record.parallelScore != 0:
@@ -193,7 +192,7 @@ class UnixBench(models.Model):
 
 	# instance score for serial test
 	serialScore = models.IntegerField(default = 0)
-	
+
 	# instance score for parallel test
 	parallelScore = models.IntegerField(default = 0)
 
