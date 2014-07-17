@@ -149,6 +149,15 @@ class Client(models.Model):
 
 		return result
 
+	def getAllEnvironmentsAvailableRoles(self):
+		result = []
+		environments = self.getAllEnvironments()
+
+		for env in environments:
+			result.extend(env.getAllAvailableRoles())
+
+		return result
+
 
 # cloud environment info
 class ClientEnvironment(models.Model):
@@ -207,6 +216,21 @@ class ClientEnvironment(models.Model):
 			info[pair["name"]] = pair["value"]
 		
 		return info
+
+	# return available roles for current environment
+	def getAllAvailableRoles(self):
+		roles = set()
+		images = self.manufacture.images.all()
+
+		for i in images:
+			if i.role not in roles:
+				roles.add(i.role)
+
+		result = []
+		for r in roles:
+			result.append(r.getAllPlatforms())
+
+		return result
 
 
 # save properties for environment
