@@ -1,6 +1,6 @@
 from django.db import models
 from clients.models import Client, ClientEnvironmentProperty
-from benchmark.models import InstanceType
+from benchmark.models import InstanceType, Manufacture
 import datetime
 
 # --------------- Farm Start ---------------
@@ -27,7 +27,7 @@ class Farm(models.Model):
 	dtAdded = models.DateTimeField(auto_now_add = True)
 
 	# create server for this farm
-	def createServer(self, role, **kwargs):
+	def createServer(self, role, instanceType, **kwargs):
 		newServer = Server(farm = self, role = role, **kwargs)
 		newServer.save()
 		return newServer
@@ -376,7 +376,7 @@ class Role(models.Model):
 
 		images = self.getImages()
 		for i in images:
-			result.append(i.platform)
+			result.append(i.getDetails())
 
 		return result
 
@@ -398,9 +398,9 @@ class RoleSoftware(models.Model):
 
 class RoleImage(models.Model):
 	role = models.ForeignKey(Role, related_name = 'images')
+	manufacture = models.ForeignKey(Manufacture, related_name = 'images')
 
 	name = models.CharField(max_length = 255)
-	platform = models.CharField(max_length = 25)
 	location = models.CharField(max_length = 50)
 	architecture = models.CharField(max_length = 6)
 
@@ -408,8 +408,8 @@ class RoleImage(models.Model):
 		info = {}
 
 		info["name"] = self.name
-		info["platform"] = self.platform
-		info["location"] = self.cloudLocation
+		info["manufacture"] = self.manufacture.name
+		info["location"] = self.location
 		info["architecture"] = self.architecture
 
 		return info
