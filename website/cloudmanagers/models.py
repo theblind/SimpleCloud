@@ -289,11 +289,13 @@ class Message(models.Model):
 		self.status = self.UNREAD
 
 	# get message basic info
-	def getMessage(self):
+	def getDetails(self):
 		info = {}
 
 		info["title"] = self.title
 		info["content"] = self.content
+		info["type"] = MESSAGE_TYPE[self.messageType][1]
+		info["status"] = MESSAGE_STATUS[self.status][1]
 		info["time"] = self.dtAdded
 
 		return info
