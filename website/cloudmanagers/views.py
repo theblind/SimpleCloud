@@ -96,10 +96,8 @@ def sshkey(request):
     projects_list = client.getAllFarms()
     context['projects_list'] = projects_list
 
-    environments = client.getAllEnvironments()
-    for environment in environments:
-        client.getSSHKeyByEnvironment(environment)
-
+    ssh_keys = client.getAllEnvironmentsSSHKeys()
+    context['ssh_keys_list'] = ssh_keys
     return render(request, 'cloudmanagers/sshkey.html', context)
 
 def render_to_json_response(context, **response_kwargs):

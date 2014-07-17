@@ -557,10 +557,9 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                            </a>
                            <div id="sample_2_column_toggler" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                               <label><input type="checkbox" checked data-column="0">Cloud</label>                              
-                              <label><input type="checkbox" checked data-column="1">Key ID</label>
-                              <label><input type="checkbox" checked data-column="2">Project</label>
-                              <label><input type="checkbox" checked data-column="3">Name</label>
-                              <label><input type="checkbox" checked data-column="4">Type</label>
+                              <label><input type="checkbox" checked data-column="1">Name</label>
+                              <label><input type="checkbox" checked data-column="2">Cloud Location</label>
+                              <label><input type="checkbox" checked data-column="3">Type</label>
                            </div>
                         </div>
                      </div>
@@ -570,50 +569,22 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         <thead>
                            <tr>
                               <th>Cloud</th>
-                              <th>Key ID</th>
-                              <th>Project</th>
                               <th>Name</th>
+                              <th>Cloud Location</th>
                               <th>Type</th>
-
                            </tr>
                         </thead>
                         <tbody>
+                        {% for key in ssh_keys_list %}
                            <tr >
-                              <td style="text-align:center">
-                                 <img class="x-icon-platform-small x-icon-platform-small-ec2" title="ec2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+                              <td style="">
+                                  <img class="x-icon-platform-small x-icon-platform-small-{{ key.manufacture }}" title="{{ key.manufacture}}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>
-                              <td>12382</td>
-                              <td>Project 1</td>
-                              <td>FARM-19765-ab6d8171</td>
-                              <td>global (ec2)</td>
+                              <td>{{ key.cloudKeyName }}</td>
+                              <td>{{ key.cloudLocation }}</td>
+                              <td>{{ key.keyType }}</td>
                            </tr>
-                           <tr >
-                              <td style="text-align:center">
-                                 <img class="x-icon-platform-small x-icon-platform-small-ec2" title="ec2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
-                              </td>
-                              <td>12382</td>
-                              <td>Project 1</td>
-                              <td>FARM-19765-ab6d8171</td>
-                              <td>global (ec2)</td>
-                           </tr>
-                           <tr >
-                              <td style="text-align:center">
-                                 <img class="x-icon-platform-small x-icon-platform-small-ec2" title="ec2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
-                              </td>
-                              <td>12382</td>
-                              <td>Project 1</td>
-                              <td>FARM-19765-ab6d8171</td>
-                              <td>global (ec2)</td>
-                           </tr>
-                           <tr >
-                              <td style="text-align:center">
-                                 <img class="x-icon-platform-small x-icon-platform-small-ec2" title="ec2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
-                              </td>
-                              <td>12382</td>
-                              <td>Project 1</td>
-                              <td>FARM-19765-ab6d8171</td>
-                              <td>global (ec2)</td>
-                           </tr>
+                        {% endfor %}
                         </tbody>
                      </table>
                   </div>
