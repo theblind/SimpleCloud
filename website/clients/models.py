@@ -31,248 +31,248 @@ class ClientUserManager(BaseUserManager):
 
 # Client's information
 class Client(models.Model):
-	# use email address to identify a client
-	email = models.EmailField(unique = True)
-	password = models.CharField(max_length = 32)
-	name = models.CharField(max_length = 30)
-	fullName = models.CharField(max_length = 60)
+    # use email address to identify a client
+    email = models.EmailField(unique = True)
+    password = models.CharField(max_length = 32)
+    name = models.CharField(max_length = 30)
+    fullName = models.CharField(max_length = 60)
 
-	org = models.CharField(max_length = 60)
-	country = models.CharField(max_length = 60)
-	state = models.CharField(max_length = 60)
-	city = models.CharField(max_length = 60)
-	phone = models.CharField(max_length = 60)
+    org = models.CharField(max_length = 60)
+    country = models.CharField(max_length = 60)
+    state = models.CharField(max_length = 60)
+    city = models.CharField(max_length = 60)
+    phone = models.CharField(max_length = 60)
 
-	status = models.CharField(max_length = 100)
-	isBilled = models.SmallIntegerField(default = 0)
-	isActive = models.SmallIntegerField(default = 0)
-	is_staff = models.SmallIntegerField(default = 0)
+    status = models.CharField(max_length = 100)
+    isBilled = models.SmallIntegerField(default = 0)
+    isActive = models.SmallIntegerField(default = 0)
+    is_staff = models.SmallIntegerField(default = 0)
 
-	comments = models.TextField()
-	priority = models.IntegerField(default = 0)
-	loginAttempts = models.IntegerField(default = 0)
+    comments = models.TextField()
+    priority = models.IntegerField(default = 0)
+    loginAttempts = models.IntegerField(default = 0)
 
-	dtAdded = models.DateTimeField(auto_now_add = True)
-	dtDue = models.DateTimeField(null = True)
-	dtLastLoginAttempt = models.DateTimeField(null = True)
-	last_login = models.DateTimeField(null = True)
+    dtAdded = models.DateTimeField(auto_now_add = True)
+    dtDue = models.DateTimeField(null = True)
+    dtLastLoginAttempt = models.DateTimeField(null = True)
+    last_login = models.DateTimeField(null = True)
 
-	USERNAME_FIELD = 'email'
-	REQUIRED_FIELDS = ['name', 'fullName']
-	objects = ClientUserManager()
-	def get_full_name(self):
-		return self.fullName
-	def get_short_name(self):
-		return self.name
-	def set_password(self, password):
-		self.password = hashers.make_password(password, None, 'unsalted_md5')
-	def check_password(self, password):
-		return hashers.check_password(password, self.password)
-	def has_module_perms(self, app_label):
-		return self.is_staff
-	def has_perm(self, app_label):
-		return self.is_staff
-	@property
-	def is_active(self):
-		return self.isActive
-
-
-	# create farm for this client
-	def createFarm(self, name = "", comments = ""):
-		import cloudmanagers.models as cloudmanagers
-		newFarm = cloudmanagers.Farm(client=self, createdByEmail=self.email, name=name, comments=comments)
-		newFarm.save()
-		return newFarm
-
-	# get all farms which belong to the client
-	def getAllFarms(self):
-		return list(self.farm_set.all())
-
-	# get all servers which belong to the client
-	def getAllServers(self):
-		servers = []
-		try:
-			farmSet = self.getAllFarms()
-			for farm in farmSet:
-				servers.extend(farm.getAllServers())
-			return servers
-		except:
-			return []
-
-	# collect access key to bind an environment
-	def bindingEnvironment(self, manufacture, **kwargs):
-		newEnvironment = ClientEnvironment(client = self, manufacture = manufacture)
-		newEnvironment.setActive()
-		newEnvironment.save()
-
-		for (name, value) in kwargs.items():
-			newEnvironment.createProperty(name = name, value = value)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'fullName']
+    objects = ClientUserManager()
+    def get_full_name(self):
+        return self.fullName
+    def get_short_name(self):
+        return self.name
+    def set_password(self, password):
+        self.password = hashers.make_password(password, None, 'unsalted_md5')
+    def check_password(self, password):
+        return hashers.check_password(password, self.password)
+    def has_module_perms(self, app_label):
+        return self.is_staff
+    def has_perm(self, app_label):
+        return self.is_staff
+    @property
+    def is_active(self):
+        return self.isActive
 
 
-	# get all environments which are active
-	def getAllEnvironments(self):
-		result = []
-		environments = self.environments.all()
-		for env in environments:
-			if env.isActive():
-				result.append(env)
-		return result
+    # create farm for this client
+    def createFarm(self, name = "", comments = ""):
+        import cloudmanagers.models as cloudmanagers
+        newFarm = cloudmanagers.Farm(client=self, createdByEmail=self.email, name=name, comments=comments)
+        newFarm.save()
+        return newFarm
 
-	# get all environsments' properties in following format:
-	# result = [{ "manufacture": "ec2", "secret_key": "", "access_key": "" },
-	#			{ "manufacture": "azure", "secret_key": "", "access_key": "" }]
-	def getAllEnvironmentsProperties(self):
-		result = []
-		environments = self.getAllEnvironments()
+    # get all farms which belong to the client
+    def getAllFarms(self):
+        return list(self.farm_set.all())
 
-		for env in environments:
-			result.append(env.getAllProperties())
+    # get all servers which belong to the client
+    def getAllServers(self):
+        servers = []
+        try:
+            farmSet = self.getAllFarms()
+            for farm in farmSet:
+                servers.extend(farm.getAllServers())
+            return servers
+        except:
+            return []
 
-		return result
+    # collect access key to bind an environment
+    def bindingEnvironment(self, manufacture, **kwargs):
+        newEnvironment = ClientEnvironment(client = self, manufacture = manufacture)
+        newEnvironment.setActive()
+        newEnvironment.save()
 
-	# get properties in spesicif environment
-	def getPropertiesByManufacture(self, manufacture):
-		environment = self.environments.get(manufacture = manufacture)
-		return environmentsSet.getAllProperties()
+        for (name, value) in kwargs.items():
+            newEnvironment.createProperty(name = name, value = value)
 
-	# get sshkey in specific environment
-	def getSSHKeysByManufacture(self, manufacture):
-		environment = self.environments.get(manufacture = manufacture)
-		return environment.getAllSSHKeys()
 
-	# get all sshkeys in every environment
-	def getAllEnvironmentsSSHKeys(self):
-		result = []
-		environments = self.getAllEnvironments()
-		for env in environments:
-			result.extend(env.getAllSSHKeys())
+    # get all environments which are active
+    def getAllEnvironments(self):
+        result = []
+        environments = self.environments.all()
+        for env in environments:
+            if env.isActive():
+                result.append(env)
+        return result
 
-		return result
+    # get all environsments' properties in following format:
+    # result = [{ "manufacture": "ec2", "secret_key": "", "access_key": "" },
+    #            { "manufacture": "azure", "secret_key": "", "access_key": "" }]
+    def getAllEnvironmentsProperties(self):
+        result = []
+        environments = self.getAllEnvironments()
 
-	def getAllEnvironmentsAvailableRoles(self):
-		result = []
-		environments = self.getAllEnvironments()
+        for env in environments:
+            result.append(env.getAllProperties())
 
-		for env in environments:
-			result.extend(env.getAllAvailableRoles())
+        return result
 
-		return result
+    # get properties in spesicif environment
+    def getPropertiesByManufacture(self, manufacture):
+        environment = self.environments.get(manufacture = manufacture)
+        return environmentsSet.getAllProperties()
+
+    # get sshkey in specific environment
+    def getSSHKeysByManufacture(self, manufacture):
+        environment = self.environments.get(manufacture = manufacture)
+        return environment.getAllSSHKeys()
+
+    # get all sshkeys in every environment
+    def getAllEnvironmentsSSHKeys(self):
+        result = []
+        environments = self.getAllEnvironments()
+        for env in environments:
+            result.extend(env.getAllSSHKeys())
+
+        return result
+
+    def getAllEnvironmentsAvailableRoles(self):
+        result = []
+        environments = self.getAllEnvironments()
+
+        for env in environments:
+            result.extend(env.getAllAvailableRoles())
+
+        return result
 
 # cloud environment info
 class ClientEnvironment(models.Model):
-	# which manufature
-	manufacture = models.ForeignKey(Manufacture)
-	# which client
-	client = models.ForeignKey(Client, related_name = "environments")
+    # which manufature
+    manufacture = models.ForeignKey(Manufacture)
+    # which client
+    client = models.ForeignKey(Client, related_name = "environments")
 
-	# set status to identify this environment's activeness
-	ACTIVE = 'A'
-	INACTIVE = 'I'
-	BINDING_STATUS = (
-		(ACTIVE, 'Active'),
-		(INACTIVE, 'Inactive'),
-	)
-	status = models.CharField(max_length = 1, choices = BINDING_STATUS, default = INACTIVE)
+    # set status to identify this environment's activeness
+    ACTIVE = 'A'
+    INACTIVE = 'I'
+    BINDING_STATUS = (
+        (ACTIVE, 'Active'),
+        (INACTIVE, 'Inactive'),
+    )
+    status = models.CharField(max_length = 1, choices = BINDING_STATUS, default = INACTIVE)
 
-	# create property for current environment
-	def createProperty(self, name = "", value = ""):
-		cep = ClientEnvironmentProperty(ClientEnvironment = self, name = name, value = value)
-		cep.save()
+    # create property for current environment
+    def createProperty(self, name = "", value = ""):
+        cep = ClientEnvironmentProperty(ClientEnvironment = self, name = name, value = value)
+        cep.save()
 
-	def isActive(self):
-		return self.status == self.ACTIVE
+    def isActive(self):
+        return self.status == self.ACTIVE
 
-	def setActive(self):
-		self.status = self.ACTIVE
+    def setActive(self):
+        self.status = self.ACTIVE
 
-	def setInactive(self):
-		self.status = self.INACTIVE
+    def setInactive(self):
+        self.status = self.INACTIVE
 
-	# return sshkeys in following format:
-	# result = [ {"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
-	#			{"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
-	#			... ]
-	def getAllSSHKeys(self):
-		result = []
-		sshkeys = self.sshkey_set.all()
+    # return sshkeys in following format:
+    # result = [ {"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
+    #            {"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
+    #            ... ]
+    def getAllSSHKeys(self):
+        result = []
+        sshkeys = self.sshkey_set.all()
 
-		for key in sshkeys:
-			info = key.getDetails()
-			info["manufacture"] = self.manufacture.name
-			result.append(info)
+        for key in sshkeys:
+            info = key.getDetails()
+            info["manufacture"] = self.manufacture.name
+            result.append(info)
 
-		return result
+        return result
 
-	# return properties in following format:
-	# info = { "manufacture": "ec2", "secret_key": "", "access_key": "" }
-	def getAllProperties(self):
-		info = {}
-		info["manufacture"] = self.manufacture.name
+    # return properties in following format:
+    # info = { "manufacture": "ec2", "secret_key": "", "access_key": "" }
+    def getAllProperties(self):
+        info = {}
+        info["manufacture"] = self.manufacture.name
 
-		properties = self.properties.all()
-		for p in properties:
-			pair = p.getDetails()
-			info[pair["name"]] = pair["value"]
+        properties = self.properties.all()
+        for p in properties:
+            pair = p.getDetails()
+            info[pair["name"]] = pair["value"]
 
-		return info
+        return info
 
-	# return available roles for current environment
-	def getAllAvailableRoles(self):
-		roles = set()
-		images = self.manufacture.images.all()
+    # return available roles for current environment
+    def getAllAvailableRoles(self):
+        roles = set()
+        images = self.manufacture.images.all()
 
-		for i in images:
-			if i.role not in roles:
-				roles.add(i.role)
+        for i in images:
+            if i.role not in roles:
+                roles.add(i.role)
 
-		result = []
-		for r in roles:
-			result.append(r.getDetails())
+        result = []
+        for r in roles:
+            result.append(r.getDetails())
 
-		return result
+        return result
 
 
 # save properties for environment
 class ClientEnvironmentProperty(models.Model):
-	environment = models.ForeignKey(ClientEnvironment, related_name = "properties")
+    environment = models.ForeignKey(ClientEnvironment, related_name = "properties")
 
-	name = models.CharField(max_length = 255)
-	value = models.TextField()
-	group = models.CharField(max_length = 20)
-	cloud = models.CharField(max_length = 20)
+    name = models.CharField(max_length = 255)
+    value = models.TextField()
+    group = models.CharField(max_length = 20)
+    cloud = models.CharField(max_length = 20)
 
-	def getDetails(self):
-		info = {}
+    def getDetails(self):
+        info = {}
 
-		info["name"] = self.name
-		info["value"] = self.value
+        info["name"] = self.name
+        info["value"] = self.value
 
-		return info
+        return info
 
 
 # Client's SSH key in specific environment
 class SSHKey(models.Model):
-	environment = models.ForeignKey(ClientEnvironment)
+    environment = models.ForeignKey(ClientEnvironment)
 
-	keyType = models.CharField(max_length = 10)
-	privateKey = models.TextField()
-	publicKey = models.TextField()
+    keyType = models.CharField(max_length = 10)
+    privateKey = models.TextField()
+    publicKey = models.TextField()
 
-	platform = models.CharField(max_length = 20)
-	cloudLocation = models.CharField(max_length = 255)
-	cloudKeyName = models.CharField(max_length = 255)
+    platform = models.CharField(max_length = 20)
+    cloudLocation = models.CharField(max_length = 255)
+    cloudKeyName = models.CharField(max_length = 255)
 
-	def getDetails(self):
-		info = {}
+    def getDetails(self):
+        info = {}
 
-		info["keyType"] = self.keyType
-		info["privateKey"] = self.privateKey
-		info["publicKey"] = self.publicKey
-		info["platform"] = self.platform
-		info["cloudLocation"] = self.cloudLocation
-		info["cloudKeyName"] = self.cloudKeyName
+        info["keyType"] = self.keyType
+        info["privateKey"] = self.privateKey
+        info["publicKey"] = self.publicKey
+        info["platform"] = self.platform
+        info["cloudLocation"] = self.cloudLocation
+        info["cloudKeyName"] = self.cloudKeyName
 
-		return info
+        return info
 
 
 class ClientBackend(models.Model):
