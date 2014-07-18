@@ -413,7 +413,7 @@ class RoleSoftware(models.Model):
 
 class RoleImage(models.Model):
 	role = models.ForeignKey(Role, related_name = 'images')
-	manufacture = models.ForeignKey(Manufacture, related_name = 'images')
+	manufacture = models.ForeignKey(Manufacture)
 
 	name = models.CharField(max_length = 255)
 	location = models.CharField(max_length = 50)
