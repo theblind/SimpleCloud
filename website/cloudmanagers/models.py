@@ -362,12 +362,17 @@ class Role(models.Model):
 		info["osVersion"] = self.osVersion
 
 		info["platforms"] = self.getAllPlatforms()
-
+		info["platforms_name"] = self.getAllPlatforms_name()
 		return info
-
 	def getAllSoftwares(self):
-		return list(self.softwares.all())
+		return list(self.softwares.all()) 
 
+	def getAllSoftwares_name(self):
+		name_list = []
+		soft_list = self.getAllSoftwares()
+		for soft in soft_list:
+			name_list.append(soft.name)
+		return name_list
 	def getImages(self):
 		return list(self.images.all())
 
@@ -378,7 +383,16 @@ class Role(models.Model):
 		images = self.getImages()
 		for i in images:
 			result.append(i.getDetails())
+		return result
 
+	def getAllPlatforms_name(self):
+		result = []
+		platforms_list = self.getAllPlatforms()
+		for i in platforms_list:
+			if i['manufacture'] in result:
+				continue
+			else:
+				result.append(i['manufacture'])
 		return result
 
 
