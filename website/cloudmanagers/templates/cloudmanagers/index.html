@@ -554,7 +554,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                   </div>
                   <div class="details">
                      <div class="title">Projects</div>
-                     <div class="numbers">3</div>
+                     <div class="numbers">{{projects_num}}</div>
                   </div>
                </div>
             </div>
@@ -566,7 +566,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                   </div>
                   <div class="details">
                      <div class="title">Servers</div>
-                     <div class="numbers">10</div>
+                     <div class="numbers">{{servers_num}}</div>
                   </div>
                </div>
             </div>
@@ -590,7 +590,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                   </div>
                   <div class="details">
                      <div class="title">SSH Keys</div>
-                     <div class="numbers">15</div>
+                     <div class="numbers">{{ssh_num}}</div>
                   </div>
                </div>
             </div>
@@ -645,36 +645,19 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               </tr>
                            </thead>
                            <tbody>
+                           {% for project in project_list %}                                
                               <tr>
                                  <td>
-                                    <a href="#">Project 1</a>
+                                    <a href="#">{{project.name}}</a>
                                  </td>
-                                 <td>2</td>
+                                 <td>{{project.getAllServers|length}}</td>
                                  <td>450.60$ 
-                                    <span class="label label-warning label-sm">Paid</span>
+                                    <span class="label label-success label-sm">Paid</span>
                                  </td>
-                                 <td>2014-04-17</td>
+                                 <td>{{project.dtAdded|date:"Y-m-d H:i:s"}}</td>
                               </tr>
-                              <tr>
-                                 <td>
-                                    <a href="#">Project 2</a>
-                                 </td>
-                                 <td>2</td>
-                                 <td>450.60$ 
-                                    <span class="label label-warning label-sm">Paid</span>
-                                 </td>
-                                 <td>2014-04-17</td>
-                              </tr>
-                              <tr>
-                                 <td>
-                                    <a href="#">Project 3</a>
-                                 </td>
-                                 <td>2</td>
-                                 <td>450.60$ 
-                                    <span class="label label-success label-sm">Pending</span>
-                                 </td>
-                                 <td>2014-04-17</td>
-                              </tr>
+                           {% endfor %}
+                                
                            </tbody>
                         </table>
                      </div>
@@ -703,6 +686,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         <div class="tab-pane active" id="tab_1_1">
                            <div class="scroller" style="height: 250px;" data-always-visible="1" data-rail-visible="0">
                               <ul class="feeds">
+                              {% for message in sysmessage_list %}
                                  <li>
                                     <div class="col1">
                                        <div class="cont">
@@ -713,21 +697,20 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                           </div>
                                           <div class="cont-col2">
                                              <div class="desc">
-                                                You have 4 pending tasks.
+                                                {{message.content}}
                                                 <span class="label label-sm label-danger ">
-                                                Take action 
-                                                <i class="icon-share-alt"></i>
+                                                {{message.title}}
                                                 </span>
                                              </div>
                                           </div>
                                        </div>
                                     </div>
                                     <div class="col2">
-                                       <div class="date">
-                                          Just now
-                                       </div>
+                                          {{message.dtAdded|date:"Y-m-d H:i:s"}}
                                     </div>
                                  </li>
+                              {% endfor %}
+                              {% comment %}
                                  <li>
                                     <a href="#">
                                        <div class="col1">
@@ -1088,8 +1071,9 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                        </div>
                                     </div>
                                  </li>
+                              {% endcomment %}
                               </ul>
-                           </div>
+                            </div>
                         </div>
                         <div class="tab-pane" id="tab_1_2">
                            <div class="scroller" style="height: 250px;" data-always-visible="1" data-rail-visible1="1">

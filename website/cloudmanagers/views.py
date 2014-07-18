@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response,render,get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.template.context import RequestContext
 from django.utils import simplejson
-from cloudmanagers.models import Farm, Server, ServerProperty, Role
+from cloudmanagers.models import Farm, Server, ServerProperty, Role ,Message
 from benchmark.models import InstanceType
 from clients.models import Client, ClientBackend
 from django.contrib import auth
@@ -10,58 +10,72 @@ from django.core.urlresolvers import reverse
 
 # Create your views here.
 def index(request):
-	return render(request, 'cloudmanagers/index.html')
+    client = Client.objects.get(id = request.user.id)
+    servers_num = len(client.getAllServers())
+    project_list = client.getAllFarms()
+    projects_num = len(project_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    context = {'projects_num': projects_num,'servers_num':servers_num,'project_list':project_list,'sysmessage_list':sysmessage_list,}
+    return render(request, 'cloudmanagers/index.html',context)
 
 def login(request):
-	login_message = None
-	email = request.POST.get('email')
-	if email is not None:
-		password = request.POST.get('password')
-		auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
-		user = auth.authenticate(username = email, password = password)
-		if user is None:
-			login_message = "Invalid E-mail or wrong password."
-		else:
-			auth.login(request, user)
-			return HttpResponseRedirect(reverse('cloudmanagers:index'))
-	context = {'login_message': login_message}
-	return render(request, 'cloudmanagers/login.html', context)
+    login_message = None
+    email = request.POST.get('email')
+    if email is not None:
+        password = request.POST.get('password')
+        auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
+        user = auth.authenticate(username = email, password = password)
+        if user is None:
+            login_message = "Invalid E-mail or wrong password."
+        else:
+            auth.login(request, user)
+            return HttpResponseRedirect(reverse('cloudmanagers:index'))
+    context = {'login_message': login_message}
+    return render(request, 'cloudmanagers/login.html', context)
 
 def logout(request):
-	auth.logout(request)
-	return HttpResponseRedirect(reverse('cloudmanagers:index'))
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
 def signup(request):
-	email = request.POST.get('email')
-	name = request.POST.get('name')
-	password = request.POST.get('password')
-	fullname = request.POST.get('fullname')
-	address = request.POST.get('address')
-	city = request.POST.get('city')
-	country = request.POST.get('country')
-	user = Client.objects.create_user(email=email, password=password, name=name, fullName=fullname)
-	user.country = country
-	user.city = city
-	user.save()
-	auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
-	loguser = auth.authenticate(username = email, password = password)
-	auth.login(request, loguser)
-	return HttpResponseRedirect(reverse('cloudmanagers:index'))
+    email = request.POST.get('email')
+    name = request.POST.get('name')
+    password = request.POST.get('password')
+    fullname = request.POST.get('fullname')
+    address = request.POST.get('address')
+    city = request.POST.get('city')
+    country = request.POST.get('country')
+    user = Client.objects.create_user(email=email, password=password, name=name, fullName=fullname)
+    user.country = country
+    user.city = city
+    user.save()
+    auth.AUTHENTICATION_BACKENDS = ('ClientBackend',)
+    loguser = auth.authenticate(username = email, password = password)
+    auth.login(request, loguser)
+    return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
 def platforms(request):
-	return render(request, 'cloudmanagers/platforms.html')
+    return render(request, 'cloudmanagers/platforms.html')
 
 def project(request):
-	return render(request, 'cloudmanagers/project.html')
+    return render(request, 'cloudmanagers/project.html')
 
 def rolemarket(request):
-	return render(request, 'cloudmanagers/rolemarket.html')
+    role_list  = list(Role.objects.all())
+    role_res = []
+    for index, role in enumerate(role_list):
+        role_res.append(role.getDetails())
+        role_res[index]['id'] = role.id
+        role_res[index]['role_bev'] = role.behaviors.split(",")
+        role_res[index]['role_soft'] = role.getAllSoftwares_name()
+    context = {'role_list':role_res}
+    return render(request, 'cloudmanagers/rolemarket.html', context)
 
 def settings(request):
-	return render(request, 'cloudmanagers/settings.html')
+    return render(request, 'cloudmanagers/settings.html')
 
 def sshkey(request):
-	return render(request, 'cloudmanagers/sshkey.html')
+    return render(request, 'cloudmanagers/sshkey.html')
 
 def render_to_json_response(self, context, **response_kwargs):
     data = simplejson.dumps(context)

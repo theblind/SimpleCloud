@@ -361,10 +361,14 @@ class Role(models.Model):
 		info["platforms"] = self.getAllPlatforms()
 
 		return info
-
 	def getAllSoftwares(self):
-		return list(self.softwares.all())
-
+		return list(self.softwares.all()) 
+	def getAllSoftwares_name(self):	   
+		name_list = []
+		soft_list = self.getAllSoftwares()
+		for soft in soft_list:
+			name_list.append(soft.name)
+		return name_list
 	def getImages(self):
 		return list(self.images.all())
 
@@ -374,7 +378,10 @@ class Role(models.Model):
 
 		images = self.getImages()
 		for i in images:
-			result.append(i.platform)
+			if i.platform in result:
+				continue
+			else:
+				result.append(i.platform)
 
 		return result
 

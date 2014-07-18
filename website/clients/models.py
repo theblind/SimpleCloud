@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from benchmark.models import Manufacture
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import hashers
+
 class ClientUserManager(BaseUserManager):
     def create_user(self, email, name='anonymous', fullName='anonymous', password=None):
         if not email:
@@ -12,7 +13,7 @@ class ClientUserManager(BaseUserManager):
             name=name,
             fullName=fullName,
         )
-	user.isActive = 1
+        user.isActive = 1
         user.set_password(password)
         user.save()
         return user
@@ -24,7 +25,7 @@ class ClientUserManager(BaseUserManager):
             fullName=fullName,
         )
         user.isBilled = 1
-	user.is_staff = 1
+        user.is_staff = 1
         user.save(using=self._db)
         return user
 
@@ -82,9 +83,6 @@ class Client(models.Model):
 		newFarm.save()
 		return newFarm
 
-	def getAllFarms(self):	 
-		return list(self.farm_set.all())
-
 	# get all environments which is active
 	def getAllEnvironments(self):
 		result = []
@@ -126,13 +124,12 @@ class Client(models.Model):
 	def getAllServers(self):
 		servers = []
 		try:
-			farmSet = getAllFarms()
+			farmSet = self.getAllFarms()
 			for farm in farmSet:
 				servers.extend(farm.getAllServers())
 			return servers
 		except:
 			return []
-
 
 # cloud environment info
 class ClientEnvironment(models.Model):
