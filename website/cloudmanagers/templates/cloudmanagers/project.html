@@ -664,7 +664,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                     <div class="col-md-9">
                                        <select name="newserver_role" id="select2_role" class="form-control select2" data-placeholder="Select a Role">
                                            {% for role in roles_list %}
-                                           <option value="{{ forloop.counter }}" data-behav="{{ role.behaviors | first }}" data-os="{{ role.os }}">{{ role.name }}</option>
+                                           <option value="{{ forloop.counter }}" data-behav="{{ role.behaviors_list | first }}" data-os="{{ role.os }}">{{ role.name }}</option>
                                            {% endfor %}
                                        </select>
                                     </div>
@@ -672,7 +672,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                  <div class="form-group">
                                     <label class="control-label col-md-3">Operate System</label>
                                     <div class="col-md-9">
-                                       <input type="text" id="role_os" class="form-control" value="CentOS 5.4 Final" readonly>
+                                       <input type="text" id="role_os" class="form-control" value="{% for role in roles_list %} {%if forloop.first%} {{ role.os }} {% endif%} {% endfor %}" readonly>
                                     </div>
                                  </div>
                                  <div class="form-group">

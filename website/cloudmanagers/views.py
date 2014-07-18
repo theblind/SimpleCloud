@@ -18,7 +18,7 @@ def index(request):
     project_list = client.getAllFarms()
     projects_num = len(project_list)
     sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    context = {'projects_num': projects_num,'servers_num':servers_num,'project_list':project_list,'sysmessage_list':sysmessage_list,}
+    context = {'projects_num': projects_num,'servers_num':servers_num,'projects_list':project_list,'sysmessage_list':sysmessage_list,}
     context['sshkey_num'] = sshkey_num
     return render(request, 'cloudmanagers/index.html',context)
 
@@ -93,11 +93,17 @@ def project(request, project_id):
 
     roles_list = client.getAllEnvironmentsAvailableRoles()
     for index,role in enumerate(roles_list):
-        roles_list[index]['behaviors'] = role['behaviors'].split(',')
+        roles_list[index]['behaviors_list'] = role['behaviors'].split(',')
     context['roles_list'] = roles_list
+
     return render(request, 'cloudmanagers/project.html', context)
 
 def rolemarket(request):
+    context = {}
+    client = Client.objects.get(id = request.user.id)
+    projects_list = client.getAllFarms()
+    context['projects_list'] = projects_list
+
     role_list  = list(Role.objects.all())
     role_res = []
     for index, role in enumerate(role_list):
@@ -105,7 +111,7 @@ def rolemarket(request):
         role_res[index]['id'] = role.id
         role_res[index]['role_bev'] = role.behaviors.split(",")
         role_res[index]['role_soft'] = role.getAllSoftwares_name()
-    context = {'role_list':role_res}
+    context['role_list'] = role_res
     return render(request, 'cloudmanagers/rolemarket.html', context)
 
 
