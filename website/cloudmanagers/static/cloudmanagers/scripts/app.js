@@ -604,16 +604,6 @@ var App = function () {
         }
     }
 
-    // Handle Select2 Dropdowns
-    var handleSelect2 = function() {
-        if (jQuery().select2) {
-            $('.select2me').select2({
-                placeholder: "Select",
-                allowClear: true
-            });
-        }
-    }
-
     // Handle Theme Settings
     var handleTheme = function () {
 
@@ -795,7 +785,6 @@ var App = function () {
 
             //ui component handlers
              // handle fancy box
-            handleSelect2(); // handle custom Select2 dropdowns
             handlePortletTools(); // handles portlet action bar functionality(refresh, configure, toggle, remove)
                              // handle dropdowns
             handleTabs(); // handle tabs
@@ -808,10 +797,6 @@ var App = function () {
 
         //main function to initiate core javascript after ajax complete
         initAjax: function () {
-            handleSelect2(); // handle custom Select2 dropdowns
-                              // handle dropdowns
-                               // handle bootstrap tooltips
-                              // handles bootstrap popovers
             handleAccordions(); //handles accordions 
             handleUniform(); // hanfle custom radio & checkboxes     
             handleDropdownHover() // handles dropdown hover       

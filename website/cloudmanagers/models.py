@@ -17,7 +17,7 @@ class Farm(models.Model):
 	termOnSyncFail = models.SmallIntegerField(default = 0)
 	farmRolesLaunchOrder = models.SmallIntegerField(default = 0)
 	comments = models.TextField()
-	
+
 	createdByID = models.SmallIntegerField(default = 0)
 	createdByEmail = models.EmailField()
 	changedByID = models.SmallIntegerField(default = 0)
@@ -118,7 +118,7 @@ class Server(models.Model):
 	def stopServer(self, reason = ''):
 		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
-		
+
 		# save server event
 		self.createEvent(eventType = ServerEvent.STOP, reason = reason)
 		# save server operation
@@ -163,6 +163,7 @@ class Server(models.Model):
 	def getDetails(self):
 		info = {}
 
+		info["id"] = self.id
 		info["manufacture"] = self.instanceType.manufacture.name
 		info["role"] = self.role.name
 		info["serverID"] = self.replaceServerID
@@ -225,7 +226,7 @@ class ServerOperation(models.Model):
 	status = models.CharField(max_length = 20)
 	name = models.CharField(max_length = 50)
 	phases = models.TextField()
-	
+
 	dtAdded = models.DateTimeField(auto_now_add = True)
 
 
@@ -370,7 +371,7 @@ class Role(models.Model):
 	def getImages(self):
 		return list(self.images.all())
 
-	# get all paltforms for this role 
+	# get all paltforms for this role
 	def getAllPlatforms(self):
 		result = []
 

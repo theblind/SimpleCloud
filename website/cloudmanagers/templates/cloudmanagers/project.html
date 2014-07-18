@@ -662,19 +662,17 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                  <div class="form-group">
                                     <label class="control-label col-md-3">Role</label>
                                     <div class="col-md-9">
-                                       <select name="newserver_role" id="select2_role" class="form-control select2">
-                                          <option value="1" data-behav="base">base-centos-5-4</option>
-                                          <option value="2" data-behav="base">base64-centos-5-4</option>
-                                          <option value="3" data-behav="mongodb">mongodb26-ubuntu1404</option>
-                                          <option value="4" data-behav="mysql2">mysqlng64-centos</option>
-                                          <option value="5" data-behav="app">apache-ubuntu1404</option>
+                                       <select name="newserver_role" id="select2_role" class="form-control select2" data-placeholder="Select a Role">
+                                           {% for role in roles_list %}
+                                           <option value="{{ forloop.counter }}" data-behav="{{ role.behaviors | first }}" data-os="{{ role.os }}">{{ role.name }}</option>
+                                           {% endfor %}
                                        </select>
                                     </div>
                                  </div>
                                  <div class="form-group">
                                     <label class="control-label col-md-3">Operate System</label>
                                     <div class="col-md-9">
-                                       <input type="text" class="form-control" placeholder="Ubuntu 12.04 Precise (64bit)" readonly>
+                                       <input type="text" id="role_os" class="form-control" value="CentOS 5.4 Final" readonly>
                                     </div>
                                  </div>
                                  <div class="form-group">
@@ -701,14 +699,14 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                     <label class="control-label col-md-3">Location</label>
                                     <div class="col-md-9">
                                        <div class="map map-common" style="width: 210px; height: 100px; background-position: 0px -500px;">
-                                          <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="ext-gen4446"></div>
-                                          <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="ext-gen4447"></div>
-                                          <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="ext-gen4448"></div>
-                                          <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="ext-gen4449"></div>
-                                          <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="ext-gen4450"></div>
-                                          <div data-location="us-east-1" style="top:34px;left:48px" class="location selected" title="us-east-1" id="ext-gen4451"></div>
-                                          <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="ext-gen4452"></div>
-                                          <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="ext-gen4453"></div></div>
+                                          <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="location-ap-northeast-1"></div>
+                                          <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="location-ap-southeast-1"></div>
+                                          <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="location-ap-southeast-2"></div>
+                                          <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="location-eu-west-1"></div>
+                                          <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="location-sa-east-1"></div>
+                                          <div data-location="us-east-1" style="top:34px;left:48px" class="location selected" title="us-east-1" id="location-us-east-1"></div>
+                                          <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="location-us-west-1"></div>
+                                          <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="location-us-west-2"></div></div>
                                     </div>
                                  </div>
                               </div>
@@ -960,7 +958,6 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/data-tables/DT_bootstrap.js' %}"></script>
    <script src="{% static 'cloudmanagers/scripts/plugins/bootstrap-modal/js/bootstrap-modalmanager.js' %}" type="text/javascript" ></script>
    <script src="{% static 'cloudmanagers/scripts/plugins/bootstrap-modal/js/bootstrap-modal.js' %}" type="text/javascript" ></script>
-   <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/select2/select2.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/bootstrap-toastr/toastr.min.js' %}"></script>
    <!-- END PAGE LEVEL PLUGINS -->
    <!-- BEGIN PAGE LEVEL SCRIPTS -->

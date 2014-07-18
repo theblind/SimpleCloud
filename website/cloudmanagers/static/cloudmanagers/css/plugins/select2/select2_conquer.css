@@ -226,7 +226,7 @@ Modifed by keenthemes for Conquer theme integration.
 }
 
 .select2-search input.select2-active {
-    background: #fff url('select2-spinner.gif') no-repeat 100%;
+    background: #fff url('/static/cloudmanagers/img/select2-spinner.gif') no-repeat 100%;
 }
 
 .select2-container-active .select2-choice,

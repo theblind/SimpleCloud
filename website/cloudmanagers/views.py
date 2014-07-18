@@ -74,6 +74,11 @@ def project(request, project_id):
         servers_list[index]['name'] = server.name
     context['servers_list'] = servers_list
     context['project_id'] = int(project_id)
+
+    roles_list = client.getAllEnvironmentsAvailableRoles()
+    for index,role in enumerate(roles_list):
+        roles_list[index]['behaviors'] = role['behaviors'].split(',')
+    context['roles_list'] = roles_list
     return render(request, 'cloudmanagers/project.html', context)
 
 def rolemarket(request):
