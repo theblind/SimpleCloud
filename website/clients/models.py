@@ -219,18 +219,9 @@ class ClientEnvironment(models.Model):
 
 	# return available roles for current environment
 	def getAllAvailableRoles(self):
-		roles = set()
-		images = self.manufacture.images.all()
+		import cloudmanagers.models as cloudmanagers
 
-		for i in images:
-			if i.role not in roles:
-				roles.add(i.role)
-
-		result = []
-		for r in roles:
-			result.append(r.getDetails())
-
-		return result
+		return cloudmanagers.Role.objects.getAvailableRolesByManufacture(manufacture = self.manufacture)
 
 
 # save properties for environment

@@ -308,6 +308,31 @@ class Message(models.Model):
 
 # --------------- Role Start ---------------
 
+# create Role Image Manager to add table-level method
+class RoleImageManager(models.Manager):
+	def getRoleImagesByManufacture(self, manufacture):
+		return list(self.filter(manufacture = manufacture))
+
+
+# create Role Manager to add table-level method
+class RoleManager(models.Manager):
+	def getAvailableRolesByManufacture(self, manufacture):
+		images = RoleImage.objects.getRoleImagesByManufacture(manufacture)
+
+		result = []
+		roles = set()
+		for i in images:
+			role = i.role
+			if role not in roles:
+				info = role.getDetails()
+				info["platforms"] = []
+				roles.add(role)
+			info["platforms"].append(i.getDetails())
+			result.append(info)
+
+		return result
+
+
 # Role represent a server's functionality in a farm
 class Role(models.Model):
 	name = models.CharField(max_length = 100, unique = True)
@@ -347,6 +372,8 @@ class Role(models.Model):
 	addedByClientID = models.IntegerField(default = 0)
 	addedByEmail = models.EmailField()
 
+	objects = RoleManager()
+
 	def getDetails(self):
 		info = {}
 
@@ -361,8 +388,6 @@ class Role(models.Model):
 		info["osGeneration"] = self.osGeneration
 		info["osVersion"] = self.osVersion
 
-		info["platforms"] = self.getAllPlatforms()
-
 		return info
 
 	def getAllSoftwares(self):
@@ -370,16 +395,6 @@ class Role(models.Model):
 
 	def getImages(self):
 		return list(self.images.all())
-
-	# get all paltforms for this role
-	def getAllPlatforms(self):
-		result = []
-
-		images = self.getImages()
-		for i in images:
-			result.append(i.getDetails())
-
-		return result
 
 
 class RoleSoftware(models.Model):
@@ -399,19 +414,20 @@ class RoleSoftware(models.Model):
 
 class RoleImage(models.Model):
 	role = models.ForeignKey(Role, related_name = 'images')
-	manufacture = models.ForeignKey(Manufacture)
+	manufacture = models.ForeignKey(Manufacture, related_name = 'images')
 
 	name = models.CharField(max_length = 255)
 	location = models.CharField(max_length = 50)
 	architecture = models.CharField(max_length = 6)
 
+	objects = RoleImageManager()
+
 	def getDetails(self):
 		info = {}
 
-		info["name"] = self.name
 		info["manufacture"] = self.manufacture.name
+		info["name"] = self.name
 		info["location"] = self.location
-		info["architecture"] = self.architecture
 
 		return info
 
