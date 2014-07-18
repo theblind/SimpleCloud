@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedire
 from django.template.context import RequestContext
 from django.utils import simplejson
 from cloudmanagers.models import Farm, Server, ServerProperty, Role
-from benchmark.models import InstanceType
+from benchmark.models import InstanceType, Manufacture
 from clients.models import Client, ClientBackend
 from django.contrib import auth
 from django.core.urlresolvers import reverse
@@ -58,6 +58,15 @@ def platforms(request):
     projects_list = client.getAllFarms()
     context['projects_list'] = projects_list
     return render(request, 'cloudmanagers/platforms.html', context)
+
+def platformsSave(request):
+    accountNumber = request.POST.get('accountNumber')
+    accessKey = request.POST.get('accessKey')
+    secretAccessKey = request.POST.get('secretAccessKey')
+    client = Client.objects.get(id = request.user.id)
+    manufacture = Manufacture.objects.get(name = 'ec2')
+    client.bindingEnvironment(manufacture = manufacture, account_number = accountNumber, access_key = accessKey, secret_key = secretAccessKey)
+    return HttpResponseRedirect(reverse('cloudmanagers:platforms'))
 
 def project(request, project_id):
     context = {}
