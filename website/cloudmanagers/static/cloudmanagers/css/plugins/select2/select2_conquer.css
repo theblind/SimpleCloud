@@ -90,7 +90,7 @@ Modifed by keenthemes for Conquer theme integration.
     text-decoration: none;
 
     border: 0;
-    background: url('/static/assets/img/select2.png') right top no-repeat;
+    background: url('/static/cloudmanagers/img/select2.png') right top no-repeat;
     cursor: pointer;
     outline: 0;
 }
@@ -181,7 +181,7 @@ Modifed by keenthemes for Conquer theme integration.
     display: block;
     width: 100%;
     height: 100%;
-    background: url('/static/assets/img/select2.png') no-repeat 0 1px;
+    background: url('/static/cloudmanagers/img/select2.png') no-repeat 0 1px;
 }
 
 .select2-search {
@@ -226,7 +226,7 @@ Modifed by keenthemes for Conquer theme integration.
 }
 
 .select2-search input.select2-active {
-    background: #fff url('select2-spinner.gif') no-repeat 100%;
+    background: #fff url('/static/cloudmanagers/img/select2-spinner.gif') no-repeat 100%;
 }
 
 .select2-container-active .select2-choice,
@@ -496,7 +496,7 @@ disabled look for disabled choices in the results dropdown
     top: 4px;
     font-size: 1px;
     outline: none;
-    background: url('/static/assets/img/select2.png') right top no-repeat;
+    background: url('/static/cloudmanagers/img/select2.png') right top no-repeat;
 }
 
 .select2-container-multi .select2-search-choice-close {

@@ -210,44 +210,85 @@ var App = function () {
             e.preventDefault();
         });
 
-        // handle ajax links
-        jQuery('.page-sidebar').on('click', ' li > a.ajaxify', function (e) {
-            e.preventDefault();
-            App.scrollTop();
+    }
 
-            var url = $(this).attr("href");
-            var menuContainer = jQuery('.page-sidebar ul');
-            var pageContent = $('.page-content');
-            var pageContentBody = $('.page-content .page-content-body');
+    var _redirect = function (timeout, url) {
+        window.setTimeout(function(){
+                window.location.href = url;
+            }, timeout
+        );
+        
+    }
+    //handle all ajax request
+    var handleCreateProjectAjax = function() {
+        jQuery('#create_project').on('click', function(e){
+             e.preventDefault();
+             var project_name = $('input[name=project_name]').val();
+             var comments = $('textarea[name=comments]').val();
+            
+             var el = jQuery('#newproject > form');
+             App.blockUI(el);
 
-            menuContainer.children('li.active').removeClass('active');
-            menuContainer.children('arrow.open').removeClass('open');
-
-            $(this).parents('li').each(function () {
-                $(this).addClass('active');
-                $(this).children('a > span.arrow').addClass('open');
-            });
-            $(this).parents('li').addClass('active');
-
-            App.blockUI(pageContent, false);
-
-            $.ajax({
-                type: "GET",
-                cache: false,
-                url: url,
-                dataType: "html",
-                success: function (res) {
-                    App.unblockUI(pageContent);
-                    pageContentBody.html(res);
-                    App.fixContentHeight(); // fix content height
-                    App.initAjax(); // initialize core stuff
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/create_project',
+                dataType : "json",
+                data : {"name" : project_name, "comments" : comments},
+                success : function(res){
+                    App.unblockUI($(el));
+                    var $toast = toastr["success"]("Project Successfully Created.<br/> The page will Redirect to your new project in 2 seconds.");
+                    var newUrl = '/cloudmanagers/project/' + res.farm_id;
+                    _redirect(2000, newUrl);  
+                    console.log(res);
                 },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    pageContentBody.html('<h4>Could not load the requested content.</h4>');
-                    App.unblockUI(pageContent);
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    alert("Create error!");
+                }
+             });
+
+        });
+    }
+
+    var handleAddServerAjax = function() {
+        //handle Map location select
+        jQuery('.map > .location').on('click', function(){
+            $(this).addClass('selected').siblings('.selected').removeClass('selected');
+        });
+
+        //handle Add Server Ajax request
+        jQuery('#create_server').on('click', function(e){
+             e.preventDefault();
+             var project_id = $('input[name=newserver_projectid]').val();
+             var server_name = $('input[name=newserver_name]').val();
+             var role_id = $('select[name=newserver_role]').val();
+             var instance_type = $('select[name=newserver_instancetype]').val();
+             var platform = $('.create-server.x-icon-platform.x-btn-pressed').data('platform');
+             var server_location = $('.location.selected').data('location');
+
+             var el = jQuery('#addserver > form');
+             App.blockUI(el);
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/create_server',
+                dataType : "json",
+                data : {"project_id" : project_id, "role_id" : role_id, "server_name" : server_name, "instance_type" : instance_type, "platform" : platform, "server_location" : server_location},
+                success : function(res){
+                    App.unblockUI($(el));
+                    var $toast = toastr["success"]("Server Successfully Created.<br/>The page will refresh in 2 seconds.");
+                    var newUrl = '/cloudmanagers/project/' +  project_id;
+                    _redirect(2000, newUrl);  
+                    console.log(res);
                 },
-                async: false
-            });
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    alert("Create Server error!");
+                }
+             });
+
         });
     }
 
@@ -563,16 +604,6 @@ var App = function () {
         }
     }
 
-    // Handle Select2 Dropdowns
-    var handleSelect2 = function() {
-        if (jQuery().select2) {
-            $('.select2me').select2({
-                placeholder: "Select",
-                allowClear: true
-            });
-        }
-    }
-
     // Handle Theme Settings
     var handleTheme = function () {
 
@@ -682,7 +713,7 @@ var App = function () {
 
         // handle theme colors
         var setColor = function (color) {
-            $('#style_color').attr("href", "assets/css/themes/" + color + ".css");
+            $('#style_color').attr("href", "/static/cloudmanagers/css/themes/" + color + ".css");
             $.cookie('style_color', color);
         }
 
@@ -748,9 +779,12 @@ var App = function () {
             handleGoTop(); //handles scroll to top functionality in the footer
             handleTheme(); // handles style customer tool
 
+            //handle ajax
+            handleCreateProjectAjax();
+            handleAddServerAjax();
+
             //ui component handlers
              // handle fancy box
-            handleSelect2(); // handle custom Select2 dropdowns
             handlePortletTools(); // handles portlet action bar functionality(refresh, configure, toggle, remove)
                              // handle dropdowns
             handleTabs(); // handle tabs
@@ -758,14 +792,11 @@ var App = function () {
                           // handles bootstrap popovers
             handleAccordions(); //handles accordions 
             handleModals(); // handle modals
+
         },
 
         //main function to initiate core javascript after ajax complete
         initAjax: function () {
-            handleSelect2(); // handle custom Select2 dropdowns
-                              // handle dropdowns
-                               // handle bootstrap tooltips
-                              // handles bootstrap popovers
             handleAccordions(); //handles accordions 
             handleUniform(); // hanfle custom radio & checkboxes     
             handleDropdownHover() // handles dropdown hover       
@@ -817,19 +848,20 @@ var App = function () {
                 centerY = true;
             }
             el.block({
-                message: '<img src="/static/assets/img/ajax-loading.gif" align="">',
+                message: '<img src="/static/cloudmanagers/img/ajax-loading.gif" align="">',
                 centerY: centerY != undefined ? centerY : true,
                 css: {
                     top: '10%',
                     border: 'none',
                     padding: '2px',
-                    backgroundColor: 'none'
+                    backgroundColor: 'none',
                 },
                 overlayCSS: {
                     backgroundColor: '#000',
                     opacity: 0.05,
                     cursor: 'wait'
-                }
+                },
+                baseZ : 10060
             });
         },
 

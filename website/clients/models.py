@@ -77,9 +77,9 @@ class Client(models.Model):
 		return self.isActive
 
 
-	# create farm for this client 
+	# create farm for this client
 	def createFarm(self, name = "", comments = ""):
-		import cloudmanagers.models as cloudmanagers	 
+		import cloudmanagers.models as cloudmanagers
 		newFarm = cloudmanagers.Farm(client=self, createdByEmail=self.email, name=name, comments=comments)
 		newFarm.save()
 		return newFarm
@@ -92,7 +92,7 @@ class Client(models.Model):
 	def getAllServers(self):
 		servers = []
 		try:
-			farmSet = getAllFarms()
+			farmSet = self.getAllFarms()
 			for farm in farmSet:
 				servers.extend(farm.getAllServers())
 			return servers
@@ -213,7 +213,7 @@ class ClientEnvironment(models.Model):
 		for p in properties:
 			pair = p.getDetails()
 			info[pair["name"]] = pair["value"]
-		
+
 		return info
 
 	# return available roles for current environment
@@ -227,7 +227,7 @@ class ClientEnvironment(models.Model):
 
 		result = []
 		for r in roles:
-			result.extend(r.getAllPlatforms())
+			result.append(r.getDetails())
 
 		return result
 

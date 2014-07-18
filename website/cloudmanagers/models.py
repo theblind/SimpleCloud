@@ -17,7 +17,7 @@ class Farm(models.Model):
 	termOnSyncFail = models.SmallIntegerField(default = 0)
 	farmRolesLaunchOrder = models.SmallIntegerField(default = 0)
 	comments = models.TextField()
-	
+
 	createdByID = models.SmallIntegerField(default = 0)
 	createdByEmail = models.EmailField()
 	changedByID = models.SmallIntegerField(default = 0)
@@ -118,7 +118,7 @@ class Server(models.Model):
 	def stopServer(self, reason = ''):
 		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
-		
+
 		# save server event
 		self.createEvent(eventType = ServerEvent.STOP, reason = reason)
 		# save server operation
@@ -163,6 +163,7 @@ class Server(models.Model):
 	def getDetails(self):
 		info = {}
 
+		info["id"] = self.id
 		info["manufacture"] = self.instanceType.manufacture.name
 		info["role"] = self.role.name
 		info["serverID"] = self.replaceServerID
@@ -225,7 +226,7 @@ class ServerOperation(models.Model):
 	status = models.CharField(max_length = 20)
 	name = models.CharField(max_length = 50)
 	phases = models.TextField()
-	
+
 	dtAdded = models.DateTimeField(auto_now_add = True)
 
 
@@ -361,11 +362,12 @@ class Role(models.Model):
 		info["osVersion"] = self.osVersion
 
 		info["platforms"] = self.getAllPlatforms()
-
+		info["platforms_name"] = self.getAllPlatforms_name()
 		return info
 	def getAllSoftwares(self):
 		return list(self.softwares.all()) 
-	def getAllSoftwares_name(self):	   
+
+	def getAllSoftwares_name(self):
 		name_list = []
 		soft_list = self.getAllSoftwares()
 		for soft in soft_list:
@@ -374,21 +376,23 @@ class Role(models.Model):
 	def getImages(self):
 		return list(self.images.all())
 
-	# get all paltforms for this role 
+	# get all paltforms for this role
 	def getAllPlatforms(self):
 		result = []
 
 		images = self.getImages()
 		for i in images:
-<<<<<<< HEAD
-			if i.platform in result:
+			result.append(i.getDetails())
+		return result
+
+	def getAllPlatforms_name(self):
+		result = []
+		platforms_list = self.getAllPlatforms()
+		for i in platforms_list:
+			if i['manufacture'] in result:
 				continue
 			else:
-				result.append(i.platform)
-=======
-			result.append(i.getDetails())
->>>>>>> f542c34b32dd0fdb028d4c61f04919f5dace0183
-
+				result.append(i['manufacture'])
 		return result
 
 
