@@ -546,40 +546,47 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                      <div class="margin-top-10">
                         <ul class="mix-filter">
                            <li class="filter btn" data-filter="all">All</li>
-                           <li class="filter btn" data-filter="category_1">Base</li>
-                           <li class="filter btn" data-filter="category_2">Databases</li>
-                           <li class="filter btn" data-filter="category_3">Application Servers</li>
-                           <li class="filter btn" data-filter="category_4">Caches</li>
+                           <li class="filter btn" data-filter="category_Base">Base</li>
+                           <li class="filter btn" data-filter="category_Databases">Databases</li>
+                           <li class="filter btn" data-filter="category_Application Servers">Application Servers</li>
+                           <li class="filter btn" data-filter="category_Caches">Caches</li>
                         </ul>
                         <div class="row mix-grid">
-                           <div class="col-md-4 col-sm-4 mix category_2">
+                        {% for role in role_list %}
+                           <div class="col-md-4 col-sm-4 mix category_{{role.category}}">
                               <div class="stat-block">
                                  <table class="table table-hover">
                                     <tbody>
                                        <tr class="">
                                           <td>Name:</td>
-                                          <td>mysqllvm-centos-5-4</td>
+                                          <td>{{role.name}}</td>
                                        </tr>
                                        <tr class="">
                                           <td>Role ID:</td>
-                                          <td>17627</td>
+                                          <td>{{role.id}}</td>
                                        </tr>
                                        <tr class="">
                                           <td>Clouds:</td>
-                                          <td><img class="x-icon-platform-small x-icon-platform-small-ec2" title="Amazon EC2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></td>
+                                          <td>
+                                          {% for plat in role.platforms_name %}
+                                          <img class="x-icon-platform-small x-icon-platform-small-{{plat}}" title="{{plat}}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+                                          {% endfor %}
+                                          </td>
                                        </tr>
                                        <tr class="">
                                           <td>OS:</td>
-                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-centos">&nbsp;CentOS 5.4 Final</td>
+                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-{{role.osFamily}}">&nbsp;{{role.os}}</td>
                                        </tr>
                                        <tr class="">
                                           <td>Software:</td>
-                                          <td><img class="x-icon-role-small x-icon-role-small-mysql" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;MySQL</td>
+                                          <td><img class="x-icon-role-small x-icon-role-small-{{ role.role_bev | first }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;{{role.role_soft | join:"," }}</td>
                                        </tr>
                                     </tbody>
                                  </table>                                 
                               </div>
                            </div>
+                        {% endfor %}
+                        {% comment %}
                            <div class="col-md-4 col-sm-4 mix category_1">
                               <div class="stat-block">
                                  <table class="table table-hover">
@@ -598,7 +605,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                        </tr>
                                        <tr class="">
                                           <td>OS:</td>
-                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-centos">&nbsp;CentOS 5.4 Final</td>
+                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-centos">&nbsp;{{role.os}}</td>
                                        </tr>
                                        <tr class="">
                                           <td>Software:</td>
@@ -664,6 +671,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                  </table>                                 
                               </div>
                            </div>
+                        {% endcomment %}
                         </div>
                      </div>
                   </div>

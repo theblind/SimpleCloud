@@ -324,7 +324,7 @@ class RoleManager(models.Manager):
 		for i in images:
 			role = i.role
 			if role not in roles:
-				info = role.getDetails()
+				info = role.getBasicInfo()
 				info["platforms"] = []
 				roles.add(role)
 			info["platforms"].append(i.getDetails())
@@ -374,9 +374,10 @@ class Role(models.Model):
 
 	objects = RoleManager()
 
-	def getDetails(self):
+	def getBasicInfo(self):
 		info = {}
 
+		info["role_id"] = self.id
 		info["name"] = self.name
 		info["category"] = self.CATEGORY[self.category][1]
 		info["rule"] = self.rule
@@ -390,11 +391,45 @@ class Role(models.Model):
 
 		return info
 
+	def getDetails(self):
+		info = self.getBasicInfo()
+
+		info["platforms"] = self.getAllPlatforms()
+		info["platforms_name"] = self.getAllPlatforms_name()
+
+		return info
+
 	def getAllSoftwares(self):
-		return list(self.softwares.all())
+		return list(self.softwares.all()) 
+
+	def getAllSoftwares_name(self):
+		name_list = []
+		soft_list = self.getAllSoftwares()
+		for soft in soft_list:
+			name_list.append(soft.name)
+		return name_list
 
 	def getImages(self):
 		return list(self.images.all())
+
+	# get all paltforms for this role
+	def getAllPlatforms(self):
+		result = []
+
+		images = self.getImages()
+		for i in images:
+			result.append(i.getDetails())
+		return result
+
+	def getAllPlatforms_name(self):
+		result = []
+		platforms_list = self.getAllPlatforms()
+		for i in platforms_list:
+			if i['manufacture'] in result:
+				continue
+			else:
+				result.append(i['manufacture'])
+		return result
 
 
 class RoleSoftware(models.Model):
