@@ -23,7 +23,46 @@ class Manufacture(models.Model):
 		return info
 
 
-# create model Instance Type to represent
+# create Instance Type Manager to add table-level method
+class InstanceTypeManager(models.Manager):
+	def getDistinctInstanceType(self):
+		result = set()
+		instanceTypes = self.all()
+
+		for i in instanceTypes:
+			indicator = i.getHardwareIndicator()
+			if not self.isPlausibleHardwareIndicator(indicator):
+				continue
+
+			if indicator not in result:
+				result.add(i)
+
+		return list(result)
+
+	def isPlausibleHardwareIndicator(self, indicator):
+		vcpu = indicator[1]
+		vram = indicator[2]
+		if vcpu * 2 >= vram:
+			return True
+		else:
+			return False
+
+	def filterPlausibleInstanceType(self, querySet):
+		result = set()
+
+		for instance in querySet:
+			indicator = instance.getHardwareIndicator()
+			if not self.isPlausibleHardwareIndicator(indicator):
+				continue
+
+			if indicator not in result:
+				result.add(instance)
+
+		return list(result)
+
+
+
+# create model Instance Type to represent 
 # instance's hardware information
 class InstanceType(models.Model):
 	# many to one relationship with IaaS Provider
@@ -35,8 +74,6 @@ class InstanceType(models.Model):
 	# instance hardware info
 	# instance vCPU number
 	vcpu = models.IntegerField(default=0)
-	# vCPU frequency
-	frequency = models.DecimalField(max_digits = 4, decimal_places = 2, default = 0)
 	# instance memory size, unit is GB
 	vram = models.DecimalField(max_digits = 4, decimal_places = 2, default = 0)
 	# instance storage capacity, unit is GB
@@ -53,13 +90,16 @@ class InstanceType(models.Model):
 	# update timestamp
 	update_time = models.IntegerField(default = 0)
 
+	# set table-level manager
+	objects = InstanceTypeManager()
+
+	# better option to get instance type's details
 	def getDetails(self):
 		info = {}
 
 		info["manufacture"] = self.manufacture.name
 		info["alias_name"] = self.alias_name
 		info["vcpu"] = self.vcpu
-		info["frequency"] = self.frequency
 		info["vram"] = self.vram
 		info["storage"] = self.storage
 		info["band_width"] = self.band_width
@@ -70,6 +110,7 @@ class InstanceType(models.Model):
 
 		return info
 
+	# current edition to get instance type's details
 	def getDetailsUgly(self):
 		info = {}
 
@@ -78,12 +119,34 @@ class InstanceType(models.Model):
 		info["vcpu"] = self.vcpu
 		info["vram"] = str(self.vram)
 		info["storage"] = self.storage
-		info["pricing"] = parseInstancePrice(instance.price)
+
+		info["pricing"] = self.getPrice()
+
 		info["provider"] = self.manufacture.name
 		info["link"] = self.manufacture.link
 		info["image"] = self.manufacture.image
 
 		return info
+
+	# get current price information
+	def getPrice(self):
+		info = {}
+		price = self.price.first()
+
+		if price.pricing_cycle == "hour":
+			info["pph"] = str(price.prices)
+			info["ppm"] = str(price.prices * 24 * 30)
+		elif price.pricing_cycle == "month":
+			info["pph"] = str(price.prices / (24 * 30))
+			info["ppm"] = str(price.prices)
+
+		info["unit"] = price.monetary_unit
+
+		return info
+
+	#
+	def getHardwareIndicator(self):
+		return (self.manufacture.name, self.vcpu, self.vram)
 
 
 # store the pricing information of specified instancetype
@@ -104,7 +167,7 @@ class InstancePriceAll(models.Model):
 # keep the latest instance price information of all manumfactures
 class InstancePriceLatest(models.Model):
 	"""docstring for InstancePriceCurrent"""
-	instanceType = models.ForeignKey(InstanceType)
+	instanceType = models.ForeignKey(InstanceType, related_name = "price")
 	# on-demand, reserved or audition
 	pricing_type = models.CharField(max_length = 30)
 	# RMB or USD

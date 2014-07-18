@@ -25,6 +25,7 @@ def search(request):
 		queryResult = InstanceType.objects.filter(os_type = str(os),
 											vcpu = int(vcpu),
 											vram__range = [float(vram) - 1, float(vram) + 1])
+		queryResult = InstanceType.objects.filterPlausibleInstanceType(queryResult)
 
 		# fill up responseData in json format and return
 		responseData = {}
@@ -34,6 +35,7 @@ def search(request):
 		# set error flag if query result is empty
 		if len(queryResult) == 0:
 			responseData["errno"] = -1
+			responseData["err"] = "no query data"
 			return HttpResponse(json.dumps(responseData), content_type="application/json")
 
 		# just return first ten results to display
@@ -41,46 +43,15 @@ def search(request):
 			queryResult = queryResult[:10]
 
 		for instance in queryResult:
-			instanceInfo = parseInstanceInfo(instance)
-			responseData["rsm"]["Instances"][instance.id] = instanceInfo
+			responseData["rsm"]["Instances"][instance.id] = instance.getDetailsUgly()
 
 		responseData["rsm"]["Performance"] = parsePerformanceInfo(queryResult)
+		responseData["errno"] = 1
 
 		return HttpResponse(json.dumps(responseData), content_type="application/json")
 	else:
 		return HttpResponseBadRequest()
 
-# extract general info from specific instance
-def parseInstanceInfo(instance):
-	info = {}
-
-	info["id"] = instance.id
-	info["instance"] = instance.alias_name
-	info["vcpu"] = instance.vcpu
-	info["vram"] = str(instance.vram)
-	info["storage"] = instance.storage
-
-	info["pricing"] = parseInstancePrice(instance.price)
-
-	info["provider"] = instance.manufacture.name
-	info["link"] = instance.manufacture.link
-	info["image"] = instance.manufacture.image
-
-	return info
-
-# extract price info from specific instance
-def parseInstancePrice(instancePrice):
-	price = {}
-
-	if instancePrice.pricing_cycle == "hour":
-		price["pph"] = str(instancePrice.prices)
-		price["ppm"] = str(instancePrice.prices * 24 * 30)
-	elif instancePrice.pricing_cycle == "month":
-		price["pph"] = str(instancePrice.prices / (24 * 30))
-		price["ppm"] = str(instancePrice.prices)
-	price["unit"] = instancePrice.monetary_unit
-
-	return price
 
 # extract performance info from all instances
 def parsePerformanceInfo(queryResult):
