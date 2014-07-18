@@ -26,40 +26,27 @@ class Manufacture(models.Model):
 # create Instance Type Manager to add table-level method
 class InstanceTypeManager(models.Manager):
 	def getDistinctInstanceType(self):
-		result = set()
-		instanceTypes = self.all()
-
-		for i in instanceTypes:
-			indicator = i.getHardwareIndicator()
-			if not self.isPlausibleHardwareIndicator(indicator):
-				continue
-
-			if indicator not in result:
-				result.add(i)
-
-		return list(result)
+		return self.filterPlausibleInstanceType(self.all())
 
 	def isPlausibleHardwareIndicator(self, indicator):
 		vcpu = indicator[1]
 		vram = indicator[2]
-		if vcpu * 2 >= vram:
-			return True
-		else:
-			return False
+		return (vcpu * 2 >= vram)
 
 	def filterPlausibleInstanceType(self, querySet):
-		result = set()
+		result = []
 
+		indicators = set()
 		for instance in querySet:
 			indicator = instance.getHardwareIndicator()
-			if not self.isPlausibleHardwareIndicator(indicator):
-				continue
+			#if not self.isPlausibleHardwareIndicator(indicator):
+			#	continue
 
-			if indicator not in result:
-				result.add(instance)
+			if indicator not in indicators:
+				indicators.add(indicator)
+				result.append(instance)
 
 		return list(result)
-
 
 
 # create model Instance Type to represent 

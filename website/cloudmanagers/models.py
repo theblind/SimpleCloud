@@ -319,17 +319,19 @@ class RoleManager(models.Manager):
 	def getAvailableRolesByManufacture(self, manufacture):
 		images = RoleImage.objects.getRoleImagesByManufacture(manufacture)
 
-		result = []
-		roles = set()
+		roles = {}
 		for i in images:
 			role = i.role
-			if role not in roles:
+			if role.name not in roles:
 				info = role.getBasicInfo()
-				info["platforms"] = []
-				roles.add(role)
-			info["platforms"].append(i.getDetails())
-			result.append(info)
+				info["platforms"] = [i.getDetails()]
+				roles[role.name] = info
+			else:
+				roles[role.name]["platforms"].append(i.getDetails())
 
+		result = []
+		for role in roles.keys():
+			result.append(roles[role])
 		return result
 
 
