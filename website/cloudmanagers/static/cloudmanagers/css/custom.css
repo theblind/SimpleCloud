@@ -1,0 +1,314 @@
+/* here you can put your own css to customize and override the theme */
+img.x-icon-osfamily-small {
+	vertical-align: top
+}
+.x-icon-osfamily-small {
+	width: 18px;
+	height: 18px;
+	background-image: url(../img/icon/os-sprite-small.png?1.2) !important;
+	background-repeat: no-repeat;
+	background-position: 0 18px !important
+}
+.x-icon-osfamily-small-unknown {
+	background-position: 0 0 !important
+}
+.x-icon-osfamily-small-ubuntu {
+	background-position: 0 -18px !important
+}
+.x-icon-osfamily-small-centos {
+	background-position: 0 -36px !important
+}
+.x-icon-osfamily-small-rhel, .x-icon-osfamily-small-redhat {
+	background-position: 0 -54px !important
+}
+.x-icon-osfamily-small-oel {
+	background-position: 0 -72px !important
+}
+.x-icon-osfamily-small-debian {
+	background-position: 0 -90px !important
+}
+.x-icon-osfamily-small-gcel {
+	background-position: 0 -108px !important
+}
+.x-icon-osfamily-small-amazon {
+	background-position: 0 -126px !important
+}
+.x-icon-osfamily-small-windows {
+	background-position: 0 -144px !important
+}
+.x-icon-osfamily-small-scientific {
+	background-position: 0 -162px !important
+}
+.x-icon-role-small {
+	width: 18px;
+	height: 18px;
+	background: url(../img/icon/roles-sprite-small.png) 0 -18px no-repeat;
+}
+.x-icon-role-small-mixed {
+	background-position: 0 0
+}
+.x-icon-role-small-base {
+	background-position: 0 -18px
+}
+.x-icon-role-small-app {
+	background-position: 0 -36px
+}
+.x-icon-role-small-tomcat {
+	background-position: 0 -54px
+}
+.x-icon-role-small-memcached {
+	background-position: 0 -72px
+}
+.x-icon-role-small-cf-all-in-one, .x-icon-role-small-cf-cchm, .x-icon-role-small-cf_cloud_controller, .x-icon-role-small-cf_health_manager, .x-icon-role-small-cf-dea, .x-icon-role-small-cf_dea, .x-icon-role-small-cf-router, .x-icon-role-small-cf_router, .x-icon-role-small-cf-service, .x-icon-role-small-cf_service {
+	background-position: 0 -90px
+}
+.x-icon-role-small-cassandra {
+	background-position: 0 -108px
+}
+.x-icon-role-small-mongodb {
+	background-position: 0 -126px
+}
+.x-icon-role-small-mysql, .x-icon-role-small-mysql2 {
+	background-position: 0 -144px
+}
+.x-icon-role-small-percona {
+	background-position: 0 -162px
+}
+.x-icon-role-small-postgresql {
+	background-position: 0 -180px
+}
+.x-icon-role-small-redis {
+	background-position: 0 -198px
+}
+.x-icon-role-small-www {
+	background-position: 0 -216px
+}
+.x-icon-role-small-rabbitmq {
+	background-position: 0 -234px
+}
+.x-icon-role-small-database {
+	background-position: 0 -252px
+}
+.x-icon-role-small-mariadb {
+	background-position: 0 -270px
+}
+.x-icon-role-small-haproxy {
+	background-position: 0 -288px
+}
+.x-icon-role-small-chef {
+	background-position: 0 -306px
+}
+.x-icon-platform {
+	width: 42px;
+	height: 42px;
+	background-image: url("../img/icon/platforms-sprite.png")!important;
+}
+.x-icon-platform-ec2 {
+	background-position: 0 0;
+}
+.x-icon-platform-gce {
+	background-position: 0 -210px;
+}
+img.x-icon-platform-small {
+	vertical-align: top
+}
+.x-icon-platform-small {
+	width: 18px;
+	height: 18px;
+	background-image: url("../img/icon/platforms-sprite-small.png") !important;
+	background-position: 0 18px !important;
+	background-repeat: no-repeat
+}
+.x-icon-platform-small-ec2 {
+	background-position: 0 0 !important
+}
+.x-icon-platform-small-rackspace {
+	background-position: 0 -18px !important
+}
+.x-icon-platform-small-cloudstack {
+	background-position: 0 -36px !important
+}
+.x-icon-platform-small-eucalyptus {
+	background-position: 0 -54px !important
+}
+.x-icon-platform-small-openstack {
+	background-position: 0 -72px !important
+}
+.x-icon-platform-small-gce {
+	background-position: 0 -90px !important
+}
+.x-icon-platform-small-idcf {
+	background-position: 0 -108px !important
+}
+.x-icon-platform-small-nimbula {
+	background-position: 0 -126px !important
+}
+.x-icon-platform-small-rackspacengus, .x-icon-platform-small-rackspacenguk {
+	background-position: 0 -144px !important
+}
+.x-icon-platform-small-ucloud {
+	background-position: 0 -162px !important
+}
+.x-icon-platform-small-ecs {
+	background-position: 0 -180px !important
+}
+.x-icon-platform-small-nebula {
+	background-position: 0 -198px !important
+}
+.x-icon-platform-small-ocs {
+	background-position: 0 -216px !important
+}
+.x-icon-platform-small-contrail {
+	background-position: 0 -234px !important
+}
+
+.x-icon-behavior-large {
+	width: 95px;
+	height: 70px;
+	background-image: url(../img/icon/behaviors-sprite-large.png?1.2);
+	background-position: 0 -910px;
+	background-repeat: no-repeat
+}
+.x-icon-behavior-large-mysql, .x-icon-behavior-large-mysql2 {
+	background-position: 0 0
+}
+.x-icon-behavior-large-postgresql {
+	background-position: 0 -70px
+}
+.x-icon-behavior-large-percona {
+	background-position: 0 -140px
+}
+.x-icon-behavior-large-app, .x-icon-behavior-large-apache {
+	background-position: 0 -210px
+}
+.x-icon-behavior-large-www, .x-icon-behavior-large-nginx {
+	background-position: 0 -280px
+}
+.x-icon-behavior-large-memcached {
+	background-position: 0 -350px
+}
+.x-icon-behavior-large-redis {
+	background-position: 0 -420px
+}
+.x-icon-behavior-large-rabbitmq {
+	background-position: 0 -490px
+}
+.x-icon-behavior-large-mongodb {
+	background-position: 0 -560px
+}
+.x-icon-behavior-large-mysqlproxy {
+	background-position: 0 -630px
+}
+.x-icon-behavior-large-chef {
+	background-position: 0 -700px
+}
+.x-icon-behavior-large-mixed {
+	background-position: 0 -770px
+}
+.x-icon-behavior-large-wizard {
+	background-position: 0 -840px
+}
+.x-icon-behavior-large-base {
+	background-position: 0 -910px
+}
+.x-icon-behavior-large-tomcat {
+	background-position: 0 -980px
+}
+.x-icon-behavior-large-lamp {
+	background-position: 0 -1050px
+}
+.x-icon-behavior-large-vpcrouter {
+	background-position: 0 -1120px
+}
+.x-icon-behavior-large-mariadb {
+	background-position: 0 -1190px
+}
+.x-icon-behavior-large-haproxy {
+	background-position: 0 -1260px
+}
+.x-icon-behavior-large-cassandra {
+	background-position: 0 -1330px
+}
+.x-icon-behavior-large-cf_cloud_controller {
+	background-position: 0 -1470px
+}
+.x-icon-behavior-large-cf_health_manager {
+	background-position: 0 -1470px
+}
+.x-icon-behavior-large-cf_dea {
+	background-position: 0 -1540px
+}
+.x-icon-behavior-large-cf_router {
+	background-position: 0 -1610px
+}
+.x-icon-behavior-large-cf_service {
+	background-position: 0 -1680px
+}
+
+.x-btn-pressed {
+	background: #d4d4d4;
+	box-shadow: 0 1px 1px #31476c inset,0 1px 1px rgba(49,71,108,0.4) inset,0 1px 3px rgba(49,71,108,0.7) inset,0 1px rgba(255,255,255,0.5);
+	-webkit-box-shadow: 0 1px 2px #31476c inset,0 1px 1px rgba(49,71,108,0.4) inset,0 1px 5px rgba(49,71,108,0.7) inset,0 1px rgba(255,255,255,0.5);
+}
+
+.x-btn {
+	display: inline-block;
+	position: relative;
+	outline: 0;
+	cursor: pointer;
+	white-space: nowrap;
+	vertical-align: middle;
+	text-decoration: none;
+	border-radius: 3px;
+}
+
+.context-menu { 
+	color: #fff !important; 
+	background-color: #444;
+}
+
+.context-menu a{ 
+	color: #fff !important; 
+	padding: 6px 13px !important;
+}
+
+.context-menu a:hover{ 
+	background-color: #373737 !important;
+	color: #f90 !important;
+}
+
+.context-menu .divider {
+	background-color: #222;
+	border-bottom: 1px solid #555;
+	height: 1px;
+	margin: 2px 1px;
+	overflow: hidden;
+}
+
+.map{
+	position: relative;
+}
+
+.map-common {
+	background: url(../img/icon/maps.png) 0 -400px no-repeat;
+}
+
+.map .location {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background: #95A5B3;
+	border-radius: 5px;
+	z-index: 2;
+	cursor: pointer;
+}
+
+.map .selected{
+	background: #1D9C16;
+}
+
+.stat-block table td{
+	border: 0 !important;
+	padding: 4px !important;
+	font-size: 14px;
+}

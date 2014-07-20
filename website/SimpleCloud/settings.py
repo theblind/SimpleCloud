@@ -70,8 +70,8 @@ DATABASES = {
         'NAME': config.get('database', 'name'),
         'USER': config.get('database', 'user'),
         'PASSWORD': config.get('database', 'password'),
-        'HOST': '',
-        'PORT': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -101,3 +101,5 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates/'),
 )
+
+AUTH_USER_MODEL = 'clients.Client'
