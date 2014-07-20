@@ -67,12 +67,12 @@ config.read(os.path.join(BASE_DIR, 'SimpleCloud', 'database.conf'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        #'NAME': config.get('database', 'name'),
-        #'USER': config.get('database', 'user'),
-        #'PASSWORD': config.get('database', 'password'),
-        'NAME': 'git_simplecloud',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': config.get('database', 'name'),
+        'USER': config.get('database', 'user'),
+        'PASSWORD': config.get('database', 'password'),
+        #'NAME': 'git_simplecloud',
+        #'USER': 'root',
+        #'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
