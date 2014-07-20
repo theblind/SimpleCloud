@@ -9,19 +9,28 @@ from benchmark.models import InstanceType, Manufacture
 from clients.models import Client, ClientBackend
 from django.contrib import auth
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
-
+@login_required
 def index(request):
 
     client = Client.objects.get(id = request.user.id)
     servers_num = len(client.getAllServers())
     sshkey_num = len(client.getAllEnvironmentsSSHKeys())
-    project_list = client.getAllFarms()
-    projects_num = len(project_list)
+    projects_list = client.getAllFarms()
+    projects_num = len(projects_list)
     sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    context = {'projects_num': projects_num,'servers_num':servers_num,'projects_list':project_list,'sysmessage_list':sysmessage_list,}
-    context['sshkey_num'] = sshkey_num
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'projects_list':projects_list,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'sshkey_num':sshkey_num,
+              'username':client.get_full_name(),
+              }
     return render(request, 'cloudmanagers/index.html',context)
 
 
@@ -42,7 +51,7 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect(reverse('cloudmanagers:index'))
+    return HttpResponseRedirect('/cloudmanagers/login')
 
 def signup(request):
     email = request.POST.get('email')
@@ -61,11 +70,22 @@ def signup(request):
     auth.login(request, loguser)
     return HttpResponseRedirect(reverse('cloudmanagers:index'))
 
+@login_required
 def platforms(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
     projects_list = client.getAllFarms()
-    context['projects_list'] = projects_list
+    servers_num = len(client.getAllServers())
+    projects_num = len(projects_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'projects_list':projects_list,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'username':client.get_full_name(),
+              }
     return render(request, 'cloudmanagers/platforms.html', context)
 
 def platformsSave(request):
@@ -77,12 +97,13 @@ def platformsSave(request):
     client.bindingEnvironment(manufacture = manufacture, account_number = accountNumber, access_key = accessKey, secret_key = secretAccessKey)
     return HttpResponseRedirect(reverse('cloudmanagers:platforms'))
 
+@login_required
 def project(request, project_id):
     context = {}
     client = Client.objects.get(id = request.user.id)
     projects_list = client.getAllFarms()
     context['projects_list'] = projects_list
-
+    
     project = Farm.objects.get(id = project_id)
     context['current_project'] = project
     servers = project.getAllServers()
@@ -98,14 +119,34 @@ def project(request, project_id):
         roles_list[index]['behaviors_list'] = role['behaviors'].split(',')
     context['roles_list'] = roles_list
 
+    servers_num = len(client.getAllServers())
+    projects_num = len(projects_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'username':client.get_full_name(),
+              }
     return render(request, 'cloudmanagers/project.html', context)
 
+@login_required
 def rolemarket(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
     projects_list = client.getAllFarms()
-    context['projects_list'] = projects_list
-
+    servers_num = len(client.getAllServers())
+    projects_num = len(projects_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'projects_list':projects_list,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'username':client.get_full_name(),
+              }
     role_list  = list(Role.objects.all())
     role_res = []
     for index, role in enumerate(role_list):
@@ -116,19 +157,41 @@ def rolemarket(request):
     context['role_list'] = role_res
     return render(request, 'cloudmanagers/rolemarket.html', context)
 
-
+@login_required
 def settings(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
     projects_list = client.getAllFarms()
-    context['projects_list'] = projects_list
+    servers_num = len(client.getAllServers())
+    projects_num = len(projects_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'projects_list':projects_list,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'username':client.get_full_name(),
+              }
     return render(request, 'cloudmanagers/settings.html', context)
 
+@login_required
 def sshkey(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
     projects_list = client.getAllFarms()
-    context['projects_list'] = projects_list
+
+    servers_num = len(client.getAllServers())
+    projects_num = len(projects_list)
+    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
+    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
+    context = {'projects_num': projects_num,
+              'servers_num':servers_num,
+              'projects_list':projects_list,
+              'sysmessage_list':sysmessage_list,
+              'promessage_list':promessage_list,
+              'username':client.get_full_name(),
+              }
 
     ssh_keys = client.getAllEnvironmentsSSHKeys()
     context['ssh_keys_list'] = ssh_keys
@@ -273,3 +336,4 @@ def ajax_create_server(request):
 
 # def response_bad_param():
 #     return HttpResponse(json.dumps({status: "fail", msg: 'bad request parameters'}))
+

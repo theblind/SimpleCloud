@@ -74,6 +74,9 @@ DATABASES = {
         'NAME': config.get('database', 'name'),
         'USER': config.get('database', 'user'),
         'PASSWORD': config.get('database', 'password'),
+        #'NAME': 'git_simplecloud',
+        #'USER': 'root',
+        #'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -108,4 +111,4 @@ TEMPLATE_DIRS = (
 
 AUTH_USER_MODEL = 'clients.Client'
 
-OMNIBUS_CONNECTION_FACTORY = 'cloudmanagers.connection.mousemove_connection_factory'
+LOGIN_URL = '/cloudmanagers/login'
