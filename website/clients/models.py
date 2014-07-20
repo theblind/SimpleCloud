@@ -72,6 +72,8 @@ class Client(models.Model):
         return self.is_staff
     def has_perm(self, app_label):
         return self.is_staff
+    def is_authenticated(self):
+        return True
     @property
     def is_active(self):
         return self.isActive
