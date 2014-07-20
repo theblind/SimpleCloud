@@ -958,31 +958,34 @@ var App = function () {
 }();
 
 
-var Omnibus = function(){
-
-    var init = function(omnibus_user, omnibus_endpoint, omnibus_auth_token) {
+var NotifySocket = function(){
+    var initOmnibus = function(omnibus_user, omnibus_endpoint, omnibus_auth_token) {
         var transport = WebSocket; 
-        var channel = connection.openChannel(omnibus_user);
         var endpoint = omnibus_endpoint;
         var options = {authToken: omnibus_auth_token};
 
         var connection = new Omnibus(transport, endpoint, options);
+        var channel = connection.openChannel('mousemove');
 
         // Add events on connection:
         connection
         .on(Omnibus.events.CONNECTION_CONNECTED, function(event) {
-            $('.connection').addClass('open').text('Yes');
+            //$('.connection').addClass('open').text('Yes');
+            alert('conneted');
         })
         .on(Omnibus.events.CONNECTION_AUTHENTICATED, function(event) {
-            $('.identification').addClass('open').text('Yes');
+            //$('.identification').addClass('open').text('Yes');
+            alert('CONNECTION_AUTHENTICATED')
         });
 
         // Add events on channel:
         channel
         .on(Omnibus.events.CHANNEL_SUBSCRIBED, function(event) {
-            $('.channel').addClass('open').text('Yes');
+            //$('.channel').addClass('open').text('Yes');
+            alert('CHANNEL_SUBSCRIBED')
         })
         .on('server', function (event) {
+            alert('I accept server');
             console.log(event);
             // handle mouse moves form other users...
             if(event.data.sender == 'server'){
@@ -991,26 +994,28 @@ var Omnibus = function(){
                 console.log("Just mouse moving");
             }
         })
-/*        .on('disconnect', function (event) {
-            var player = players[event.data.sender];
+        .on('disconnect', function (event) {
+/*            var player = players[event.data.sender];
             if (player !== undefined) {
                 player.remove();
                 players[event.data.sender] = undefined;
                 delete(players[event.data.sender]);
-            }
-        });*/
+            }*/
+            alert('disconnect');
+        });
 
         // Add mouse move event on window to send own mouse moves:
         $('body').mousemove(function(e) {
-            channel.send('move', {top: e.pageY, left: e.pageX});
+            channel.send('server', {top: e.pageY, left: e.pageX});
         });
+    }
 
-
+    return {
+        init : function(omnibus_user, omnibus_endpoint, omnibus_auth_token){
+            initOmnibus(omnibus_user, omnibus_endpoint, omnibus_auth_token);
+        }
     }
 
     
-    
-
-
 
 }();

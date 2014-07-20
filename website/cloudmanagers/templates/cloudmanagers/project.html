@@ -645,7 +645,8 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
       jQuery(document).ready(function() {       
          UIToastr.init();
          App.init();
-         Omnibus.init("{{ username }}", "{{ OMNIBUS_ENDPOINT }}" , "{{ OMNIBUS_AUTH_TOKEN }}");
+         NotifySocket.init("{{ username }}", "{{ OMNIBUS_ENDPOINT }}" , "{{ OMNIBUS_AUTH_TOKEN }}");
+         
          TableAdvanced.init();
          FormComponents.init();
       });

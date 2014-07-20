@@ -112,3 +112,34 @@ TEMPLATE_DIRS = (
 AUTH_USER_MODEL = 'clients.Client'
 
 LOGIN_URL = '/cloudmanagers/login'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'simple': {'format': '%(levelname)s %(asctime)s %(name)s %(message)s'},
+        'short': {'format': '%(levelname)s %(asctime)s %(message)s'},
+        'verbose': {'format': '%(levelname)s %(asctime)s %(name)s %(message)s\n%(request)s'},
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'short',
+        },
+    },
+    'loggers': {
+        'omnibus': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}
+
+OMNIBUS_CONNECTION_FACTORY = 'cloudmanagers.connection.mousemove_connection_factory'
