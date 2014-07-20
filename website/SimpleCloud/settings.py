@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 import os
 import ConfigParser
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -41,7 +42,8 @@ INSTALLED_APPS = (
     'application',
     'benchmark',
     'clients',
-    'cloudmanagers'
+    'cloudmanagers',
+    'omnibus'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -52,6 +54,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS += ('omnibus.context_processors.omnibus',)
 
 ROOT_URLCONF = 'SimpleCloud.urls'
 
@@ -103,3 +107,5 @@ TEMPLATE_DIRS = (
 )
 
 AUTH_USER_MODEL = 'clients.Client'
+
+OMNIBUS_CONNECTION_FACTORY = 'cloudmanagers.connection.mousemove_connection_factory'

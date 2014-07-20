@@ -956,3 +956,61 @@ var App = function () {
     };
 
 }();
+
+
+var Omnibus = function(){
+
+    var init = function(omnibus_user, omnibus_endpoint, omnibus_auth_token) {
+        var transport = WebSocket; 
+        var channel = connection.openChannel(omnibus_user);
+        var endpoint = omnibus_endpoint;
+        var options = {authToken: omnibus_auth_token};
+
+        var connection = new Omnibus(transport, endpoint, options);
+
+        // Add events on connection:
+        connection
+        .on(Omnibus.events.CONNECTION_CONNECTED, function(event) {
+            $('.connection').addClass('open').text('Yes');
+        })
+        .on(Omnibus.events.CONNECTION_AUTHENTICATED, function(event) {
+            $('.identification').addClass('open').text('Yes');
+        });
+
+        // Add events on channel:
+        channel
+        .on(Omnibus.events.CHANNEL_SUBSCRIBED, function(event) {
+            $('.channel').addClass('open').text('Yes');
+        })
+        .on('server', function (event) {
+            console.log(event);
+            // handle mouse moves form other users...
+            if(event.data.sender == 'server'){
+                console.log("Get something about server info update");
+            }else{
+                console.log("Just mouse moving");
+            }
+        })
+/*        .on('disconnect', function (event) {
+            var player = players[event.data.sender];
+            if (player !== undefined) {
+                player.remove();
+                players[event.data.sender] = undefined;
+                delete(players[event.data.sender]);
+            }
+        });*/
+
+        // Add mouse move event on window to send own mouse moves:
+        $('body').mousemove(function(e) {
+            channel.send('move', {top: e.pageY, left: e.pageX});
+        });
+
+
+    }
+
+    
+    
+
+
+
+}();

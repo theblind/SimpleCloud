@@ -959,6 +959,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
    <script src="{% static 'cloudmanagers/scripts/plugins/bootstrap-modal/js/bootstrap-modalmanager.js' %}" type="text/javascript" ></script>
    <script src="{% static 'cloudmanagers/scripts/plugins/bootstrap-modal/js/bootstrap-modal.js' %}" type="text/javascript" ></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/bootstrap-toastr/toastr.min.js' %}"></script>
+   <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/omnibus.min.js' %}"></script>
    <!-- END PAGE LEVEL PLUGINS -->
    <!-- BEGIN PAGE LEVEL SCRIPTS -->
    <script src="{% static 'cloudmanagers/scripts/app.js' %}"></script>
@@ -969,6 +970,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
       jQuery(document).ready(function() {       
          UIToastr.init();
          App.init();
+         Omnibus.init("{{ username }}", "{{ OMNIBUS_ENDPOINT }}" , "{{ OMNIBUS_AUTH_TOKEN }}");
          TableAdvanced.init();
          FormComponents.init();
       });
