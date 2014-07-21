@@ -32,12 +32,18 @@ class Farm(models.Model):
 	# create server for this farm
 	def createServer(self, role, instanceType, **info):
 		newServer = Server(farm = self, role = role, name = info["server_name"])
+
+		# create connetion to buy instance
+		token = {
+			"access_id": info["properties"]["access_id"],
+			"access_key": info["properties"]["access_key"]
+		}		
 		#newServer.setConnection(token, info["platform"], info["server_location"])
 		newServer.setConnection(usertoken, "ec2", info["server_location"])
 
 		# get Server info to buy instance
 		serverInfo = {}
-		serverInfo["image_id"] = info["image_id"]
+		serverInfo["image_id"] = role.images.get(location = info["server_location"])
 		serverInfo["key_name"] = info["key_name"]
 		serverInfo["instance_type"] = instanceType.alias_name
 		serverInfo["security_groups"] = ""
@@ -45,8 +51,12 @@ class Farm(models.Model):
 		# receive reservation of buy instance action
 		#reservation = newServer.getConnection().buy_instance(serverInfo)
 		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], serverInfo["instance_type"])
-		serverID = reservation["instances"].id
+		result = reservation.instances[0]
+
+		serverID = result.id
 		newServer.setServerId(serverID)
+		newServer.innerIPAddress = result.private_ip_address
+		newServer.dtLaunched = result.launch_time
 		newServer.save()
 
 		# send message to client to notify creating server
