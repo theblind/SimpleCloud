@@ -1,5 +1,3 @@
-# from util.IaaS.middleware import IaaSConnection
-# from util.IaaS import usertoken
 from django.shortcuts import render_to_response,render,get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.template.context import RequestContext
@@ -11,6 +9,10 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
+import json
+
+from util.IaaS.middleware import IaaSConnection
+from util.IaaS import usertoken
 
 # Create your views here.
 @login_required
@@ -242,98 +244,90 @@ def ajax_create_server(request):
 
     else :
         return HttpResponse("Bad Request")
-
 # def buy_instances(request):
 #     if(request.method is not "POST"):
 #         return response_bad_method()
+    try:
+        userid = request.session['userid']
+        instance_list = request.POST['params']
+        if not isinstance(instance_list, list):
+            return response_bad_param()
+        # get the platform token with userid
+        token = usertoken.get_access_key(userid, provider)
+        feedback_message = []
+        # get the connection object with given userid
+        for instance in instance_list:
+            try:
+                provider = instance['prov']
+                instance_info = instance['inst_info']
+                region = instance['region']
+                if provider is None or instance_type is None or region is None:
+                    raise Exception("parameters should not be none")
+                # set up the connection
+                conn = IaaSConnection(token, provider, region)
+                result = conn.buy_instances(instance_info)
+            except Exception, e:
+                feedback_message.append({"index": instance.index, "status": "error"})
+            feedback_message.append({"index":instance.index, "status": "success", "instances": len(result)})
+        return HttpResponse(json.dumps({"status": "done", "message": feedback_message}))
+    except Exception, e:
+        return response_internal_error()
 
-#     userid = request.session['userid']
-#     instance_list = request.POST['inst_list']
+# start a list of specified instances with the 
+def start_instances(request):
+    return operate_instance(request, "start_instances")
 
-#     # get the platform token with userid
-#     token = usertoken.get_access_key(userid, provider)
+# stop a list of instance specified by provider, region and instance_id
+def stop_instances(request):
+    return operate_instance(request, "stop_instances")
 
-#     feedback_message = []
-#     # get the connection object with given userid
-#     for instance in instance_list:
-#         try:
-#             provider = instance['prov']
-#             instance_type = instance['type']
-#             region = instance['region']
-#             if provider is None or instance_type is None or region is None:
-#                 raise Exception("parameters should not be none")
-#             # set up the connection
-#             conn = new IaaSConnection(userid, provider, region)
-#             conn.buy_instances(instance_type)
-#         except Exception, e:
-#             feedback_message.append({index: instance.index, message: "error"})
-#     if len(feedback_message) == 0:
-#         return HttpResponse(json.dumps({status: "success", msg: None}))
-#     else:
-#         return HttpResponse(json.dumps({status: "error", msg: feedback_message}))
+def terminate_instances(request):
+    return operate_instance(request, "terminate_instances")
 
-# # start a list of specified instances with the 
-# def start_instance(request):
-#     return operate_instance(request, "start_instance")
+def reboot_instances(request):
+    return operate_instance(request, "reboot_instances")
 
-# # stop a list of instance specified by provider, region and instance_id
-# def stop_instance(request):
-#     return operate_instance(request, "stop_instance")
+def operate_instances(request, method):
+    if(request.method is not "POST"):
+        return response_bad_method()
+    #  deal with the 
+    try:
+        userid = request.session['userid']
+        token = usertoken.get_access_key(userid, provider)
+        batch_request = request.POST['params']
+        # check the parameters
+        if not isinstance(batch_request, list):
+            return response_bad_param()
+        feedback_message = []
 
-# def terminate_instance(request):
-#     return operate_instance(request, "terminate_instance")
+        for order_item in batch_request:
+            try:
+                provider = order_item['prov']
+                region = order_item['region']
+                instance_ids = order_item['insts']
+                if not isinstance(instance_ids, list):
+                    raise Exception("instance ids should be list type")
+                conn = IaaSConnection(token, provider, region)
+                if method is "start_instances":
+                    result = conn.start_instances(instance_ids)
+                elif method is "stop_instances":
+                    result = conn.stop_instances(instance_ids)
+                elif method is "terminate_instances":
+                    result = conn.terminate_instances(instance_ids)
+                elif method is "reboot_instances":
+                    result = conn.reboot_instances(instance_ids)
+                feedback_message.append({"index": order_item.index, "status": "success", "instances": len(result)})
+            except Exception, e:
+                feedback_message.append({"index": order_item.index, "status": "fail"})
+        return HttpResponse(json.dumps({"status": "done", "message": feedback_message}))
+    except Exception, e:
+        return response_internal_error()
 
-# def reboot_instance(request):
-#     return operate_instance(request, "reboot_instance")
+# Create your views here.
+def response_bad_method():
+    return HttpResponse(json.dumps({"status": "fail", "message": "bad request method"}))
 
-# def operate_instance(request, method):
-#     if(request.method is not "POST"):
-#         return response_bad_method()
-
-#     userid = request.session['userid']
-
-#     # parameterss needed: provider, region, instance_ids(list)
-#     # request.POST sample: [
-#     #   {
-#     #       index: 1
-#     #       provider: "aliyun",
-#     #       region: "qingdao-sssx",
-#     #       instance_ids: ["instance-01", 'instancce-02']
-#     #   },{
-#     #       index: 2
-#     #       provider: "azure",
-#     #       region: "qingdao-sssx",
-#     #       instance_ids: ["instance-01", 'instancce-02']
-#     #   }
-#     # ]
-
-#     batch_request = request.POST
-#     # check the parameters
-#     if not isinstance(batch_request, list):
-#         return response_bad_param()
-
-#     feedback_message = []
-
-#     for order_item in batch_request:
-#         try:
-#             provider = order_item['prov']
-#             region = order_item['region']
-#             instance_ids = order_item['insts']
-#             if not isinstance(instance_ids, list):
-#                 raise Exception("instance ids should be list type")
-#             conn = new IaaSConnection(userid, provider, region)
-#             conn[method](instance_ids)
-#         except Exception, e:
-#             feedback_message.append({index: order_item, message: e.message})
-#     if(len(feedback_message) == 0):
-#         return HttpResponse(json.dumps({status: "success", msg: "none"}))
-#     return HttpResponse(json.dumps({status: 'errror', msg: feedback_message}))
-
-
-# # Create your views here.
-# def response_bad_method():
-#     return HttpResponse(json.dumps({status: "fail", msg: "bad request method"}))
-
-# def response_bad_param():
-#     return HttpResponse(json.dumps({status: "fail", msg: 'bad request parameters'}))
-
+def response_bad_param():
+    return HttpResponse(json.dumps({"status": "fail", "message": 'bad request parameters'}))
+def response_internal_error():
+    return HttpResponse(json.dumps({"status": "fail", "message": "internal error"}))
