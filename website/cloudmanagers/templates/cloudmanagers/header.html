@@ -56,11 +56,11 @@
                <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                   data-close-others="true">
                <i class="icon-cloud"></i>
-               <span class="badge badge-info">{{projects_num}}</span>
+               <span class="badge badge-info">{{promessage_list | length}}</span>
                </a>
                <ul class="dropdown-menu extended inbox">
                   <li>
-                     <p>You have {{projects_num}} new messages</p>
+                     <p>You have {{promessage_list | length}}  new messages</p>
                   </li>
                   <li>
                      <ul class="dropdown-menu-list scroller" style="height: 250px;">
@@ -209,7 +209,7 @@
                <ul class="dropdown-menu">
                   <li><a href="/cloudmanagers/settings"><i class="icon-user"></i> My Profile</a>
                   </li>
-                  <li><a href="/cloudmanagers/platforms"><i class="icon-cloud"></i> My Inbox <span class="badge badge-danger">3</span></a>
+                  <li><a href="/cloudmanagers/platforms"><i class="icon-cloud"></i> My Cloud <span class="badge badge-danger">3</span></a>
                   </li>
                   <li class="divider"></li>
                   </li>

@@ -125,12 +125,15 @@ def project(request, project_id):
     projects_num = len(projects_list)
     sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
     promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
-              'username':client.get_full_name(),
-              }
+
+    context.update({
+        'projects_num': projects_num,
+        'servers_num':servers_num,
+        'sysmessage_list':sysmessage_list,
+        'promessage_list':promessage_list,
+        'username':client.get_full_name(),
+    })
+
     return render(request, 'cloudmanagers/project.html', context)
 
 @login_required
@@ -142,13 +145,8 @@ def rolemarket(request):
     projects_num = len(projects_list)
     sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
     promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'projects_list':projects_list,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
-              'username':client.get_full_name(),
-              }
+
+
     role_list  = list(Role.objects.all())
     role_res = []
     for index, role in enumerate(role_list):
@@ -157,6 +155,16 @@ def rolemarket(request):
         role_res[index]['role_bev'] = role.behaviors.split(",")
         role_res[index]['role_soft'] = role.getAllSoftwares_name()
     context['role_list'] = role_res
+
+    context.update({
+        'projects_num': projects_num,
+        'servers_num':servers_num,
+        'projects_list':projects_list,
+        'sysmessage_list':sysmessage_list,
+        'promessage_list':promessage_list,
+        'username':client.get_full_name(),
+    })    
+
     return render(request, 'cloudmanagers/rolemarket.html', context)
 
 @login_required

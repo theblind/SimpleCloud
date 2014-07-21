@@ -14,17 +14,18 @@ def __connect_to_ec2__(token, region):
 def __connect_to_azure__():
 	pass
 
-class IaaSConnection():
+class IaaSConnection(object):
 	"""docstring for IaaSConnection"""
 
-	def __init__(self, token, provider, region):
+	def __init__(self, token, provider = 'ec2', region='us-east-1', arg=''):
 		super(IaaSConnection, self).__init__()
 		self.arg = arg
 		self.provider = provider
+		self.token = token
 
-		if provider is "aws":
-			self.conn = __connect_to_aws__(token, region)
-		elif provider is "azure":
+		if provider == "ec2":
+			self.conn = __connect_to_ec2__(token, region)
+		elif provider == "azure":
 			self.conn = __connect_to_azure(token, region)
 		else:
 			self.conn = None
@@ -74,35 +75,49 @@ class IaaSConnection():
 		)
 
 	def buy_instances(self, instance_info, *args, **kwds):
-		if provider is "aws":
+		if provider == "ec2":
 			reservation = buy_ec2_instances(instance_info)
 			return reservation or []
-		elif provider is "azure":
+		elif provider == "azure":
 			pass
 		else:
 			return None
 
 	# call the boto api to start a list of isntance
 	def start_instances(self, instance_ids):
-		if self.provider is "aws":
+		if self.provider == "ec2":
 			insts = self.conn.start_instances(instance_ids)
 
 		return insts or []
 
 	def stop_instances(self, instance_ids):
-		if self.provider is "aws":
+		if self.provider == "ec2":
 			insts = self.conn.stop_instances(instance_ids)
 
 		return insts or []
 
 	def terminate_instances(self, instance_ids):
-		if self.provider is "aws":
+		if self.provider == "ec2":
 			insts = self.conn.terminate_instances(instance_ids)
 
 		return insts or []
 
 	def reboot_instances(self, instance_ids):
-		if self.provider is "aws":
+		if self.provider == "ec2":
 			insts = self.conn.reboot_instances(instance_ids)
 
 		return insts or []
+
+	def get_all_reservations(self):
+		reservation = []
+		if self.provider == "ec2":
+			regions = self.conn.get_all_regions()
+			for region in regions:
+				temp_conn = region.connect(aws_access_key_id=self.token['access_id'],aws_secret_access_key=self.token['access_key'])
+				temp_reservation = temp_conn.get_all_reservations()
+				reservation.extend(temp_reservation)
+			return reservation
+		elif self.provider == "azure":
+			pass
+		else:
+			return None
