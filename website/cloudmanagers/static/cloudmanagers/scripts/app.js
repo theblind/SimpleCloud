@@ -254,7 +254,8 @@ var App = function () {
     var handleAddServerAjax = function() {
         //handle Map location select
         jQuery('.map > .location').on('click', function(){
-            $(this).addClass('selected').siblings('.selected').removeClass('selected');
+            $('.location').removeClass('selected');
+            $(this).addClass('selected');
         });
 
         //handle Add Server Ajax request
@@ -267,7 +268,7 @@ var App = function () {
              var platform = $('.create-server.x-icon-platform.x-btn-pressed').data('platform');
              var server_location = $('.location.selected').data('location');
 
-             var el = jQuery('#addserver > form');
+             var el = jQuery('#addserver');
              App.blockUI(el);
 
              $.ajax({
@@ -1005,9 +1006,9 @@ var NotifySocket = function(){
         });
 
         // Add mouse move event on window to send own mouse moves:
-        $('body').mousemove(function(e) {
+/*        $('body').mousemove(function(e) {
             channel.send('server', {top: e.pageY, left: e.pageX});
-        });
+        });*/
     }
 
     return {

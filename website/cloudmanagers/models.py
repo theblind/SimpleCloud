@@ -30,21 +30,23 @@ class Farm(models.Model):
 	dtAdded = models.DateTimeField(auto_now_add = True)
 
 	# create server for this farm
-	def createServer(self, role, instanceType, **info):
-		newServer = Server(farm = self, role = role, name = info["server_name"])
+	def createServer(self, role, instanceType, info={}):
+		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
 		# create connetion to buy instance
-		token = {
-			"access_id": info["properties"]["access_id"],
-			"access_key": info["properties"]["access_key"]
-		}		
+		# token = {
+		# 	"access_id": info["properties"]["access_id"],
+		# 	"access_key": info["properties"]["access_key"]
+		# }		
 		#newServer.setConnection(token, info["platform"], info["server_location"])
-		newServer.setConnection(usertoken, "ec2", info["server_location"])
+		token = usertoken.get_access_key(None, info['platform'])
+		info['server_location'] = 'us-west-2'
+		newServer.setConnection(token, info['platform'], info["server_location"])
 
 		# get Server info to buy instance
 		serverInfo = {}
-		serverInfo["image_id"] = role.images.get(location = info["server_location"])
-		serverInfo["key_name"] = info["key_name"]
+		serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
+#		serverInfo["key_name"] = info["key_name"]
 		serverInfo["instance_type"] = instanceType.alias_name
 		serverInfo["security_groups"] = ""
 
@@ -62,7 +64,7 @@ class Farm(models.Model):
 		# send message to client to notify creating server
 		messageTitle = "Create server"
 		messageContent = ""
-		newServer.createMessage(client = self.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+#		newServer.createMessage(client = self.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
 
 		return newServer
 
@@ -329,7 +331,8 @@ class MessageManager(models.Manager):
 		content["server"] = server_id
 		content["old_status"] = old_status
 		content["new_status"] = new_status
-		msg = self.model(client=uid, messageType=self.model.PROJECT_MESSAGE, title = title, content=content)
+		client = Client.objects.get(id = uid)
+		msg = self.model(client=client, messageType=self.model.PROJECT_MESSAGE, title = title, content=content)
 		msg.setUnread()
 		msg.save()
 		return msg

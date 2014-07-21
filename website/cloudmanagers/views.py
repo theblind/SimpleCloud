@@ -243,14 +243,16 @@ def ajax_create_project(request):
 
 def ajax_create_server(request):
     if request.is_ajax() and request.method == 'POST':
-        projects = Farm.objects.get(id = request.POST['project_id'])
-        role = Role.objects.get(id = request.POST['role_id'])
+        projects = Farm.objects.get(id = int(request.POST['project_id']))
+        role = Role.objects.get(id = int(request.POST['role_id']))
         server_exinfo = {}
-        server_exinfo['name'] = request.POST['server_name']
-        server_exinfo['instanceType'] = InstanceType.objects.get(id = request.POST['instance_type'])
-        server_exinfo['location'] = request.POST['server_location']
-        newServer = projects.createServer(role, name = server_exinfo['name'], instanceType = server_exinfo['instanceType'], location = server_exinfo['location'] )
-
+        server_exinfo['server_name'] = request.POST['server_name']
+        instanceType = InstanceType.objects.get(id = int(request.POST['instance_type']))
+        server_exinfo['instanceType'] = instanceType
+        server_exinfo['server_location'] = request.POST['server_location']
+        server_exinfo['platform'] = request.POST['platform']
+#        server_exinfo['properties'] = projects.client.getPropertiesByManufacture(instanceType.manufacture)
+        newServer = projects.createServer(role, server_exinfo['instanceType'],server_exinfo)
         result = {}
         if newServer.id :
             result['success'] = True
