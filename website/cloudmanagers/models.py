@@ -3,6 +3,9 @@ from clients.models import Client, ClientEnvironmentProperty
 from benchmark.models import InstanceType, Manufacture
 import datetime
 
+from util.IaaS.middleware import IaaSConnection
+from util.IaaS import usertoken
+
 # --------------- Farm Start ---------------
 
 # Farm represent a task for cloud servers
@@ -27,9 +30,30 @@ class Farm(models.Model):
 	dtAdded = models.DateTimeField(auto_now_add = True)
 
 	# create server for this farm
-	def createServer(self, role, instanceType, **kwargs):
-		newServer = Server(farm = self, role = role, **kwargs)
+	def createServer(self, role, instanceType, **info):
+		newServer = Server(farm = self, role = role, name = info["server_name"])
+		#newServer.setConnection(token, info["platform"], info["server_location"])
+		newServer.setConnection(usertoken, "ec2", info["server_location"])
+
+		# get Server info to buy instance
+		serverInfo = {}
+		serverInfo["image_id"] = info["image_id"]
+		serverInfo["key_name"] = info["key_name"]
+		serverInfo["instance_type"] = instanceType.alias_name
+		serverInfo["security_groups"] = ""
+
+		# receive reservation of buy instance action
+		#reservation = newServer.getConnection().buy_instance(serverInfo)
+		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], serverInfo["instance_type"])
+		serverID = reservation["instances"].id
+		newServer.setServerId(serverID)
 		newServer.save()
+
+		# send message to client to notify creating server
+		messageTitle = "Create server"
+		messageContent = ""
+		newServer.createMessage(client = self.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+
 		return newServer
 
 	# get all servers in this farm
@@ -99,10 +123,27 @@ class Server(models.Model):
 	dtShutDown = models.DateTimeField(auto_now_add = True)
 	dtLastSync = models.DateTimeField(auto_now_add = True)
 
+	# save current server connection
+	def getConnection(self):
+		return self.connection
+
+	def setConnection(self, token, provider, region):
+		self.connection = IaaSConnection(token, provider, region)
+
+	# get remote server id
+	def getServerId(self):
+		return self.replaceServerID
+
+	def setServerId(self, serverID):
+		self.replaceServerID = serverID
+
 	# start server, set status and send a message
 	def startServer(self, reason = ''):
 		self.status = self.START
 		self.dtLaunched = datetime.datetime.now()
+
+		# connect to iaas platform
+		self.getConnection().start_instances(self.replaceServerID)
 
 		# save server event
 		self.createEvent(eventType = ServerEvent.START, reason = reason)
@@ -119,6 +160,9 @@ class Server(models.Model):
 		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
 
+		# connect to iaas platform
+		self.getConnection().stop_instances(self.replaceServerID)
+
 		# save server event
 		self.createEvent(eventType = ServerEvent.STOP, reason = reason)
 		# save server operation
@@ -131,6 +175,9 @@ class Server(models.Model):
 
 	# stop server, set status and send a message
 	def terminateServer(self, reason = ''):
+		# connect to iaas platform
+		self.getConnection().terminate_instances(self.replaceServerID)
+
 		# send message to client to notify starting server
 		messageTitle = "Terminate server"
 		messageContent = ""
@@ -265,7 +312,7 @@ class MessageManager(models.Manager):
 		msg.setUnread()
 		msg.save()
 		return msg
-	def createProjectMessage(self, uid, project_id, server_id, old_status, new_status, title = 'Project Notification', text = ''):
+	def createProjectMessage(self, uid, project_id = None, server_id = None, old_status = None, new_status = None, title = 'Project Notification', text = ''):
 		content = {}
 		content["text"] = text
 		content["project"] = project_id
@@ -515,6 +562,7 @@ class RoleImage(models.Model):
 		info["manufacture"] = self.manufacture.name
 		info["name"] = self.name
 		info["location"] = self.location
+		info["architecture"] = self.architecture
 
 		return info
 

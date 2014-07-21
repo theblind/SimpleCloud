@@ -131,7 +131,7 @@ class InstanceType(models.Model):
 
 		return info
 
-	#
+	# get key performance indecator for instance
 	def getHardwareIndicator(self):
 		return (self.manufacture.name, self.vcpu, self.vram)
 
@@ -218,7 +218,7 @@ class UnixBenchManager(models.Manager):
 		return result
 
 	# return average score of records for specific instance type
-	def averageScore(self, instanceType):
+	def getAverageScoreByInstanceType(self, instanceType):
 		recordsList = self.filter(instanceType = instanceType)
 		if len(recordsList) == 0:
 			return 0
@@ -297,25 +297,16 @@ class BonnieManager(models.Manager):
 	def getAveragePerformanceByInstancetType(self, instanceType):
 		recordsList = self.filter(instanceType = instanceType)
 		result = {
-			"writeCharaterSpeed": 0,
 			"writeBlockSpeed": 0,
-			"readCharacerSpeed": 0,
 			"readBlcokSpeed": 0,
-			"randomSeek": 0,
 		}
 
 		for record in recordsList:
-			result["writeCharaterSpeed"] += record.writeCharaterSpeed
 			result["writeBlockSpeed"] += record.writeBlockSpeed
-			result["readCharacerSpeed"] += record.readCharacerSpeed
 			result["readBlcokSpeed"] += record.readBlcokSpeed
-			result["randomSeek"] += record.randomSeek
 
-		result["writeCharaterSpeed"] /= len(recordsList)
 		result["writeBlockSpeed"] /= len(recordsList)
-		result["readCharacerSpeed"] /= len(recordsList)
 		result["readBlcokSpeed"] /= len(recordsList)
-		result["randomSeek"] /= len(recordsList)
 
 		return result
 

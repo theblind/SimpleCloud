@@ -31,9 +31,9 @@ class IaaSConnection(object):
 			self.conn = None
 
 	# call the boto api to buy ondemand type instances
-	def __buy_ec2_instances__(instance_info):
+	def __buy_ec2_instances__(self, image_id, instance_info):
 		params_dict = {
-			"image_id": None, "min_count": None, "max_count": None, "key_name": None,
+			"min_count": None, "max_count": None, "key_name": None,
 			"security_groups": None, "user_data": None, "addressing_type": None, "instance_type": None,
 			"placement": None, "kernel_id": None, "ramdisk_id": None, "monitoring_enabled": None,
 			"subnet_id": None, "block_device_map": None, "disable_api_termination": None,
@@ -45,7 +45,7 @@ class IaaSConnection(object):
 		params_dict.update(instance_info)
 
 		return self.conn.run_instances(
-			params_dict['image_id'], 
+			image_id, 
 			min_count=params_dict['min_count'] or None,
 			max_count=params_dict['max_count'] or None,
 			key_name=params_dict['key_name'] or None,
@@ -74,14 +74,22 @@ class IaaSConnection(object):
 			dry_run=params_dict['dry_run'] or False
 		)
 
-	def buy_instances(self, instance_info, *args, **kwds):
-		if provider == "ec2":
-			reservation = buy_ec2_instances(instance_info)
+	def buy_instances(self, image_id, instance_info, *args, **kwds):
+		if self.provider == "ec2":
+			reservation = self.__buy_ec2_instances__(image_id, instance_info)
 			return reservation or []
-		elif provider == "azure":
+		elif self.provider == "azure":
 			pass
 		else:
 			return None
+
+	def buy_instance_temporary(self, image_id, instance_type):
+		reservation = self.conn.run_instances(
+			image_id,
+			key_name='kyle-lab',
+			instance_type=instance_type,
+			security_groups=['default'])
+		return reservation
 
 	# call the boto api to start a list of isntance
 	def start_instances(self, instance_ids):

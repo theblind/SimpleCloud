@@ -24,7 +24,8 @@ def search(request):
 		# query virtual machine's info from database by given condition
 		queryResult = InstanceType.objects.filter(os_type = str(os),
 											vcpu = int(vcpu),
-											vram__range = [float(vram) - 1, float(vram) + 1])
+											vram__range = [float(vram) - 1, float(vram) + 1],
+											os_text__startswith="Ubuntu")
 		queryResult = InstanceType.objects.filterPlausibleInstanceType(queryResult)
 
 		# fill up responseData in json format and return
@@ -59,6 +60,7 @@ def parsePerformanceInfo(queryResult):
 
 	# receive unixbench result info
 	info["unixbench"] = parseUnixBenchResult(queryResult)
+	#info["bonnie"] = parseBonnieResult(queryResult)
 
 	return info
 
@@ -67,11 +69,24 @@ def parseUnixBenchResult(queryResult):
 	result = { "series": {}, "average": {} }
 	
 	result["name"] = "unixbench"
-	result["description"] = ""
+	result["description"] = "unixbench"
 	result["scale"] = "Score"
 	result["os"] = "linux"
 
 	for instance in queryResult:
 		result["series"][instance.id] = str(UnixBench.objects.getRecordsByInstanceType(instance))
-		result["average"][instance.id] = str(UnixBench.objects.averageScore(instance))
+		result["average"][instance.id] = str(UnixBench.objects.getAverageScoreByInstanceType(instance))
 	return result
+
+# extract bonnie result from query instances
+def parseBonnieResult(queryResult):
+	result = { "average": {} }
+
+	result["name"] = "bonnie"
+	result["description"] = "bonnie"
+	result["scale"] = "MB/S"
+	result["os"] = "linux"
+
+	for instance in queryResult:
+		result["average"][instance.id] = str(Bonnie.objects.getAveragePerformanceByInstancetType(instance))
+	return result	

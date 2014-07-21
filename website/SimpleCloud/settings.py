@@ -38,12 +38,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'south',
     'application',
     'benchmark',
     'clients',
     'cloudmanagers',
-    'omnibus'
+    'omnibus',
+    'util'
 )
 
 MIDDLEWARE_CLASSES = (
