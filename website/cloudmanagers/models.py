@@ -249,15 +249,46 @@ class ServerOperationProgress(models.Model):
 
 # --------------- Message Start ---------------
 
+class MessageManager(models.Manager):
+	def createSystemMessage(self, uid, title = 'System Notification', text = ''):
+		content = {}
+		content["text"] = text
+		msg = self.model(client=uid, messageType=self.model.SYSTEM_MESSAGE, title = title, content=content)
+		msg.setUnread()
+		msg.save()
+		return msg
+	def createUserMessage(self, from_uid, to_uid, title = 'User Message', text = ''):
+		content = {}
+		content["from"] = from_uid
+		content["text"] = text
+		msg = self.model(client=uid, messageType=self.model.USER_MESSAGE, title = title, content=content)
+		msg.setUnread()
+		msg.save()
+		return msg
+	def createProjectMessage(self, uid, project_id, server_id, old_status, new_status, title = 'Project Notification', text = ''):
+		content = {}
+		content["text"] = text
+		content["project"] = project_id
+		content["server"] = server_id
+		content["old_status"] = old_status
+		content["new_status"] = new_status
+		msg = self.model(client=uid, messageType=self.model.PROJECT_MESSAGE, title = title, content=content)
+		msg.setUnread()
+		msg.save()
+		return msg
+
+
 class Message(models.Model):
 	client = models.ForeignKey(Client)
 
 	# system message and project message
 	SYSTEM_MESSAGE = 'S'
 	PROJECT_MESSAGE = 'P'
+	USER_MESSAGE = 'U'
 	MESSAGE_TYPE = (
 		(SYSTEM_MESSAGE, 'system'),
 		(PROJECT_MESSAGE, 'project'),
+		(USER_MESSAGE, 'user'),
 	)
 	messageType = models.CharField(max_length = 1, choices = MESSAGE_TYPE, default = SYSTEM_MESSAGE)
 
@@ -289,13 +320,32 @@ class Message(models.Model):
 	def setUnread(self):
 		self.status = self.UNREAD
 
+	objects = MessageManager()
+
 	# get message basic info
 	def getDetails(self):
 		info = {}
 
 		info["title"] = self.title
-		info["content"] = self.content
+		
+		info["text"] = self.content["text"]
 		info["type"] = MESSAGE_TYPE[self.messageType][1]
+
+		# if self.messageType == self.SYSTEM_MESSAGE:
+			# Only text.
+			
+		if self.messageType == self.USER_MESSAGE:
+			info["from_uid"] = self.content["from"]
+			info["from_name"] = Client.objects.get(id = self.content["from"]).fullName
+
+		if self.messageType == self.PROJECT_MESSAGE:
+			info["project_id"] = self.content["project"]
+			info["project_name"] = Farm.objects.get(id = self.content["project"]).name
+			info["server_id"] = self.content["server"]
+			info["server_name"] = Server.objects.get(id = self.content["server"]).name
+			info["old_status"] = self.content["old_status"]
+			info["new_status"] = self.content["new_status"]
+
 		info["status"] = MESSAGE_STATUS[self.status][1]
 		info["time"] = self.dtAdded
 

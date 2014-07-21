@@ -223,9 +223,20 @@ def ajax_create_project(request):
             result['success'] = True
             result['message'] = "Project Successfully Created"
             result['farm_id'] = newFarm.id
+       	    Message.objects.createProjectMessage(
+                uid = request.user.id,
+                project_id = newFarm.id,
+                title = 'Project Successfully Created',
+                text = 'Your project has successfully created.',
+            )
         else :
             result['success'] = False
             result['message'] = "Create Project Failed"
+            Message.objects.createProjectMessage(
+                uid = request.user.id,
+                title = 'Create Project Failed',
+                text = 'Oops, something wrong happened.',
+            )
         return render_to_json_response(result, status = 200)
     else :
         return HttpResponse("Bad Request")
@@ -245,9 +256,22 @@ def ajax_create_server(request):
             result['success'] = True
             result['message'] = "Server Successfully Created"
             result['server_id'] = newServer.id
+       	    Message.objects.createProjectMessage(
+                uid = request.user.id,
+                project_id = projects.id,
+                server_id = newServer.id,
+                title = 'Server Successfully Created',
+                text = 'Your server has successfully created.',
+            )
         else:
             result['success'] = False
             result['message'] = "Create Server Faied"
+       	    Message.objects.createProjectMessage(
+                uid = request.user.id,
+                project_id = projects.id,
+                title = 'Create Server Faied',
+                text = 'Oops, something wrong happened.',
+            )
         return render_to_json_response(result, status = 200)
 
     else :
