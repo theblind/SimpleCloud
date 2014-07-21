@@ -339,7 +339,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                     <div class="col-md-9">
                                        <select name="newserver_role" id="select2_role" class="form-control select2" data-placeholder="Select a Role">
                                            {% for role in roles_list %}
-                                           <option value="{{ forloop.counter }}" data-behav="{{ role.behaviors_list | first }}" data-os="{{ role.os }}">{{ role.name }}</option>
+                                           <option value="{{ role.role_id }}" data-behav="{{ role.behaviors_list | first }}" data-os="{{ role.os }}">{{ role.name }}</option>
                                            {% endfor %}
                                        </select>
                                     </div>

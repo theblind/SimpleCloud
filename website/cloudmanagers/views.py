@@ -119,6 +119,12 @@ def project(request, project_id):
     roles_list = client.getAllEnvironmentsAvailableRoles()
     for index,role in enumerate(roles_list):
         roles_list[index]['behaviors_list'] = role['behaviors'].split(',')
+
+        roles_list[index]['architecture'] = ''
+        for platform in role['platforms']:
+            if platform['architecture']:
+                roles_list[index]['architecture'] = platform['architecture'] 
+
     context['roles_list'] = roles_list
 
     servers_num = len(client.getAllServers())
