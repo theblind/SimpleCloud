@@ -199,11 +199,11 @@ def ajax_create_server(request):
             )
         else:
             result['success'] = False
-            result['message'] = "Create Server Faied"
+            result['message'] = "Create Server Failed"
        	    Message.objects.createProjectMessage(
                 uid = request.user.id,
                 project_id = projects.id,
-                title = 'Create Server Faied',
+                title = 'Create Server Failed',
                 text = 'Oops, something wrong happened.',
             )
         return render_to_json_response(result, status = 200)
