@@ -116,13 +116,13 @@ var regions = [
 	"cn-qingdao-cm5-a01"
 ];
 exports.config = {
-	"manufacture": "Aliyun",
+	"manufacture": "aliyun",
 	"CPU_RAM_LIST": cpu_ram_list,
 	"os_choice": os_choice,
 	'region': regions
 };
 
-exports.get_instancetype_list = function(){
+exports.get_instancetype_list = function(callback){
 	var instancetype_list = [];
 	for(var price_type in cpu_ram_list){
 		for(var cpuram_index in cpu_ram_list[price_type]){
@@ -150,5 +150,5 @@ exports.get_instancetype_list = function(){
 			}
 		}
 	}
-	return instancetype_list;
+	return callback(instancetype_list);
 }

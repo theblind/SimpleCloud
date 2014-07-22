@@ -46,7 +46,7 @@ exports.getPrice = function(mongoHnd, updateTime, listener){
 				};
 				//创建用于插入数据的对象
 				var instance = new Instance(mongoHnd, {
-					manufacture: "QCloud",
+					manufacture: "qcloud",
 					alias_name: "qcloud",
 					vcpu: Number(cpu),
 					vram: Number(mem),
@@ -56,7 +56,7 @@ exports.getPrice = function(mongoHnd, updateTime, listener){
 						value: operatingSystem[os]
 					},
 					region: null,
-					pricing_type: ["ondemind"],
+					pricing_type: "ondemind",
 					band_width: 0,
 					// storage: [{type: "localdisk", size: 0}],
 					storage: 0,
@@ -122,7 +122,7 @@ function sendrequest(instance, options, retry_times, callback){
 		});
 		res.on("end", function() {
 			if(res.statusCode === 200){
-				console.log("Crawl qcloud successfully... statusCode: 200");
+				// console.log("Crawl qcloud successfully... statusCode: 200");
 				try{
 					/*将返回的字符串内容转化成json，并提取有效部分*/
 					var contentObj = JSON.parse(iconv.decode(bufferHelper.toBuffer(), "utf8"));
@@ -137,7 +137,7 @@ function sendrequest(instance, options, retry_times, callback){
 							return sendrequest(instance, options, retry_times-1, callback);
 						}
 						else{
-							console.log("[Success] "+instanceDesc);
+							// console.log("[Success] "+instanceDesc);
 							return callback(true);
 						}
 					});

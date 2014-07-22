@@ -29,12 +29,14 @@ exports.sync = function(listener) {
 
 function pickoutInstance(mongoHnd, conn, listener){
 	var updateTime = listener.updateTime;
+	console.log("update_time is: %d", listener.updateTime);
 	mongoHnd.find({update_time: updateTime}, {manufacture: 1}, function(err, docs){
 		/*出错了*/
 		if(err){
 			return callback("fail to search in mongodb with "+updateTime, 0);
 		}
 		/*没有匹配的新增记录，也是出错了*/
+		console.log("docs` length is: %d", docs.length);
 		if(docs.length == 0){
 			return callback(null, 0);
 		}

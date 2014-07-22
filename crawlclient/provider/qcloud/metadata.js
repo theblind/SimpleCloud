@@ -12,7 +12,7 @@ exports.operatingSystem = operating_system;
 exports.CPUNumber = cpu_list;
 exports.RAMSize = ram_size;
 
-exports.get_instancetype_list = function(){
+exports.get_instancetype_list = function(callback){
 	var instancetype_list = [];
 
 	var mem = 0;
@@ -26,7 +26,7 @@ exports.get_instancetype_list = function(){
 				continue;
 			for(var os in operating_system){
 				instancetype_list.push({
-					manufacture: "QCloud",
+					manufacture: "qcloud",
 					alias_name: "qcloud",
 					vcpu: Number(cpu),
 					vram: Number(mem),
@@ -41,5 +41,5 @@ exports.get_instancetype_list = function(){
 			}
 		}
 	}
-	return instancetype_list;
+	return callback(instancetype_list);
 }

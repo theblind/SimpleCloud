@@ -61,7 +61,7 @@ class InstanceType(models.Model):
 	# instance vCPU number
 	vcpu = models.IntegerField(default=0)
 	# instance memory size, unit is GB
-	vram = models.DecimalField(max_digits = 4, decimal_places = 2, default = 0)
+	vram = models.DecimalField(max_digits = 6, decimal_places = 2, default = 0)
 	# instance storage capacity, unit is GB
 	storage = models.IntegerField(default = 0)
 	# instance bandwidth, unit is Mb/s

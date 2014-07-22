@@ -9,10 +9,11 @@
     "node": "*"
   },
   "dependencies": {
-    "mongodb": "*",
-    "cheerio": "*",
+    "aws-sdk": "^2.0.8",
     "bufferhelper": "*",
+    "cheerio": "*",
     "iconv-lite": "*",
+    "mongodb": "*",
     "mysql": "~2.1.1"
   }
 }

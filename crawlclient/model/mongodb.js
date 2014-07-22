@@ -27,7 +27,7 @@ function MongoHnd(db){
 
 MongoHnd.prototype.insertUpdate = function(instanceinfo, callback){
 	this.colle.update({"manufacture": instanceinfo.manufacture, "alias_name": instanceinfo.alias_name,
-			"vcpu": instanceinfo.vcpu, "vram": instanceinfo.vram, "os": instanceinfo.os, "region": instanceinfo.region,
+			"vcpu": instanceinfo.vcpu, "vram": instanceinfo.vram, "os.value": instanceinfo.os.value, "region": instanceinfo.region,
 			"pricing_type": instanceinfo.pricing_type}, {"$set": instanceinfo}, {upsert: true}, function(err){
 		if(err){
 			console.log("Error happened when updating "+util.inspect(instanceinfo));

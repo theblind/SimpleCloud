@@ -46,7 +46,7 @@ exports.getPrice = function(mongoHnd, updatetime, listener){
 					// informations.data.vm_os = os_choice[ostype][osIndex].value;
 					informations.data.vm_os = "";
 					var instance = new Instance(mongoHnd, {
-						"manufacture": "Aliyun", "alias_name": "Virtual Machine",
+						"manufacture": "aliyun", "alias_name": "Virtual Machine",
 						"vcpu": Number(informations.data.vm_cpu),
 						"vram": Number(informations.data.vm_ram)/1024,
 						"os": os_choice[osIndex],
@@ -117,7 +117,7 @@ function sendrequest(instance, options, contents, retry_times, callback) {
 					/* 正常 */
 					instance.instanceInfo.prices = {"RMB": bodyContent["data"]["order"]["tradeAmount"]};
 					instance.save(function(err){
-						console.log(instance.instanceInfo.os.text);
+						// console.log(instance.instanceInfo.os.text);
 						/* if error happened, recall the sendrequest function */
 						if(err){
 							console.log("send request failed, %d times retry remain", retry_times);
@@ -125,7 +125,7 @@ function sendrequest(instance, options, contents, retry_times, callback) {
 						}
 						/* if send request successfully, then call the callback function */
 						else {
-							console.log("done!");
+							// console.log("done!");
 							return callback(true);
 						}
 					});
