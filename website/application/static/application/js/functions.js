@@ -165,11 +165,11 @@ function _config_form_processer(result)
 						        	},
 						            min: 0,
 						            title: {
-						                text: 'Scores of Bonnie'
+						                text: '磁盘读写速度'
 						            }
 						        },
 						       	xAxis: {
-						            categories: ['Output Speed', 'Input Speed']
+						            categories: ['读取速度(MB/S)', '写入速度(MB/S)']
 						        },
 
 							};

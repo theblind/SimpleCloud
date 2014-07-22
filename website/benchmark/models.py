@@ -321,8 +321,8 @@ class BonnieManager(models.Manager):
 			result["writeBlockSpeed"] += record.writeBlockSpeed
 			result["readBlcokSpeed"] += record.readBlcokSpeed
 
-		result["writeBlockSpeed"] /= len(recordsList)
-		result["readBlcokSpeed"] /= len(recordsList)
+		result["writeBlockSpeed"] /= (len(recordsList) * 1000)
+		result["readBlcokSpeed"] /= (len(recordsList) * 1000)
 
 		return result
 
@@ -342,7 +342,7 @@ class Bonnie(models.Model):
 	# Reading with block
 	readBlcokSpeed = models.IntegerField(default = 0)
 	# Random Seek per second
-	randomSeek = models.DecimalField(max_digits = 5, decimal_places = 1, default = 0)
+	randomSeek = models.IntegerField(default = 0)
 
 	# timestamps for single test
 	createdAt = models.DateTimeField(auto_now_add = True)

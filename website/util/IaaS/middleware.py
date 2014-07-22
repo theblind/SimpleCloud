@@ -129,3 +129,6 @@ class IaaSConnection(object):
 			pass
 		else:
 			return None
+
+	def import_key_name(self, key_name, public_key_material):
+		return self.conn.import_key_name(key_name, public_key_material)
