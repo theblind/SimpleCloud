@@ -131,8 +131,11 @@ var TableAdvanced = function () {
     }
 
     var handleStopServerAjax = function (server_id) {
+        var el = jQuery('.page-content');
+        App.blockUI(el);
         //handle Stop Server Ajax request
         var project_id = $('input[name=newserver_projectid]').val();
+
         $.ajax({
             type : "POST",
             cache : false,
@@ -140,18 +143,23 @@ var TableAdvanced = function () {
             dataType : "json",
             data : {"server_id" : server_id},
             success : function(res){
+                App.unblockUI($(el));
                 var $toast = toastr["success"]("Server Successfully Stopped.<br/>The page will refresh in 2 seconds.");
                 var newUrl = '/cloudmanagers/project/' +  project_id;
                 _redirect(2000, newUrl);  
                 console.log(res);
             },
             error : function(xhr, ajaxOptions, thrownError){
-                alert("Stop Server error!");
+                App.unblockUI($(el));
+                var $toast = toastr["error"]("Server Stop Failed");
             }
         });
     }
 
     var handleStartServerAjax = function (server_id) {
+        
+        var el = jQuery('.page-content');
+        App.blockUI(el);
         //handle Stop Server Ajax request
         var project_id = $('input[name=newserver_projectid]').val();
         $.ajax({
@@ -161,18 +169,22 @@ var TableAdvanced = function () {
             dataType : "json",
             data : {"server_id" : server_id},
             success : function(res){
+                App.unblockUI($(el));
                 var $toast = toastr["success"]("Server Successfully Started.<br/>The page will refresh in 2 seconds.");
                 var newUrl = '/cloudmanagers/project/' +  project_id;
                 _redirect(2000, newUrl);  
                 console.log(res);
             },
             error : function(xhr, ajaxOptions, thrownError){
-                alert("Start Server error!");
+                App.unblockUI($(el));
+                var $toast = toastr["error"]("Server Start Failed");
             }
         });
     }
 
     var handleTerminateServerAjax = function (server_id) {
+        var el = jQuery('.page-content');
+        App.blockUI(el);
         //handle Stop Server Ajax request
         var project_id = $('input[name=newserver_projectid]').val();
         $.ajax({
@@ -182,13 +194,15 @@ var TableAdvanced = function () {
             dataType : "json",
             data : {"server_id" : server_id},
             success : function(res){
+                App.unblockUI($(el));
                 var $toast = toastr["success"]("Server Successfully Terminated.<br/>The page will refresh in 2 seconds.");
                 var newUrl = '/cloudmanagers/project/' +  project_id;
                 _redirect(2000, newUrl);  
                 console.log(res);
             },
             error : function(xhr, ajaxOptions, thrownError){
-                alert("Terminate Server error!");
+                App.unblockUI($(el));
+                var $toast = toastr["error"]("Server Terminate Failed");
             }
         });
     }

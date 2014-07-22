@@ -42,7 +42,7 @@ class Farm(models.Model):
 
 		#token = usertoken.get_access_key(None, info['platform'])
 		info['server_location'] = 'us-west-2'
-		newServer.setConnection(token, info['platform'], info["server_location"])
+		newServer.setConnection(token)
 
 		# get Server info to buy instance
 		serverInfo = {}

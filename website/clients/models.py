@@ -165,7 +165,7 @@ class Client(models.Model):
         result['sysmessage_list'] = []
         result['promessage_list'] = []
 
-        messages = self.message_set.all()
+        messages = self.message_set.order_by('-dtAdded')
         for message in messages:
             if message.messageType == "S":
                 result['sysmessage_list'].append(message.getDetails())

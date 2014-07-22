@@ -236,7 +236,7 @@ var App = function () {
                 dataType : "json",
                 data : {"name" : project_name, "comments" : comments},
                 success : function(res){
-                    App.unblockUI($(el));
+                    //App.unblockUI($(el));
                     var $toast = toastr["success"]("Project Successfully Created.<br/> The page will Redirect to your new project in 2 seconds.");
                     var newUrl = '/cloudmanagers/project/' + res.farm_id;
                     _redirect(2000, newUrl);  
@@ -244,7 +244,7 @@ var App = function () {
                 },
                 error : function(xhr, ajaxOptions, thrownError){
                     App.unblockUI($(el));
-                    alert("Create error!");
+                    var $toast = toastr["error"]("Project Create Failed");
                 }
              });
 
@@ -268,7 +268,7 @@ var App = function () {
              var platform = $('.create-server.x-icon-platform.x-btn-pressed').data('platform');
              var server_location = $('.location.selected').data('location');
 
-             var el = jQuery('#addserver');
+             var el = jQuery('#addserver > form');
              App.blockUI(el);
 
              $.ajax({
@@ -278,7 +278,7 @@ var App = function () {
                 dataType : "json",
                 data : {"project_id" : project_id, "role_id" : role_id, "server_name" : server_name, "instance_type" : instance_type, "platform" : platform, "server_location" : server_location},
                 success : function(res){
-                    App.unblockUI($(el));
+                    //App.unblockUI($(el));
                     var $toast = toastr["success"]("Server Successfully Created.<br/>The page will refresh in 2 seconds.");
                     var newUrl = '/cloudmanagers/project/' +  project_id;
                     _redirect(2000, newUrl);  
@@ -286,7 +286,7 @@ var App = function () {
                 },
                 error : function(xhr, ajaxOptions, thrownError){
                     App.unblockUI($(el));
-                    alert("Create Server error!");
+                    var $toast = toastr["error"]("Server Create Failed");
                 }
              });
 
