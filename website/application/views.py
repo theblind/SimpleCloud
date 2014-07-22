@@ -24,7 +24,7 @@ def search(request):
 		# query virtual machine's info from database by given condition
 		queryResult = InstanceType.objects.filter(os_type = str(os),
 											vcpu = int(vcpu),
-											vram__range = [float(vram) - 1, float(vram) + 1],
+											vram = float(vram),
 											os_text__startswith="Ubuntu")
 		queryResult = InstanceType.objects.filterPlausibleInstanceType(queryResult)
 
@@ -46,6 +46,7 @@ def search(request):
 		for instance in queryResult:
 			responseData["rsm"]["Instances"][instance.id] = instance.getDetailsUgly()
 
+
 		responseData["rsm"]["Performance"] = parsePerformanceInfo(queryResult)
 		responseData["errno"] = 1
 
@@ -60,7 +61,7 @@ def parsePerformanceInfo(queryResult):
 
 	# receive unixbench result info
 	info["unixbench"] = parseUnixBenchResult(queryResult)
-	#info["bonnie"] = parseBonnieResult(queryResult)
+	info["bonnie"] = parseBonnieResult(queryResult)
 
 	return info
 
