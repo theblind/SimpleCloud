@@ -21,19 +21,12 @@ def index(request):
     client = Client.objects.get(id = request.user.id)
     servers_num = len(client.getAllServers())
     sshkey_num = len(client.getAllEnvironmentsSSHKeys())
-    projects_list = client.getAllFarms()
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'projects_list':projects_list,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
+
+    context = {
+              'servers_num':servers_num,              
               'sshkey_num':sshkey_num,
-              'username':client.get_full_name(),
               }
-    return render(request, 'cloudmanagers/index.html',context)
+    return render(request, 'cloudmanagers/index.html',context, context_instance = RequestContext(request))
 
 
 def login(request):
@@ -75,20 +68,8 @@ def signup(request):
 @login_required
 def platforms(request):
     context = {}
-    client = Client.objects.get(id = request.user.id)
-    projects_list = client.getAllFarms()
-    servers_num = len(client.getAllServers())
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'projects_list':projects_list,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
-              'username':client.get_full_name(),
-              }
-    return render(request, 'cloudmanagers/platforms.html', context)
+
+    return render(request, 'cloudmanagers/platforms.html', context, context_instance = RequestContext(request))
 
 def platformsSave(request):
     accountNumber = request.POST.get('accountNumber')
@@ -103,9 +84,7 @@ def platformsSave(request):
 def project(request, project_id):
     context = {}
     client = Client.objects.get(id = request.user.id)
-    projects_list = client.getAllFarms()
-    context['projects_list'] = projects_list
-    
+
     project = Farm.objects.get(id = project_id)
     context['current_project'] = project
     servers = project.getAllServers()
@@ -127,31 +106,12 @@ def project(request, project_id):
 
     context['roles_list'] = roles_list
 
-    servers_num = len(client.getAllServers())
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-
-    context.update({
-        'projects_num': projects_num,
-        'servers_num':servers_num,
-        'sysmessage_list':sysmessage_list,
-        'promessage_list':promessage_list,
-        'username':client.get_full_name(),
-    })
-
-    return render(request, 'cloudmanagers/project.html', context)
+    return render(request, 'cloudmanagers/project.html', context, context_instance = RequestContext(request))
 
 @login_required
 def rolemarket(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
-    projects_list = client.getAllFarms()
-    servers_num = len(client.getAllServers())
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-
 
     role_list  = list(Role.objects.all())
     role_res = []
@@ -162,56 +122,22 @@ def rolemarket(request):
         role_res[index]['role_soft'] = role.getAllSoftwares_name()
     context['role_list'] = role_res
 
-    context.update({
-        'projects_num': projects_num,
-        'servers_num':servers_num,
-        'projects_list':projects_list,
-        'sysmessage_list':sysmessage_list,
-        'promessage_list':promessage_list,
-        'username':client.get_full_name(),
-    })    
-
-    return render(request, 'cloudmanagers/rolemarket.html', context)
+    return render(request, 'cloudmanagers/rolemarket.html', context, context_instance = RequestContext(request))
 
 @login_required
 def settings(request):
     context = {}
-    client = Client.objects.get(id = request.user.id)
-    projects_list = client.getAllFarms()
-    servers_num = len(client.getAllServers())
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'projects_list':projects_list,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
-              'username':client.get_full_name(),
-              }
-    return render(request, 'cloudmanagers/settings.html', context)
+
+    return render(request, 'cloudmanagers/settings.html', context, context_instance = RequestContext(request))
 
 @login_required
 def sshkey(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
-    projects_list = client.getAllFarms()
-
-    servers_num = len(client.getAllServers())
-    projects_num = len(projects_list)
-    sysmessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'S'))
-    promessage_list = list(Message.objects.filter(client_id = request.user.id, messageType = 'P'))
-    context = {'projects_num': projects_num,
-              'servers_num':servers_num,
-              'projects_list':projects_list,
-              'sysmessage_list':sysmessage_list,
-              'promessage_list':promessage_list,
-              'username':client.get_full_name(),
-              }
 
     ssh_keys = client.getAllEnvironmentsSSHKeys()
     context['ssh_keys_list'] = ssh_keys
-    return render(request, 'cloudmanagers/sshkey.html', context)
+    return render(request, 'cloudmanagers/sshkey.html', context, context_instance = RequestContext(request))
 
 def render_to_json_response(context, **response_kwargs):
     data = simplejson.dumps(context)

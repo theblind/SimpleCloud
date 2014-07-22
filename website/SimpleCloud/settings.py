@@ -55,7 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS += ('omnibus.context_processors.omnibus',)
+TEMPLATE_CONTEXT_PROCESSORS += ('omnibus.context_processors.omnibus', 'cloudmanagers.context_processors.global_vars')
 
 ROOT_URLCONF = 'SimpleCloud.urls'
 

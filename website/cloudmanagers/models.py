@@ -2,6 +2,7 @@ from django.db import models
 from clients.models import Client, ClientEnvironmentProperty
 from benchmark.models import InstanceType, Manufacture
 import datetime
+import json
 
 from util.IaaS.middleware import IaaSConnection
 from util.IaaS import usertoken
@@ -312,6 +313,7 @@ class MessageManager(models.Manager):
 	def createSystemMessage(self, uid, title = 'System Notification', text = ''):
 		content = {}
 		content["text"] = text
+		content = json.dumps(content)
 		msg = self.model(client=uid, messageType=self.model.SYSTEM_MESSAGE, title = title, content=content)
 		msg.setUnread()
 		msg.save()
@@ -320,6 +322,7 @@ class MessageManager(models.Manager):
 		content = {}
 		content["from"] = from_uid
 		content["text"] = text
+		content = json.dumps(content)
 		msg = self.model(client=uid, messageType=self.model.USER_MESSAGE, title = title, content=content)
 		msg.setUnread()
 		msg.save()
@@ -331,6 +334,9 @@ class MessageManager(models.Manager):
 		content["server"] = server_id
 		content["old_status"] = old_status
 		content["new_status"] = new_status
+
+		content = json.dumps(content)
+
 		client = Client.objects.get(id = uid)
 		msg = self.model(client=client, messageType=self.model.PROJECT_MESSAGE, title = title, content=content)
 		msg.setUnread()
@@ -387,26 +393,29 @@ class Message(models.Model):
 		info = {}
 
 		info["title"] = self.title
+
+		content = json.loads(self.content)
 		
-		info["text"] = self.content["text"]
-		info["type"] = MESSAGE_TYPE[self.messageType][1]
+		info["text"] = content["text"]
+		info["type"] = self.messageType
 
 		# if self.messageType == self.SYSTEM_MESSAGE:
 			# Only text.
 			
 		if self.messageType == self.USER_MESSAGE:
-			info["from_uid"] = self.content["from"]
-			info["from_name"] = Client.objects.get(id = self.content["from"]).fullName
+			info["from_uid"] = content["from"]
+			info["from_name"] = Client.objects.get(id = content["from"]).fullName
 
 		if self.messageType == self.PROJECT_MESSAGE:
-			info["project_id"] = self.content["project"]
-			info["project_name"] = Farm.objects.get(id = self.content["project"]).name
-			info["server_id"] = self.content["server"]
-			info["server_name"] = Server.objects.get(id = self.content["server"]).name
-			info["old_status"] = self.content["old_status"]
-			info["new_status"] = self.content["new_status"]
+			info["project_id"] = content["project"]
+			info["project_name"] = Farm.objects.get(id = content["project"]).name
+			if content["server"]:
+				info["server_id"] = content["server"]
+				info["server_name"] = Server.objects.get(id = content["server"]).name
+			info["old_status"] = content["old_status"]
+			info["new_status"] = content["new_status"]
 
-		info["status"] = MESSAGE_STATUS[self.status][1]
+		info["status"] = self.status
 		info["time"] = self.dtAdded
 
 		return info

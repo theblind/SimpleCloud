@@ -135,7 +135,7 @@ class Client(models.Model):
     # get properties in spesicif environment
     def getPropertiesByManufacture(self, manufacture):
         environment = self.environments.get(manufacture = manufacture)
-        return environmentsSet.getAllProperties()
+        return environment.getAllProperties()
 
     # get sshkey in specific environment
     def getSSHKeysByManufacture(self, manufacture):
@@ -157,6 +157,20 @@ class Client(models.Model):
 
         for env in environments:
             result.extend(env.getAllAvailableRoles())
+
+        return result
+
+    def getAllMessages(self):
+        result = {}
+        result['sysmessage_list'] = []
+        result['promessage_list'] = []
+
+        messages = self.message_set.all()
+        for message in messages:
+            if message.messageType == "S":
+                result['sysmessage_list'].append(message.getDetails())
+            elif message.messageType == "P":
+                result['promessage_list'].append(message.getDetails())
 
         return result
 
