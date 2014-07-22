@@ -109,27 +109,9 @@ function _config_form_processer(result)
 		bigStarsPath : STATIC_URL + "images/stars.png"
 	});
 	
-	var options = {
-		chart: {
-			type: 'spline'
-		},
-		title: {
-			text: null
-		},
-		xAxis: {
-			type: "datetime"
-		},
-		yAxis: {
-			labels:{
-				format: '{value}'
-			},
-			plotLines: [{
-				value: 0,
-				width: 1,
-				color: '#808080'
-			}]
-		},
-	};
+
+
+
 
 	//fadeOut和fadeIn的Callback函数对每个元素都执行一次，所以需要限制只执行一次
 	var exc_time = 1;
@@ -137,14 +119,69 @@ function _config_form_processer(result)
 		if(exc_time){	
 			$('.data').fadeIn(300, function(){
 				if(exc_time){
+
 					$.each(performance, function(key , val){
 						var series = new Array();
-						$.each(val.series, function(k, v){
-							var obj = eval({"name": instances[k].provider , "data": v});
-							series.push(obj);
-						});
-						options.series = series;
-						$('#performance_' + key).highcharts(options);
+						//unixbenche数据，随时间变化
+						if(val.series){
+							var options = {
+								chart : { type : 'spline' },
+								title: { text: null },
+								xAxis: {type: "datetime"},
+								yAxis: {
+									labels:{
+										format: '{value}'
+									},
+									plotLines: [{
+										value: 0,
+										width: 1,
+										color: '#808080'
+									}],
+									title: {
+										text: 'Scores of Unixbench'
+									}
+								},
+							};
+
+							$.each(val.series, function(k, v){
+								var obj = eval({"name": instances[k].provider , "data": v});
+								series.push(obj);
+							});
+							options.series = series;
+							$('#performance_' + key).highcharts(options);
+						}
+						//bonnie单独数据
+						else if(key == "bonnie"){
+							var options = {
+								chart: {
+						            type: 'column',
+						        },
+						        title: {
+						            text: null
+						        },
+						        yAxis: {
+						        	labels:{
+						        		format : '{value}'
+						        	},
+						            min: 0,
+						            title: {
+						                text: 'Scores of Bonnie'
+						            }
+						        },
+						       	xAxis: {
+						            categories: ['Output Speed', 'Input Speed']
+						        },
+
+							};
+							$.each(val.average, function(k, v){
+								var obj = eval({"name": instances[k].provider , "data": [v.readBlcokSpeed, v.writeBlockSpeed]});
+								series.push(obj);
+							});
+							options.series = series;
+							console.log(options);
+							$('#performance_' + key).highcharts(options);
+						}
+
 					});
 					exc_time = exc_time - 1;
 				}

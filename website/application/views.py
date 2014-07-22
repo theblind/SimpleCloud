@@ -61,7 +61,7 @@ def parsePerformanceInfo(queryResult):
 
 	# receive unixbench result info
 	info["unixbench"] = parseUnixBenchResult(queryResult)
-	#info["bonnie"] = parseBonnieResult(queryResult)
+	info["bonnie"] = parseBonnieResult(queryResult)
 
 	return info
 

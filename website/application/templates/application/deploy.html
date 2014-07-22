@@ -221,9 +221,25 @@
                     <div id="performance_unixbench" style="width:100%; height:320px;"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="performance">
+        <div class="container">
+            <h3 class="text-center">磁盘IO性能(Disk Input/Output Performance)</h3>
+            <div class="row intro">
+                <div class="col-md-10 col-md-offset-1">
+                    <p class="font16 text-indent">
+                        磁盘通常是计算机最慢的子系统，也是最容易出现性能瓶颈的地方，因为磁盘离 CPU 距离最远而且 CPU 访问磁盘要涉及到机械操作，比如转轴、寻轨等。访问硬盘和访问内存之间的速度差别是以数量级来计算的，就像1天和1分钟的差别一样。我们使用Bonnie作为测试基准，主要用来衡量UNIX文件系统操作性能，并关注系统瓶颈的分析。
+                    </p>
+                </div>
+            </div>
+            <div class="row img-loading" style="display:none"> 
+                <img src="{% static 'application/images/loading.jpg' %}"/>
+            </div>
             <div class="row data" style="display:none">
                 <div class="col-md-10 col-md-offset-1">
-                    <div id="performance_cloudsuite" style="width:100%; height:320px;"></div>
+                    <div id="performance_bonnie" style="width:100%; height:320px;"></div>
                 </div>
             </div>
         </div>
