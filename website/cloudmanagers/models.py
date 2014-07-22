@@ -47,7 +47,7 @@ class Farm(models.Model):
 		# get Server info to buy instance
 		serverInfo = {}
 		serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
-#		serverInfo["key_name"] = info["key_name"]
+		#serverInfo["key_name"] = info["key_name"]
 		serverInfo["instance_type"] = instanceType.alias_name
 		serverInfo["security_groups"] = ""
 
@@ -63,9 +63,10 @@ class Farm(models.Model):
 		newServer.save()
 
 		# send message to client to notify creating server
-		messageTitle = "Create server"
-		messageContent = ""
-#		newServer.createMessage(client = self.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
+			old_status = "",
+			new_status = newServer.SERVER_STATUS[newServer.TERMINATE][1],
+			title = 'Create server', text = '')
 
 		return newServer
 
@@ -114,11 +115,15 @@ class Server(models.Model):
 	instanceType = models.ForeignKey(InstanceType)
 
 	# use server status to represent server's current status
-	STOP = 0
-	START = 1
+	TERMINATE = 0
+	PENDING = 1
+	START = 2
+	STOP = 3
 	SERVER_STATUS = (
-		(STOP, 'stop'),
-		(START, 'start'),
+		(TERMINATE, 'terminated'),
+		(PENDING, 'pending'),
+		(STOP, 'stopped'),
+		(START, 'running'),
 	)
 	status = models.SmallIntegerField(choices = SERVER_STATUS, default = STOP)
 
@@ -150,61 +155,72 @@ class Server(models.Model):
 	def setServerId(self, serverID):
 		self.replaceServerID = serverID
 
+	# get current server status
+	def getStatus(self):
+		return self.SERVER_STATUS[self.status][1]
+
 	# start server, set status and send a message
 	def startServer(self, reason = ''):
+		if self.status == self.TERMINATE:
+			return
+
+		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
+			old_status = self.SERVER_STATUS[self.status][1],
+			new_status = self.SERVER_STATUS[self.START][1],
+			title = 'Start server', text = '')
+
 		self.status = self.START
 		self.dtLaunched = datetime.datetime.now()
 
 		# connect to iaas platform
 		self.getConnection().start_instances(self.replaceServerID)
+		self.save()
 
 		# save server event
 		self.createEvent(eventType = ServerEvent.START, reason = reason)
 		# save server operation
 		self.createOperation()
 
-		# send message to client to notify starting server
-		messageTitle = "Start server"
-		messageContent = ""
-#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
-
 	# stop server, set status and send a message
 	def stopServer(self, reason = ''):
+		if self.status == self.TERMINATE:
+			return
+
+		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
+			old_status = self.SERVER_STATUS[self.status][1],
+			new_status = self.SERVER_STATUS[self.STOP][1],
+			title = 'Stop server', text = '')
+
 		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
 
 		# connect to iaas platform
 		self.getConnection().stop_instances(self.replaceServerID)
+		self.save()
 
 		# save server event
 		self.createEvent(eventType = ServerEvent.STOP, reason = reason)
 		# save server operation
 		self.createOperation()
 
-		# send message to client to notify starting server
-		messageTitle = "Stop server"
-		messageContent = ""
-#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
 
 	# stop server, set status and send a message
 	def terminateServer(self, reason = ''):
+		if self.status == self.TERMINATE:
+			return
+
+		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
+			old_status = self.SERVER_STATUS[self.status][1],
+			new_status = self.SERVER_STATUS[self.TERMINATE][1],
+			title = 'Terminate server', text = '')
+
+		self.status = self.TERMINATE
 		# connect to iaas platform
 		self.getConnection().terminate_instances(self.replaceServerID)
-
-		# send message to client to notify starting server
-		messageTitle = "Terminate server"
-		messageContent = ""
-#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+		self.save()
 
 		# delete this server
-		self.delete()
-
-
-	# create message for this server
-	def createMessage(self, client, messageType, title, content):
-		newMessage = Message(client = self.farm.client, messageType = messageType, title = title, content = content)
-		newMessage.save()
-		return newMessage
+		#self.delete()
 
 	# create histroy event for this server
 	def createEvent(self, eventType, reason):
