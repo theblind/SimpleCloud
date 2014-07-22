@@ -68,17 +68,29 @@ def signup(request):
 @login_required
 def platforms(request):
     context = {}
+    client = Client.objects.get(id = request.user.id)
+    manufacture = Manufacture.objects.get(name = "ec2")
+    context['properties'] = client.getPropertiesByManufacture(manufacture)
 
     return render(request, 'cloudmanagers/platforms.html', context, context_instance = RequestContext(request))
 
-def platformsSave(request):
-    accountNumber = request.POST.get('accountNumber')
-    accessKey = request.POST.get('accessKey')
-    secretAccessKey = request.POST.get('secretAccessKey')
-    client = Client.objects.get(id = request.user.id)
-    manufacture = Manufacture.objects.get(name = 'ec2')
-    client.bindingEnvironment(manufacture = manufacture, account_number = accountNumber, access_key = accessKey, secret_key = secretAccessKey)
-    return HttpResponseRedirect(reverse('cloudmanagers:platforms'))
+def ajax_platform_setting(request):
+    if request.is_ajax() and request.method == 'POST':
+        accountNumber = request.POST.get('accountNumber')
+        accessKey = request.POST.get('accessKey')
+        secretAccessKey = request.POST.get('secretAccessKey')
+        client = Client.objects.get(id = request.user.id)
+        manufacture = Manufacture.objects.get(name = 'ec2')
+        res = client.bindingEnvironment(manufacture = manufacture, account_number = accountNumber, access_id = accessKey, access_key = secretAccessKey)
+        
+        result = {}
+        if res:
+            result['success'] = True
+            result['message'] = "Platform Keys Successfully Saved"
+        else:
+            result['success'] = False
+            result['message'] = "Unvalid Keys"
+        return render_to_json_response(result, status = 200)
 
 @login_required
 def project(request, project_id):
@@ -186,26 +198,9 @@ def ajax_create_server(request):
         server_exinfo['properties'] = projects.client.getPropertiesByManufacture(instanceType.manufacture)
         newServer = projects.createServer(role, server_exinfo['instanceType'],server_exinfo)
         result = {}
-        if newServer.id :
-            result['success'] = True
-            result['message'] = "Server Successfully Created"
-            result['server_id'] = newServer.id
-       	    Message.objects.createProjectMessage(
-                uid = request.user.id,
-                project_id = projects.id,
-                server_id = newServer.id,
-                title = 'Server Successfully Created',
-                text = request.POST['server_name'] + ' has successfully created.',
-            )
-        else:
-            result['success'] = False
-            result['message'] = "Create Server Failed"
-       	    Message.objects.createProjectMessage(
-                uid = request.user.id,
-                project_id = projects.id,
-                title = 'Create Server Failed',
-                text = 'Oops, something wrong happened.',
-            )
+        result['success'] = True
+        result['message'] = "Server Successfully Created"
+
         return render_to_json_response(result, status = 200)
 
 def ajax_stop_server(request):

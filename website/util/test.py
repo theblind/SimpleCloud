@@ -4,13 +4,18 @@ from pprint import pprint
 import boto.ec2 as ec2
 
 if __name__ == '__main__':
-	provider = "ec2"
-	token = usertoken.get_access_key(None, provider)
-	conn = IaaSConnection(token, provider, "us-west-2")
+    provider = "ec2"
+    token = {
+        "access_id": '123',
+        "access_key": '123'
+    } 
+#    token = usertoken.get_access_key(None, provider)
+    conn = IaaSConnection(token, provider, "us-west-2")
+    print conn.conn.get_all_regions()
 
-	reservation = conn.buy_instance_temporary('ami-fa9cf1ca', 't1.micro')
-	
-	serverID = reservation.instances[0].id
-	print serverID
-	address = reservation.instances[0].private_ip_address
-	print address
+	# reservation = conn.buy_instance_temporary('ami-fa9cf1ca', 't1.micro')
+
+	# serverID = reservation.instances[0].id
+	# print serverID
+	# address = reservation.instances[0].private_ip_address
+	# print address

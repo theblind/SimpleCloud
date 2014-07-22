@@ -219,6 +219,9 @@ var App = function () {
         );
         
     }
+
+
+
     //handle all ajax request
     var handleCreateProjectAjax = function() {
         jQuery('#create_project').on('click', function(e){
@@ -245,6 +248,40 @@ var App = function () {
                 error : function(xhr, ajaxOptions, thrownError){
                     App.unblockUI($(el));
                     var $toast = toastr["error"]("Project Create Failed");
+                }
+             });
+
+        });
+    }
+
+    //handle all ajax request
+    var handlePlatformSettingAjax = function() {
+        jQuery('#save_platform').on('click', function(e){
+             e.preventDefault();
+             var account_num = $('input[name=accountNumber]').val();
+             var access_key = $('input[name=accessKey]').val();
+             var secret_key = $('input[name=secretAccessKey]').val();
+            
+             var el = jQuery('.page-content');
+             App.blockUI(el);
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/platform_setting',
+                dataType : "json",
+                data : {"accountNumber" : account_num, "accessKey" : access_key, "secretAccessKey" : secret_key},
+                success : function(res){
+                    App.unblockUI($(el));
+                    if(res.success){
+                        var $toast = toastr["success"](res['message']);
+                    }else{
+                        var $toast = toastr["error"](res['message']);
+                    }         
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    var $toast = toastr["error"]("Platform Keys Save Failed.");
                 }
              });
 
@@ -783,6 +820,7 @@ var App = function () {
             //handle ajax
             handleCreateProjectAjax();
             handleAddServerAjax();
+            handlePlatformSettingAjax();
 
             //ui component handlers
              // handle fancy box

@@ -4,6 +4,8 @@ from benchmark.models import Manufacture
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import hashers
 
+from util.IaaS.middleware import IaaSConnection
+
 class ClientUserManager(BaseUserManager):
     def create_user(self, email, name='anonymous', fullName='anonymous', password=None):
         if not email:
@@ -103,12 +105,26 @@ class Client(models.Model):
 
     # collect access key to bind an environment
     def bindingEnvironment(self, manufacture, **kwargs):
-        newEnvironment = ClientEnvironment(client = self, manufacture = manufacture)
-        newEnvironment.setActive()
-        newEnvironment.save()
+        if manufacture.name == "ec2": 
+            token = {
+                "access_id": kwargs['access_id'],
+                "access_key": kwargs['access_key']
+            } 
+            connection = IaaSConnection(token, manufacture.name, "us-west-2") 
+            try:
+                regions = connection.conn.get_all_regions()
+            except Exception, e:
+                return False
 
-        for (name, value) in kwargs.items():
-            newEnvironment.createProperty(name = name, value = value)
+            newEnvironment, created = ClientEnvironment.objects.get_or_create(client = self, manufacture = manufacture)
+            if created:
+                newEnvironment.setActive()
+                newEnvironment.save()
+
+            for (name, value) in kwargs.items():
+                newEnvironment.createProperty(name = name, value = value)
+
+            return True
 
 
     # get all environments which are active
@@ -176,39 +192,39 @@ class Client(models.Model):
 
 # cloud environment info
 class ClientEnvironment(models.Model):
-	# which manufature
-	manufacture = models.ForeignKey(Manufacture)
-	# which client
-	client = models.ForeignKey(Client, related_name = "environments")
+    # which manufacture
+    manufacture = models.ForeignKey(Manufacture)
+    # which client
+    client = models.ForeignKey(Client, related_name = "environments")
 
-	# set status to identify this environment's activeness
-	ACTIVE = 'A'
-	INACTIVE = 'I'
-	BINDING_STATUS = (
-		(ACTIVE, 'Active'),
-		(INACTIVE, 'Inactive'),
-	)
-	status = models.CharField(max_length = 1, choices = BINDING_STATUS, default = INACTIVE)
+    # set status to identify this environment's activeness
+    ACTIVE = 'A'
+    INACTIVE = 'I'
+    BINDING_STATUS = (
+        (ACTIVE, 'Active'),
+        (INACTIVE, 'Inactive'),
+    )
+    status = models.CharField(max_length = 1, choices = BINDING_STATUS, default = INACTIVE)
 
-	# create property for current environment
-	def createProperty(self, name = "", value = ""):
-		cep = ClientEnvironmentProperty(ClientEnvironment = self, name = name, value = value)
-		cep.save()
+    def createProperty(self,name,value):
+        cep, created = ClientEnvironmentProperty.objects.get_or_create(environment = self, name = name)
+        cep.value = value
+        cep.save()
 
-	def isActive(self):
+    def isActive(self):
 		return self.status == self.ACTIVE
 
-	def setActive(self):
+    def setActive(self):
 		self.status = self.ACTIVE
 
-	def setInactive(self):
+    def setInactive(self):
 		self.status = self.INACTIVE
 
 	# return sshkeys in following format:
 	# result = [ {"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
 	#			{"manufacture": "ec2", "privateKey": "", "publicKey": "", ...},
 	#			... ]
-	def getAllSSHKeys(self):
+    def getAllSSHKeys(self):
 		result = []
 		sshkeys = self.sshkey_set.all()
 
@@ -221,7 +237,7 @@ class ClientEnvironment(models.Model):
 
 	# return properties in following format:
 	# info = { "manufacture": "ec2", "secret_key": "", "access_key": "" }
-	def getAllProperties(self):
+    def getAllProperties(self):
 		info = {}
 		info["manufacture"] = self.manufacture.name
 
@@ -233,7 +249,7 @@ class ClientEnvironment(models.Model):
 		return info
 
 	# return available roles for current environment
-	def getAllAvailableRoles(self):
+    def getAllAvailableRoles(self):
 		import cloudmanagers.models as cloudmanagers
 
 		return cloudmanagers.Role.objects.getAvailableRolesByManufacture(manufacture = self.manufacture)
