@@ -39,8 +39,6 @@ class InstanceTypeManager(models.Manager):
 		indicators = set()
 		for instance in querySet:
 			indicator = instance.getHardwareIndicator()
-			#if not self.isPlausibleHardwareIndicator(indicator):
-			#	continue
 
 			if indicator not in indicators:
 				indicators.add(indicator)
@@ -124,7 +122,7 @@ class InstanceType(models.Model):
 			info["pph"] = str(price.prices)
 			info["ppm"] = str(price.prices * 24 * 30)
 		elif price.pricing_cycle == "month":
-			info["pph"] = str(price.prices / (24 * 30))
+			info["pph"] = "%.2f" % (price.prices / (24 * 30))
 			info["ppm"] = str(price.prices)
 
 		info["unit"] = price.monetary_unit
@@ -300,6 +298,9 @@ class BonnieManager(models.Manager):
 			"writeBlockSpeed": 0,
 			"readBlcokSpeed": 0,
 		}
+
+		if len(recordsList) == 0:
+			return result
 
 		for record in recordsList:
 			result["writeBlockSpeed"] += record.writeBlockSpeed
