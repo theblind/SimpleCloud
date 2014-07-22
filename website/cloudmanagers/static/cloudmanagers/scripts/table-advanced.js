@@ -5,6 +5,7 @@ $.fn.contextMenu = function (settings) {
         // Open context menu
         $(this).on("contextmenu", function (e) {
             //open menu
+            console.log(e)
             $(settings.menuSelector)
                 .data("invokedOn", $(e.target))
                 .show()
@@ -122,13 +123,92 @@ var TableAdvanced = function () {
         });
     }
 
+    var _redirect = function (timeout, url) {
+        window.setTimeout(function(){
+                window.location.href = url;
+            }, timeout
+        );
+    }
+
+    var handleStopServerAjax = function (server_id) {
+        //handle Stop Server Ajax request
+        var project_id = $('input[name=newserver_projectid]').val();
+        $.ajax({
+            type : "POST",
+            cache : false,
+            url : '/cloudmanagers/ajax/stop_server',
+            dataType : "json",
+            data : {"server_id" : server_id},
+            success : function(res){
+                var $toast = toastr["success"]("Server Successfully Stopped.<br/>The page will refresh in 2 seconds.");
+                var newUrl = '/cloudmanagers/project/' +  project_id;
+                _redirect(2000, newUrl);  
+                console.log(res);
+            },
+            error : function(xhr, ajaxOptions, thrownError){
+                alert("Stop Server error!");
+            }
+        });
+    }
+
+    var handleStartServerAjax = function (server_id) {
+        //handle Stop Server Ajax request
+        var project_id = $('input[name=newserver_projectid]').val();
+        $.ajax({
+            type : "POST",
+            cache : false,
+            url : '/cloudmanagers/ajax/start_server',
+            dataType : "json",
+            data : {"server_id" : server_id},
+            success : function(res){
+                var $toast = toastr["success"]("Server Successfully Started.<br/>The page will refresh in 2 seconds.");
+                var newUrl = '/cloudmanagers/project/' +  project_id;
+                _redirect(2000, newUrl);  
+                console.log(res);
+            },
+            error : function(xhr, ajaxOptions, thrownError){
+                alert("Start Server error!");
+            }
+        });
+    }
+
+    var handleTerminateServerAjax = function (server_id) {
+        //handle Stop Server Ajax request
+        var project_id = $('input[name=newserver_projectid]').val();
+        $.ajax({
+            type : "POST",
+            cache : false,
+            url : '/cloudmanagers/ajax/terminate_server',
+            dataType : "json",
+            data : {"server_id" : server_id},
+            success : function(res){
+                var $toast = toastr["success"]("Server Successfully Terminated.<br/>The page will refresh in 2 seconds.");
+                var newUrl = '/cloudmanagers/project/' +  project_id;
+                _redirect(2000, newUrl);  
+                console.log(res);
+            },
+            error : function(xhr, ajaxOptions, thrownError){
+                alert("Terminate Server error!");
+            }
+        });
+    }
 
     var initContextMenu = function() {
         $('#sample_2 td').contextMenu({
             menuSelector: "#serverMenu",
             menuSelected: function (invokedOn, selectedMenu){
+                var server_id = invokedOn.parent().data("server");
+                if(selectedMenu.text() == "Stop"){
+                    handleStopServerAjax(server_id);
+                }
+                else if(selectedMenu.text() == "Start"){
+                    handleStartServerAjax(server_id);
+                }
+                else if (selectedMenu.text() == "Terminate"){
+                    handleTerminateServerAjax(server_id);
+                }
                 var msg = "You selected the menu item '" + selectedMenu.text() +
-                    "' on the value '" + invokedOn.text() + "'";
+                    "' on the value '" + invokedOn.parent().data('server') + "'";
                 console.log(msg);
             }
         });

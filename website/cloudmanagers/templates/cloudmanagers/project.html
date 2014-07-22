@@ -446,7 +446,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
             <li><a tabindex="-1" href="#server-config" data-toggle="modal">Configure</a></li>
             <li><a id="startserver" tabindex="-1" href="javascript:">Start</a></li>
             <li><a id="stopserver" tabindex="-1" href="javascript:">Stop</a></li>
-            <li><a id="deleteserver" tabindex="-1" href="javascript:">Delete</a></li>
+            <li><a id="deleteserver" tabindex="-1" href="javascript:">Terminate</a></li>
             <li class="divider"></li>
             <li><a tabindex="-1" href="#server-info" data-toggle="modal">Extended Info</a></li>
             <li><a tabindex="-1" href="#server-log" data-toggle="modal">System Logs</a></li>
@@ -527,19 +527,19 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         </thead>
                         <tbody>
                             {% for server in servers_list %}
-                           <tr >
+                           <tr data-server ="{{ server.id }}">
                               <td style="text-align:center">
                                   <img class="x-icon-platform-small x-icon-platform-small-{{ server.manufacture }}" title="{{ server.manufacture }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>
-                              <td>{{ server.name }}</td>
-                              <td>{{ server.role }}</td>
-                              <td style="text-align:center">
+                              <td >{{ server.name }}</td>
+                              <td >{{ server.role }}</td>
+                              <td style="text-align:center" >
                                   <span class="label label-sm label-{{server.status}}" >{{ server.status }}</span>
                               </td>
-                              <td>{{ server.publicIP }}</td>
-                              <td>{{ server.instanceType }}</td>
-                              <td>{{ server.location }}</td>
-                              <td>{{ server.launchTime }}</td>
+                              <td >{{ server.publicIP }}</td>
+                              <td >{{ server.instanceType }}</td>
+                              <td >{{ server.location }}</td>
+                              <td >{{ server.launchTime }}</td>
                           </tr>
                           {% endfor %}
                         </tbody>

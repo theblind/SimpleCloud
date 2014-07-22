@@ -35,12 +35,12 @@ class Farm(models.Model):
 		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
 		# create connetion to buy instance
-		# token = {
-		# 	"access_id": info["properties"]["access_id"],
-		# 	"access_key": info["properties"]["access_key"]
-		# }		
-		#newServer.setConnection(token, info["platform"], info["server_location"])
-		token = usertoken.get_access_key(None, info['platform'])
+		token = {
+			"access_id": info["properties"]["access_id"],
+			"access_key": info["properties"]["access_key"]
+		}		
+
+		#token = usertoken.get_access_key(None, info['platform'])
 		info['server_location'] = 'us-west-2'
 		newServer.setConnection(token, info['platform'], info["server_location"])
 
@@ -140,8 +140,8 @@ class Server(models.Model):
 	def getConnection(self):
 		return self.connection
 
-	def setConnection(self, token, provider, region):
-		self.connection = IaaSConnection(token, provider, region)
+	def setConnection(self, token):
+		self.connection = IaaSConnection(token, self.instanceType.manufacture.name, self.location)
 
 	# get remote server id
 	def getServerId(self):
@@ -166,7 +166,7 @@ class Server(models.Model):
 		# send message to client to notify starting server
 		messageTitle = "Start server"
 		messageContent = ""
-		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
 
 	# stop server, set status and send a message
 	def stopServer(self, reason = ''):
@@ -184,7 +184,7 @@ class Server(models.Model):
 		# send message to client to notify starting server
 		messageTitle = "Stop server"
 		messageContent = ""
-		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
 
 	# stop server, set status and send a message
 	def terminateServer(self, reason = ''):
@@ -194,7 +194,7 @@ class Server(models.Model):
 		# send message to client to notify starting server
 		messageTitle = "Terminate server"
 		messageContent = ""
-		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
+#		self.createMessage(client = self.farm.client, messageType = Message.PROJECT_MESSAGE, title = messageTitle, content = messageContent)
 
 		# delete this server
 		self.delete()

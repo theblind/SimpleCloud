@@ -14,5 +14,8 @@ urlpatterns = patterns('',
 	url(r'^settings/$', views.settings, name = 'settings'),
 	url(r'^sshkey/$', views.sshkey, name = 'sshkey'),
 	url(r'^ajax/create_server$', views.ajax_create_server, name = 'xCreateServer'),
-	url(r'^ajax/create_project$', views.ajax_create_project, name = 'xCreateProject')
+	url(r'^ajax/create_project$', views.ajax_create_project, name = 'xCreateProject'),
+	url(r'^ajax/stop_server$', views.ajax_stop_server, name = 'xStopServer'),
+	url(r'^ajax/start_server$', views.ajax_start_server, name = 'xStartServer'),
+	url(r'^ajax/terminate_server$', views.ajax_terminate_server, name = 'xTerminateServer'),
 )

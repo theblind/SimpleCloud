@@ -159,7 +159,7 @@ def ajax_create_project(request):
                 uid = request.user.id,
                 project_id = newFarm.id,
                 title = 'Project Successfully Created',
-                text = 'Your project has successfully created.',
+                text = request.POST['name'] + ' has successfully created.',
             )
         else :
             result['success'] = False
@@ -183,7 +183,7 @@ def ajax_create_server(request):
         server_exinfo['instanceType'] = instanceType
         server_exinfo['server_location'] = request.POST['server_location']
         server_exinfo['platform'] = request.POST['platform']
-#        server_exinfo['properties'] = projects.client.getPropertiesByManufacture(instanceType.manufacture)
+        server_exinfo['properties'] = projects.client.getPropertiesByManufacture(instanceType.manufacture)
         newServer = projects.createServer(role, server_exinfo['instanceType'],server_exinfo)
         result = {}
         if newServer.id :
@@ -195,7 +195,7 @@ def ajax_create_server(request):
                 project_id = projects.id,
                 server_id = newServer.id,
                 title = 'Server Successfully Created',
-                text = 'Your server has successfully created.',
+                text = request.POST['server_name'] + ' has successfully created.',
             )
         else:
             result['success'] = False
@@ -207,3 +207,51 @@ def ajax_create_server(request):
                 text = 'Oops, something wrong happened.',
             )
         return render_to_json_response(result, status = 200)
+
+def ajax_stop_server(request):
+    if request.is_ajax() and request.method == 'POST':
+        server = Server.objects.get(id = int(request.POST['server_id']))
+        client = Client.objects.get(id = int(request.user.id))
+        properties = client.getPropertiesByManufacture(server.instanceType.manufacture)
+        token = {
+            "access_id" : properties['access_id'],
+            "access_key" : properties['access_key']
+        }
+        server.setConnection(token)
+        server.stopServer();
+        result = {}
+        result['success'] = True
+        result['message'] = "Server successfully Stopped"
+        return render_to_json_response(result, status = 200)
+
+def ajax_start_server(request):
+    if request.is_ajax() and request.method == 'POST':
+        server = Server.objects.get(id = int(request.POST['server_id']))
+        client = Client.objects.get(id = int(request.user.id))
+        properties = client.getPropertiesByManufacture(server.instanceType.manufacture)
+        token = {
+            "access_id" : properties['access_id'],
+            "access_key" : properties['access_key']
+        }
+        server.setConnection(token)
+        server.startServer();
+        result = {}
+        result['success'] = True
+        result['message'] = "Server successfully Started"
+        return render_to_json_response(result, status = 200)
+
+def ajax_terminate_server(request):
+    if request.is_ajax() and request.method == 'POST':
+        server = Server.objects.get(id = int(request.POST['server_id']))
+        client = Client.objects.get(id = int(request.user.id))
+        properties = client.getPropertiesByManufacture(server.instanceType.manufacture)
+        token = {
+            "access_id" : properties['access_id'],
+            "access_key" : properties['access_key']
+        }
+        server.setConnection(token)
+        server.terminateServer();
+        result = {}
+        result['success'] = True
+        result['message'] = "Server successfully Started"
+        return render_to_json_response(result, status = 200)    
