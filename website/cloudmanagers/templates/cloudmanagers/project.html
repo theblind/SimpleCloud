@@ -527,7 +527,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         </thead>
                         <tbody>
                             {% for server in servers_list %}
-                           <tr data-server ="{{ server.id }}">
+                           <tr data-server ="{{ server.id }}" data-status="{{ server.status }}">
                               <td style="text-align:center">
                                   <img class="x-icon-platform-small x-icon-platform-small-{{ server.manufacture }}" title="{{ server.manufacture }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>

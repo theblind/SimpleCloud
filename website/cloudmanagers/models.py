@@ -60,19 +60,20 @@ class Farm(models.Model):
 		newServer.setServerId(serverID)
 		newServer.innerIPAddress = result.private_ip_address
 		newServer.dtLaunched = result.launch_time
+		newServer.status = newServer.START
 		newServer.save()
 
 		# send message to client to notify creating server
 		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
 			old_status = "",
-			new_status = newServer.SERVER_STATUS[newServer.TERMINATE][1],
-			title = 'Create server', text = '')
+			new_status = newServer.SERVER_STATUS[newServer.START][1],
+			title = 'Server Create', text = self.name + ' has been successfully created.')
 
 		return newServer
 
 	# get all servers in this farm
 	def getAllServers(self):
-		return list(self.server_set.all())
+		return list(self.server_set.order_by('-dtAdded'))
 
 	# get all roles in this farm
 	def getAllRoles(self):
@@ -122,8 +123,8 @@ class Server(models.Model):
 	SERVER_STATUS = (
 		(TERMINATE, 'terminated'),
 		(PENDING, 'pending'),
-		(STOP, 'stopped'),
 		(START, 'running'),
+		(STOP, 'stopped'),
 	)
 	status = models.SmallIntegerField(choices = SERVER_STATUS, default = STOP)
 
@@ -167,7 +168,7 @@ class Server(models.Model):
 		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
 			old_status = self.SERVER_STATUS[self.status][1],
 			new_status = self.SERVER_STATUS[self.START][1],
-			title = 'Start server', text = '')
+			title = 'Server Start', text = self.name + ' has been successfully started.')
 
 		self.status = self.START
 		self.dtLaunched = datetime.datetime.now()
@@ -189,7 +190,7 @@ class Server(models.Model):
 		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
 			old_status = self.SERVER_STATUS[self.status][1],
 			new_status = self.SERVER_STATUS[self.STOP][1],
-			title = 'Stop server', text = '')
+			title = 'Server Stop', text = self.name + ' has been successfully stopped.')
 
 		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
@@ -212,7 +213,7 @@ class Server(models.Model):
 		Message.objects.createProjectMessage(self.farm.client.id, self.farm.id, self.id,
 			old_status = self.SERVER_STATUS[self.status][1],
 			new_status = self.SERVER_STATUS[self.TERMINATE][1],
-			title = 'Terminate server', text = '')
+			title = 'server Terminate', text = self.name + ' has been successfully terminated.')
 
 		self.status = self.TERMINATE
 		# connect to iaas platform

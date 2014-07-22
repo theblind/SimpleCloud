@@ -5,7 +5,12 @@ $.fn.contextMenu = function (settings) {
         // Open context menu
         $(this).on("contextmenu", function (e) {
             //open menu
-            console.log(e)
+            var server_status = $(this).parent().data('status');
+
+            if(server_status == 'terminated'){
+                return false;
+            }
+
             $(settings.menuSelector)
                 .data("invokedOn", $(e.target))
                 .show()
