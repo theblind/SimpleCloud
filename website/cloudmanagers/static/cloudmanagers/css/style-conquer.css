@@ -517,20 +517,21 @@ h7 .label {
 
 .label-success, 
 .badge-success,
-.label-start {
+.label-running {
   background-color: #3cc051;
   background-image: none !important;
 }
 
 .label-warning, 
-.badge-warning {
+.badge-warning,
+.label-pending {
   background-color: #fcb322;
   background-image: none !important;
 }
 
 .label-danger, 
 .badge-danger,
-.label-stop {
+.label-stopped {
   background-color: #ed4e2a;
   background-image: none !important;
 }
@@ -538,6 +539,11 @@ h7 .label {
 .label-info, 
 .badge-info {
   background-color: #57b5e3;
+  background-image: none !important;
+}
+
+.label-terminated {
+  background-color: #708090;
   background-image: none !important;
 }
 
