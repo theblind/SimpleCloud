@@ -221,27 +221,27 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         <div class="portlet">
                            <div class="portlet-body form">
                               <!-- BEGIN FORM-->
-                              <form action="/cloudmanagers/platforms/save/" class="horizontal-form">
+                              <form action="/cloudmanagers/platforms/save/" onsubmit = "return false;" class="horizontal-form">
                                  <div class="form-body">
                                     <h3 class="form-section">Amazon EC2 Keys</h3>
                                     <div class="form-group has-success">
                                        <label class="control-label">Account Number</label>
-                                       <input type="text" id="accountNumber" class="form-control" placeholder="Chee Kin" name="accountNumber"\>
+                                       <input type="text" id="accountNumber" class="form-control" placeholder="Input your account number" name="accountNumber" value = "{{ properties.account_number }}" \>
                                        <a href="https://console.aws.amazon.com/billing/home#/account" target="_blank"><span class="help-block">Get Your Account Number</span></a>
                                     </div>
-                                    <div class="form-group has-warning">
+                                    <div class="form-group has-success">
                                        <label class="control-label">Access Key ID</label>
-                                       <input type="text" id="accessKey" class="form-control" placeholder="Chee Kin" name="accessKey"\>
+                                       <input type="text" id="accessKey" class="form-control" placeholder="Input your access key ID" name="accessKey" value="{{ properties.access_id }}" \>
                                     </div>
-                                    <div class="form-group has-error">
+                                    <div class="form-group has-success">
                                        <label class="control-label">Secret Access Key</label>
-                                       <input type="text" id="secretAccessKey" class="form-control" placeholder="Chee Kin" name="secretAccessKey"\>
+                                       <input type="text" id="secretAccessKey" class="form-control" placeholder="Input your secret key" name="secretAccessKey" value="{{ properties.access_key }}" \>
                                        <a href="https://console.aws.amazon.com/iam/#home" target="_blank"><span class="help-block">Get Your Access Key ID and Secret Access Key</span></a>
                                     </div>                                    
                                  </div>
                                  <div class="form-actions right">
                                     <button type="button" class="btn btn-default">Cancel</button>
-                                    <button type="submit" class="btn btn-info"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn btn-info" id="save_platform"><i class="icon-ok"></i> Save</button>
                                  </div>
                               </form>
                               <!-- END FORM--> 
