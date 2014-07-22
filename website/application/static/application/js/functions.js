@@ -88,7 +88,7 @@ function _config_form_processer(result)
 	$('#loading').text('确定');
 	
 	if(result.errno != 1){
-		alert("发生错误，返回的信息： " + data.err);
+		alert("发生错误，返回的信息： " + result.err);
 		return false;
 	}
 
