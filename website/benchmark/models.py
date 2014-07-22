@@ -1,6 +1,7 @@
 from django.db import models
 import hashlib
 import datetime
+import calendar
 
 # create model Manufacture to represent
 # AWS, Azure, RackSpace etc.
@@ -209,10 +210,24 @@ class UnixBenchManager(models.Manager):
 		recordsList = self.filter(instanceType = instanceType)
 		result = []
 		for record in recordsList:
+			timestamp = calendar.timegm(record.createdAt.utctimetuple())
 			if record.parallelScore != 0:
-				result.append(record.parallelScore)
+				result.append([timestamp, record.parallelScore])
 			else:
-				result.append(record.serialScore)
+				result.append([timestamp, record.serialScore])
+		return result
+
+	def getRecordsByInstanceTypeTemporary(self, instanceType):
+		recordsList = self.filter(instanceType = instanceType)
+		timestamp = [1398070673000, 1398185855000, 1398243468000, 1398301067000, 1398416652000]
+		index = 0
+		result = []
+		for record in recordsList[0:5]:
+			if record.parallelScore != 0:
+				result.append([timestamp[index], record.parallelScore])
+			else:
+				result.append([timestamp[index], record.serialScore])
+			index = index + 1
 		return result
 
 	# return average score of records for specific instance type
