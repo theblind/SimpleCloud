@@ -25,12 +25,14 @@ def search(request):
 		queryResult = InstanceType.objects.filter(os_type = str(os),
 											vcpu = int(vcpu),
 											vram = float(vram),
-											os_text__startswith="Ubuntu")
+											os_text__startswith = "Ubuntu")
 		queryResult = InstanceType.objects.filterPlausibleInstanceType(queryResult)
 		
 		queryResult = list(queryResult)
 		ec2_result = InstanceType.objects.filter(manufacture_id = "ec2",
 											vcpu = int(vcpu),
+											vram__range = [float(vram) * 0.75, float(vram) * 1.25],
+											os_text__startswith = "linux",
 											region = "us-west-2")
 		queryResult.extend(list(ec2_result))
 

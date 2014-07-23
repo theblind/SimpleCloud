@@ -47,6 +47,18 @@ class InstanceTypeManager(models.Manager):
 
 		return list(result)
 
+	def getAllEC2Instances(self):
+		result = []
+
+		state = set()
+		querySet = self.filter(manufacture_id = "ec2")
+		for instance in querySet:
+			if instance.alias_name not in state:
+				state.add(instance.alias_name)
+				result.append(instance)
+
+		return result
+
 
 # create model Instance Type to represent 
 # instance's hardware information
