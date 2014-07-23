@@ -1004,7 +1004,7 @@ var NotifySocket = function(){
         var options = {authToken: omnibus_auth_token};
 
         var connection = new Omnibus(transport, endpoint, options);
-        var channel = connection.openChannel('mousemove');
+        var channel = connection.openChannel('jasonniu');
 
         // Add events on connection:
         connection
@@ -1023,14 +1023,14 @@ var NotifySocket = function(){
             //$('.channel').addClass('open').text('Yes');
             alert('CHANNEL_SUBSCRIBED')
         })
-        .on('server', function (event) {
-            alert('I accept server');
+        .on('update_instance', function (event) {
+            alert('I accept update info');
             console.log(event);
             // handle mouse moves form other users...
             if(event.data.sender == 'server'){
                 console.log("Get something about server info update");
             }else{
-                console.log("Just mouse moving");
+                console.log("Ignoring messages from nowhere");
             }
         })
         .on('disconnect', function (event) {
@@ -1045,7 +1045,7 @@ var NotifySocket = function(){
 
         // Add mouse move event on window to send own mouse moves:
 /*        $('body').mousemove(function(e) {
-            channel.send('server', {top: e.pageY, left: e.pageX});
+            channel.send('update_instance', {top: e.pageY, left: e.pageX});
         });*/
     }
 

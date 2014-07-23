@@ -524,7 +524,8 @@ h7 .label {
 
 .label-warning, 
 .badge-warning,
-.label-pending {
+.label-pending,
+.label-stopping {
   background-color: #fcb322;
   background-image: none !important;
 }

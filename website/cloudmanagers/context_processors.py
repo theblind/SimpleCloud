@@ -5,14 +5,20 @@ def global_vars(request):
 
 	if hasattr(request, 'user'):
 		user = request.user
+	elif not user.id:
+		return {}
 	else:
 		from django.contrib.auth.models import AnonymousUser
 		user = AnonymousUser()
 		return {}
 
 	context = {}
-	client = Client.objects.get(id = user.id)
-	context['username'] = client.get_full_name()
+	try:
+		client = Client.objects.get(id = user.id)
+		context['userinfo'] = client
+	except Exception, e:
+		return context
+	
 	projects_list = client.getAllFarms()
 	context['projects_list'] = projects_list
 
