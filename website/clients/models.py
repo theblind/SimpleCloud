@@ -139,8 +139,11 @@ class Client(models.Model):
 
 	# get properties in spesicif environment
 	def getPropertiesByManufacture(self, manufacture):
-		environment = self.environments.get(manufacture = manufacture)
-		return environment.getAllProperties()
+		try:
+			environment = self.environments.get(manufacture = manufacture)
+			return environment.getAllProperties()
+		except:
+			return {}
 
 	# get sshkey in specific environment
 	def getSSHKeysByManufacture(self, manufacture):
@@ -197,17 +200,29 @@ class ClientEnvironment(models.Model):
 
 
 	# import key name and save to SSHKey
-	def importKeyName(self, keyName, region = "us-west-2"):
+	def importEC2KeyPair(self, keyName, region = "us-west-2"):
 		key = RSA.generate(2048)
 		publicKey = key.publickey().exportKey('OpenSSH')
 		privateKey = key.exportKey('PEM')
-		newSSHKey = SSHKey(environment = self, privateKey = privateKey, publickey = publicKey,
+
+		newSSHKey = SSHKey(environment = self, privateKey = privateKey, publicKey = publicKey,
 			platform = "ec2", cloudLocation = region, cloudKeyName = keyName)
 		newSSHKey.save()
 
 		# binding to iaas provider
+		properties = self.getAllProperties()
+		token = {
+			"access_id": properties["access_id"],
+			"access_key": properties["access_key"]
+		}
+		"""
+		token = {
+			"access_id": "AKIAJ3PC3B6J6VVSNTGQ",
+			"access_key": "2Yjrq35Y8H3X2AGIhP+ZAvUDUZaddgzyGb/5fi9Z"
+		}
+		"""
 		connection = IaaSConnection(token, "ec2", region)
-		connection.import_key_pair(key_name, public_key)
+		connection.import_key_pair(keyName, publicKey)
 
 	# create property for current environment
 	def createProperty(self,name,value):
