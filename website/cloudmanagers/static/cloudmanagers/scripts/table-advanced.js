@@ -217,7 +217,7 @@ var TableAdvanced = function () {
         $('#exinfo-status').addClass('label-'+server_info.status).text(server_info.status);
         $('#exinfo-pubdns').text(server_info.publicDNS);
         $('#exinfo-pubip').text(server_info.publicIP);
-        $('#exinfo-priip').text(server_info.privateIP);
+        $('#exinfo-innerip').text(server_info.privateIP);
         $('#exinfo-secretg').text(server_info.secretGroup);
         $('#exinfo-platform').addClass('x-icon-platform-e'+server_info.manufacture).attr('title', server_info.manufacture);
         $('#exinfo-location > .location').each(function(){
@@ -253,6 +253,7 @@ var TableAdvanced = function () {
                         manufacture: element_selected.data('manufacture'),
                         replaceid: element_selected.data('replaceid')
                     };
+                    console.log(server_info);
                     handleExtendedInfo(server_info);
                 }
                 var msg = "You selected the menu item '" + selectedMenu.text() +
