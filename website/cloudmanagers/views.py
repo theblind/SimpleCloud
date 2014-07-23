@@ -118,6 +118,8 @@ def project(request, project_id):
 
     context['roles_list'] = roles_list
 
+    context['instance_type_list'] = InstanceType.objects.getAllEC2Instances()
+
     return render(request, 'cloudmanagers/project.html', context, context_instance = RequestContext(request))
 
 @login_required

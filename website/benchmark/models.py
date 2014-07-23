@@ -51,7 +51,7 @@ class InstanceTypeManager(models.Manager):
 		result = []
 
 		state = set()
-		querySet = self.filter(manufacture_id = "ec2")
+		querySet = self.filter(manufacture_id = "ec2").order_by('alias_name')
 		for instance in querySet:
 			if instance.alias_name not in state:
 				state.add(instance.alias_name)

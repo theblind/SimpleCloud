@@ -22,8 +22,21 @@ var FormComponents = function () {
         });
         $("#select2_role").on("select2-selecting", function(e){
             os = $("#select2_role > option[value="+ e.val +"]").data("os");
-            console.log(os);
+            //console.log(os);
             $('#role_os').val(os);
+            
+        })
+
+        $("#select2_instancetype").select2({
+            placeholder: "Select a Instance Type",
+            allowClear: true,
+            escapeMarkup: function (m) {
+                return m;
+            }
+        });
+        $("#select2_instancetype").on("select2-selecting", function(e){
+            resource = $("#select2_instancetype > option[value="+ e.val +"]").data("resource");
+            $('#instance_resource').text(resource);
             
         })
 

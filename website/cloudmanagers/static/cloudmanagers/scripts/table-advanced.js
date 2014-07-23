@@ -212,11 +212,27 @@ var TableAdvanced = function () {
         });
     }
 
+    var handleExtendedInfo = function(server_info) {
+        $('#exinfo-id').text(server_info.replaceid);
+        $('#exinfo-status').addClass('label-'+server_info.status).text(server_info.status);
+        $('#exinfo-pubdns').text(server_info.publicDNS);
+        $('#exinfo-pubip').text(server_info.publicIP);
+        $('#exinfo-priip').text(server_info.privateIP);
+        $('#exinfo-secretg').text(server_info.secretGroup);
+        $('#exinfo-platform').addClass('x-icon-platform-e'+server_info.manufacture).attr('title', server_info.manufacture);
+        $('#exinfo-location > .location').each(function(){
+            if($(this).data('location') == server_info.location){
+                $(this).addClass('selected');
+            }
+        });
+    }
+
     var initContextMenu = function() {
         $('#sample_2 td').contextMenu({
             menuSelector: "#serverMenu",
             menuSelected: function (invokedOn, selectedMenu){
-                var server_id = invokedOn.parent().data("server");
+                var element_selected = invokedOn.parent()
+                var server_id = element_selected.data("server");
                 if(selectedMenu.text() == "Stop"){
                     handleStopServerAjax(server_id);
                 }
@@ -225,6 +241,19 @@ var TableAdvanced = function () {
                 }
                 else if (selectedMenu.text() == "Terminate"){
                     handleTerminateServerAjax(server_id);
+                }
+                else if(selectedMenu.text() == "Extended Info"){
+                    var server_info = {
+                        status: element_selected.data('status'),
+                        publicDNS: element_selected.data('publicdns'),
+                        publicIP: element_selected.data('publicip'),
+                        privateIP: element_selected.data('privateip'),
+                        location: element_selected.data('location'),
+                        secretGroup: element_selected.data('secretGroup'),
+                        manufacture: element_selected.data('manufacture'),
+                        replaceid: element_selected.data('replaceid')
+                    };
+                    handleExtendedInfo(server_info);
                 }
                 var msg = "You selected the menu item '" + selectedMenu.text() +
                     "' on the value '" + invokedOn.parent().data('server') + "'";

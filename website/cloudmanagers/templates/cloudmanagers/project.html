@@ -231,82 +231,73 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
             </div>
             <div class="modal-body">
                <div class="portlet">
+                  <form action="#" class="form-horizontal">
                   <div class="portlet-body form">
-                     <!-- BEGIN FORM-->
-                     <form action="#" class="form-horizontal">
-                        <div class="form-body">
-                           <h3 class="form-section">i-70206378</h3>
-                           <div class="row">
-                              <div class="col-md-6">
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Instance State</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">stopped</p>
-                                    </div>
+                     <div class="form-body">
+                        <h3 class="form-section" id="exinfo-id"></h3>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Instance State</label>
+                                 <div class="col-md-9" style="margin:15px auto;">
+                                    <span class="label label-md" id="exinfo-status"></span>
                                  </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Public DNS</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">ec2-54-187-196-244.us-west-2.compute.amazonaws.com</p>
-                                    </div>
+                              </div>
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Public DNS</label>
+                                 <div class="col-md-9">
+                                    <p class="form-control-static" id="exinfo-pubdns"></p>
                                  </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Public IP</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">54.187.196.244</p>
-                                    </div>
+                              </div>
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Public IP</label>
+                                 <div class="col-md-9">
+                                    <p class="form-control-static" id="exinfo-pubip"></p>
                                  </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Private DNS</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">ec2-54-187-196-244.us-west-2.compute.amazonaws.com</p>
-                                    </div>
+                              </div>
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Private IP</label>
+                                 <div class="col-md-9">
+                                    <p class="form-control-static" id="exinfo-innerip"></p>
                                  </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Private IP</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">54.187.196.244</p>
-                                    </div>
-                                 </div>
+                              </div>
 
-                              </div>
-                              <!--/span-->
-                              <div class="col-md-6">
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Secret Group</label>
-                                    <div class="col-md-9">
-                                       <p class="form-control-static">default (sg-2da4ed46)</p>
-                                       <p class="form-control-static">scalr.ip-pool (sg-c6802cac)</p>
-                                    </div>
-                                 </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Cloud</label>
-                                    <div class="col-md-9">
-                                       <a class="x-btn x-icon-platform x-icon-platform-ec2" hidefocus="on" tabindex="0" title="Amazon EC2"></a>
-                                    </div>
-                                 </div>
-                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Location</label>
-                                    <div class="col-md-9">
-                                       <div class="map map-common" style="width: 210px; height: 100px; background-position: 0px -500px;">
-                                          <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="ext-gen4446"></div>
-                                          <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="ext-gen4447"></div>
-                                          <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="ext-gen4448"></div>
-                                          <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="ext-gen4449"></div>
-                                          <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="ext-gen4450"></div>
-                                          <div data-location="us-east-1" style="top:34px;left:48px" class="location selected" title="us-east-1" id="ext-gen4451"></div>
-                                          <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="ext-gen4452"></div>
-                                          <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="ext-gen4453"></div></div>
-                                    </div>
-                                 </div>
-                              </div>
-                              <!--/span-->
                            </div>
-                           <!--/row-->
+                           <!--/span-->
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Secret Group</label>
+                                 <div class="col-md-9">
+                                    <p class="form-control-static" id="exinfo-secretg"></p>
+                                 </div>
+                              </div>
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Cloud</label>
+                                 <div class="col-md-9">
+                                    <a class="x-btn x-icon-platform" id="exinfo-platform" hidefocus="on" tabindex="0" title=""></a>
+                                 </div>
+                              </div>
+                              <div class="form-group">
+                                 <label class="control-label col-md-3">Location</label>
+                                 <div class="col-md-9">
+                                    <div class="map map-common" style="width: 210px; height: 100px; background-position: 0px -500px;" id="exinfo-location">
+                                       <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="ext-gen4446"></div>
+                                       <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="ext-gen4447"></div>
+                                       <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="ext-gen4448"></div>
+                                       <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="ext-gen4449"></div>
+                                       <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="ext-gen4450"></div>
+                                       <div data-location="us-east-1" style="top:34px;left:48px" class="location" title="us-east-1" id="ext-gen4451"></div>
+                                       <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="ext-gen4452"></div>
+                                       <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="ext-gen4453"></div></div>
+                                 </div>
+                              </div>
+                           </div>
+                           <!--/span-->
                         </div>
-                     </form>
-                     <!-- END FORM-->                
+                        <!--/row-->
+                     </div>           
                   </div>
+                  </form>
                </div>
             </div>
             <div class="modal-footer">
@@ -331,7 +322,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                     <label class="control-label col-md-3">Name</label>
                                     <div class="col-md-9">
                                         <input type="hidden" name="newserver_projectid" value="{{ project_id }}">
-                                        <input type="text" name="newserver_name" class="form-control" placeholder="lamp-ubuntu1204">
+                                        <input type="text" name="newserver_name" class="form-control" placeholder="Input Server Name">
                                     </div>
                                  </div>
                                  <div class="form-group">
@@ -353,11 +344,12 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                  <div class="form-group">
                                     <label class="control-label col-md-3">Instance Type</label>
                                     <div class="col-md-9">
-                                       <select class="form-control" name="newserver_instancetype">
-                                          <option value="2315">t1.micro</option>
-                                          <option value="2">m1.small</option>
+                                       <select class="form-control" name="newserver_instancetype" id="select2_instancetype">
+                                          {% for instance_type in instance_type_list %}
+                                          <option value="{{ instance_type.id }}" data-resource="{{ instance_type.vcpu }} vCPU, {{ instance_type.vram }} GB">{{ instance_type.alias_name }}</option>
+                                          {% endfor %}
                                        </select>
-                                       <span class="help-block">1 vCPUs, 1GB RAM, SHARED CPU</span>
+                                       <span  id="instance_resource" class="help-block">{% for instance_type in instance_type_list %} {%if forloop.first%}{{ instance_type.vcpu }} vCPU, {{ instance_type.vram }} GB{% endif%} {% endfor %}</span>
                                     </div>
                                  </div>
                               </div>
@@ -527,7 +519,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         </thead>
                         <tbody>
                             {% for server in servers_list %}
-                           <tr data-server ="{{ server.id }}" data-status="{{ server.status }}">
+                           <tr data-server="{{ server.id }}" data-status="{{ server.status }}" data-publicdns="{{ server.publicDNS }}" data-publicip="{{server.publicIP}}" data-privateip="{{server.innerIPAddress}}" data-location="{{server.location}}" data-secretGroup="{{server.secretGroup}}" data-manufacture="{{server.manufacture}}"data-replaceid="{{server.serverID}}">
                               <td style="text-align:center">
                                   <img class="x-icon-platform-small x-icon-platform-small-{{ server.manufacture }}" title="{{ server.manufacture }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>
