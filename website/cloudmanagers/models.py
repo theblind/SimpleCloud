@@ -67,7 +67,7 @@ class Farm(models.Model):
 		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
 			old_status = "",
 			new_status = newServer.SERVER_STATUS[newServer.START][1],
-			title = 'Server Create', text = self.name + ' has been successfully created.')
+			title = 'Server Create', text = newServer.name + ' has been successfully created.')
 
 		return newServer
 
