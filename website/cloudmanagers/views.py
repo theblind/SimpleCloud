@@ -97,14 +97,11 @@ def ajax_client_setting(request):
         client = Client.objects.get(id = request.user.id)
         client.name = request.POST.get('name')
         client.fullName = request.POST.get('fullName')
-
+	client.save()
         result = {}
-        if res:
-            result['success'] = True
-            result['message'] = "User Settings Successfully Saved"
-        else:
-            result['success'] = False
-            result['message'] = "Unvalid Settings"
+        result['success'] = True
+        result['message'] = "User Settings Saved"
+        
         return render_to_json_response(result, status = 200)
 
 
