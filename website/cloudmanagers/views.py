@@ -9,6 +9,8 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
+from django.core.management import call_command
+
 import json
 
 from util.IaaS.middleware import IaaSConnection
@@ -252,3 +254,7 @@ def ajax_terminate_server(request):
         result['success'] = True
         result['message'] = "Server successfully Started"
         return render_to_json_response(result, status = 200)    
+
+def cron_update_instance(request):
+    call_command('updateinstance')
+    return HttpResponse(status=204)

@@ -395,6 +395,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/select2/select2.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/jquery-mixitup/jquery.mixitup.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/bootstrap-toastr/toastr.min.js' %}"></script>
+   <script type="text/javascript" src="{% static 'cloudmanagers/scripts/plugins/omnibus.min.js' %}"></script>
 
    <!-- END PAGE LEVEL PLUGINS -->
    <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -405,6 +406,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
       jQuery(document).ready(function() {
          UIToastr.init();       
          App.init();
+         NotifySocket.init("{{ userinfo.name }}", "{{ OMNIBUS_ENDPOINT }}" , "{{ OMNIBUS_AUTH_TOKEN }}");
          Portfolio.init();
       });
    </script>
