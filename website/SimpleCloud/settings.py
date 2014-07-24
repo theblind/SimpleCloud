@@ -142,4 +142,4 @@ LOGGING = {
     }
 }
 
-OMNIBUS_CONNECTION_FACTORY = 'cloudmanagers.connection.mousemove_connection_factory'
+#OMNIBUS_CONNECTION_FACTORY = 'cloudmanagers.connection.mousemove_connection_factory'

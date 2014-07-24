@@ -265,6 +265,10 @@ ul.first-li{
 	text-align: center;
 }
 
+.error h3{
+	text-align: center
+}
+
 .text-indent{
 	text-indent: 32px;
 }
@@ -302,10 +306,10 @@ ul.first-li{
 	content:'\1F53F';
 }
 .icon-mail::before{
-	content:'\1F304';
+	content:'\2709';
 }
 .icon-tel::before{
-	content:'\1F4F1';
+	content:'\E720';
 }
 .icon-global::before{
 	content: '\1F30E';

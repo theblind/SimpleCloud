@@ -60,7 +60,8 @@ class Farm(models.Model):
 		newServer.setServerId(serverID)
 		newServer.innerIPAddress = result.private_ip_address
 		newServer.dtLaunched = result.launch_time
-		newServer.status = newServer.PENDING
+		#newServer.status = newServer.PENDING
+		newServer.status = newServer.START
 		newServer.save()
 
 		# send message to client to notify creating server
@@ -172,7 +173,8 @@ class Server(models.Model):
 			new_status = self.SERVER_STATUS[self.START][1],
 			title = 'Server Start', text = self.name + ' has been successfully started.')
 
-		self.status = self.PENDING
+		#self.status = self.PENDING
+		self.status = self.START
 		self.dtLaunched = datetime.datetime.now()
 
 		# connect to iaas platform
@@ -194,7 +196,8 @@ class Server(models.Model):
 			new_status = self.SERVER_STATUS[self.STOP][1],
 			title = 'Server Stop', text = self.name + ' has been successfully stopped.')
 
-		self.status = self.STOPPING
+		#self.status = self.STOPPING
+		self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
 
 		# connect to iaas platform

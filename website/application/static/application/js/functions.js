@@ -51,11 +51,9 @@ function ajax_post(formEl, processer, before_submit_processer) // 表单对象�
         success: processer,
         error: function (xhr,error)
         {
-			console.log(xhr);
-            if ($.trim(error.responseText) != '')
-            {
-                alert('发生错误, 返回的信息:' + ' ' + error.responseText.substr(0, 40));
-            }
+			$('.img-loading').fadeOut(300, function(){
+				$('.error').html("<h3>暂无数据</h3>").show();
+			});	
         }
     });
 }
@@ -88,7 +86,10 @@ function _config_form_processer(result)
 	$('#loading').text('确定');
 	
 	if(result.errno != 1){
-		alert("发生错误，返回的信息： " + result.err);
+		$('.img-loading').fadeOut(300, function(){
+			$('.error').html("<h3>暂无数据</h3>").show();
+		});
+		
 		return false;
 	}
 
@@ -97,6 +98,7 @@ function _config_form_processer(result)
 	var instances = data.Instances;
 	var performance = data.Performance;
 	
+	$('.error').hide();
 	$("#tb_info").empty();
 	$.each(instances, function(key , val){
 		$("#tb_info").append("<tr id=\"tab_" + val.provider + "\"><td class=\"provider\"><img src=\"" + val.image + "\" width=\"150\" height=\"60\" data-src=\"" + val.image + "\" alt=\"AWS\"></td><td class=\"td_type\">" + val.instance + "</td><td class=\"td_core\">" + val.vcpu + "</td><td class=\"td_mem\">" + val.vram + "</td><td class=\"td_disk\">" + val.storage + "</td><td class=\"td_pph\">" + val.pricing.pph + val.pricing.unit + "</td><td class=\"td_ppm\">" + val.pricing.ppm + val.pricing.unit + "</td><td class=\"td_rate\"><div class=\"ratings\" data-average=\"13\" data-id=\"5\"></td><td class=\"td_link\"><a href=\"" + val.link + "\">" + val.link + "</td></tr>");
@@ -109,9 +111,6 @@ function _config_form_processer(result)
 		bigStarsPath : STATIC_URL + "images/stars.png"
 	});
 	
-
-
-
 
 	//fadeOut和fadeIn的Callback函数对每个元素都执行一次，所以需要限制只执行一次
 	var exc_time = 1;
