@@ -35,10 +35,14 @@ class Farm(models.Model):
 		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
 		# create connetion to buy instance
+		#token = {
+		#	"access_id": info["properties"]["access_id"],
+		#	"access_key": info["properties"]["access_key"]
+		#}		
 		token = {
-			"access_id": info["properties"]["access_id"],
-			"access_key": info["properties"]["access_key"]
-		}		
+			"access_id": "AKIAJ3PC3B6J6VVSNTGQ",
+			"access_key": "2Yjrq35Y8H3X2AGIhP+ZAvUDUZaddgzyGb/5fi9Z"
+		}
 
 		#token = usertoken.get_access_key(None, info['platform'])
 		info['server_location'] = 'us-west-2'
@@ -53,7 +57,7 @@ class Farm(models.Model):
 
 		# receive reservation of buy instance action
 		#reservation = newServer.getConnection().buy_instance(serverInfo)
-		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], serverInfo["instance_type"])
+		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], "t1.micro")
 		result = reservation.instances[0]
 
 		serverID = result.id
@@ -63,6 +67,14 @@ class Farm(models.Model):
 		#newServer.status = newServer.PENDING
 		newServer.status = newServer.START
 		newServer.save()
+
+		# import EC2 key pair
+		for env in self.client.getAllEnvironments():
+			if env.manufacture.name == "ec2":
+				environment = env
+				break
+		keyName = "simplecloud-" + info["server_name"]
+		environment.importEC2KeyPair(keyName)
 
 		# send message to client to notify creating server
 		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
