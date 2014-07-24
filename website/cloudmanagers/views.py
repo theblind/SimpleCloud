@@ -92,6 +92,22 @@ def ajax_platform_setting(request):
             result['message'] = "Unvalid Keys"
         return render_to_json_response(result, status = 200)
 
+def ajax_client_setting(request):
+    if request.is_ajax() and request.method == 'POST':
+        client = Client.objects.get(id = request.user.id)
+        client.name = request.POST.get('name')
+        client.fullName = request.POST.get('fullName')
+
+        result = {}
+        if res:
+            result['success'] = True
+            result['message'] = "User Settings Successfully Saved"
+        else:
+            result['success'] = False
+            result['message'] = "Unvalid Settings"
+        return render_to_json_response(result, status = 200)
+
+
 @login_required
 def project(request, project_id):
     context = {}

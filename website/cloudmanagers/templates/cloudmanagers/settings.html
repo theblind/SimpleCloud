@@ -212,22 +212,22 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                <div class="portlet">
                   <div class="portlet-body form">
                      <!-- BEGIN FORM-->
-                     <form action="#" class="horizontal-form">
+                     <form action="{% url 'cloudmanagers:xClientSetting' %}" method="post" class="horizontal-form" onSubmit="return false;">
                         <div class="form-body">
                            <h3 class="form-section">Person Info</h3>
                            <div class="row">
                               <div class="col-md-6">
                                  <div class="form-group">
-                                    <label class="control-label">First Name</label>
-                                    <input type="text" id="firstName" class="form-control" placeholder="Chee Kin">
+                                    <label class="control-label">Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" placeholder="Lim">
                                     <span class="help-block">This is inline help</span>
                                  </div>
                               </div>
                               <!--/span-->
                               <div class="col-md-6">
                                  <div class="form-group has-error">
-                                    <label class="control-label">Last Name</label>
-                                    <input type="text" id="lastName" class="form-control" placeholder="Lim">
+                                    <label class="control-label">Full Name</label>
+                                    <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Chee Kin">
                                     <span class="help-block">This field has error.</span>
                                  </div>
                               </div>
@@ -238,9 +238,9 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               <div class="col-md-6">
                                  <div class="form-group">
                                     <label class="control-label">Gender</label>
-                                    <select  class="form-control">
-                                       <option value="">Male</option>
-                                       <option value="">Female</option>
+                                    <select name="gender" class="form-control">
+                                       <option value="0">Male</option>
+                                       <option value="1">Female</option>
                                     </select>
                                     <span class="help-block">Select your gender</span>
                                  </div>
@@ -249,7 +249,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               <div class="col-md-6">
                                  <div class="form-group">
                                     <label class="control-label">Date of Birth</label>
-                                    <input type="text" class="form-control"  placeholder="dd/mm/yyyy">
+                                    <input type="text" name="birthDate" class="form-control"  placeholder="dd/mm/yyyy">
                                  </div>
                               </div>
                               <!--/span-->
@@ -259,7 +259,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               <div class="col-md-6">
                                  <div class="input-group">
                                     <span class="input-group-addon"><i class="icon-envelope"></i></span>
-                                    <input type="email" class="form-control" placeholder="Email Address">
+                                    <input type="email" name="email" class="form-control" placeholder="Email Address">
                                  </div>
                               </div>
                            </div>
