@@ -35,19 +35,19 @@ class Command(BaseCommand):
                                 except Exception, e:
                                     continue
 
+                                change_num = 1
                                 if change_num > 0:
-                                    print "Time to push"
+                                    publish(
+                                        client.name,
+                                        'wakeup',
+                                        {},
+                                        sender='server'
+                                    )
                                     publish(
                                         client.name,
                                         'update_instance',
-                                        {'name': server_new.name, 'status': new_status},
+                                        {'name': server_new.name, 'status': server_new.SERVER_STATUS[new_status][1]},
                                         sender='server'
                                     )
-
-        # publish(
-        #     'jasonniu',
-        #     'update_instance',
-        #     {'name': 'test server', 'status': 1},
-        # )
         
         #self.stdout.write('Successfully closed poll')# Dummy file to make this directory a package.

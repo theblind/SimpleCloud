@@ -1004,47 +1004,40 @@ var NotifySocket = function(){
         var options = {authToken: omnibus_auth_token};
 
         var connection = new Omnibus(transport, endpoint, options);
-        var channel = connection.openChannel('jasonniu');
+        var channel = connection.openChannel(omnibus_user);
 
-        // Add events on connection:
+/*        // Add events on connection:
         connection
         .on(Omnibus.events.CONNECTION_CONNECTED, function(event) {
             //$('.connection').addClass('open').text('Yes');
-            alert('conneted');
+            console.log('conneted');
         })
         .on(Omnibus.events.CONNECTION_AUTHENTICATED, function(event) {
             //$('.identification').addClass('open').text('Yes');
-            alert('CONNECTION_AUTHENTICATED')
-        });
+            console.log('CONNECTION_AUTHENTICATED')
+        });*/
 
         // Add events on channel:
         channel
-        .on(Omnibus.events.CHANNEL_SUBSCRIBED, function(event) {
+/*        .on(Omnibus.events.CHANNEL_SUBSCRIBED, function(event) {
             //$('.channel').addClass('open').text('Yes');
-            alert('CHANNEL_SUBSCRIBED')
-        })
+            console.log('CHANNEL_SUBSCRIBED')
+        })*/
         .on('update_instance', function (event) {
-            alert('I accept update info');
             console.log(event);
             // handle mouse moves form other users...
             if(event.data.sender == 'server'){
-                console.log("Get something about server info update");
+                var $toast = toastr["info"]("Server Status Updated.<br/> The status of your server <strong>\""+event.data.payload.name+"\"</strong> changed to <strong>"+event.data.payload.status+"</strong>.");
             }else{
                 console.log("Ignoring messages from nowhere");
             }
         })
         .on('disconnect', function (event) {
-/*            var player = players[event.data.sender];
-            if (player !== undefined) {
-                player.remove();
-                players[event.data.sender] = undefined;
-                delete(players[event.data.sender]);
-            }*/
-            alert('disconnect');
+            console.log('disconnect');
         });
 
         // Add mouse move event on window to send own mouse moves:
-/*        $('body').mousemove(function(e) {
+/*        $('body').click(function(e) {
             channel.send('update_instance', {top: e.pageY, left: e.pageX});
         });*/
     }
