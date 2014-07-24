@@ -19,4 +19,5 @@ urlpatterns = patterns('',
 	url(r'^ajax/terminate_server$', views.ajax_terminate_server, name = 'xTerminateServer'),
 	url(r'^ajax/platform_setting$', views.ajax_platform_setting, name = 'xPlatformSetting'),
 	url(r'^cron_update_instance/$', views.cron_update_instance, name='cron_update_instance'),
+	url(r'^ajax/client_setting$', views.ajax_client_setting, name = 'xClientSetting'),
 )

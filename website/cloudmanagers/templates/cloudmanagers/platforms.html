@@ -221,7 +221,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         <div class="portlet">
                            <div class="portlet-body form">
                               <!-- BEGIN FORM-->
-                              <form action="/cloudmanagers/platforms/save/" onsubmit = "return false;" class="horizontal-form">
+                              <form action="{% url 'cloudmanagers:xPlatformSetting' %}" onsubmit = "return false;" class="horizontal-form">
                                  <div class="form-body">
                                     <h3 class="form-section">Amazon EC2 Keys</h3>
                                     <div class="form-group has-success">
