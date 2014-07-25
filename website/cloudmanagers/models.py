@@ -3,6 +3,7 @@ from clients.models import Client, ClientEnvironmentProperty
 from benchmark.models import InstanceType, Manufacture
 import datetime
 import json
+from Crypto.PublicKey import RSA
 
 from util.IaaS.middleware import IaaSConnection
 from util.IaaS import usertoken
@@ -40,37 +41,51 @@ class Farm(models.Model):
 			"access_key": info["properties"]["access_key"]
 		}		
 
-		#token = usertoken.get_access_key(None, info['platform'])
 		info['server_location'] = 'us-west-2'
 		newServer.setConnection(token)
+
+		# import key pair
+		key = RSA.generate(2048)
+		publicKey = key.publickey().exportKey('OpenSSH')
+		privateKey = key.exportKey('PEM')
+		keyName = "simplecloud-" + info["server_name"]
+		try:
+			newServer.getConnection().import_key_pair(keyName, publicKey)
+			# import EC2 key pair
+			for env in self.client.getAllEnvironments():
+				if env.manufacture.name == instanceType.manufacture.name:
+					env.createSSHKey(keyName, privateKey, publicKey,
+						platform = instanceType.manufacture.name,
+						region = info['server_location'])
+					break
+		except:
+			pass
+			
+
 
 		# get Server info to buy instance
 		serverInfo = {}
 		serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
-		#serverInfo["key_name"] = info["key_name"]
-		serverInfo["instance_type"] = instanceType.alias_name
-		serverInfo["security_groups"] = ""
+		serverInfo["key_name"] = keyName
+		#serverInfo["instance_type"] = instanceType.alias_name
+		serverInfo["instance_type"] = "t1.micro"
+		serverInfo["security_groups"] = "default"
 
-		# receive reservation of buy instance action
-		#reservation = newServer.getConnection().buy_instance(serverInfo)
-		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], serverInfo["instance_type"])
-		result = reservation.instances[0]
+		try:
+			# receive reservation of buy instance action
+			#reservation = newServer.getConnection().buy_instance(serverInfo["image_id"], serverInfo)
+			reservation = newServer.getConnection().buy_instance_temporary(
+				serverInfo["image_id"], serverInfo["instance_type"], serverInfo["key_name"])
+			result = reservation.instances[0]
 
-		serverID = result.id
-		newServer.setServerId(serverID)
-		newServer.innerIPAddress = result.private_ip_address
-		newServer.dtLaunched = result.launch_time
-		#newServer.status = newServer.PENDING
-		newServer.status = newServer.START
-		newServer.save()
-
-		# import EC2 key pair
-		for env in self.client.getAllEnvironments():
-			if env.manufacture.name == "ec2":
-				environment = env
-				break
-		keyName = "simplecloud-" + info["server_name"]
-		environment.importEC2KeyPair(keyName)
+			newServer.setServerId(result.id)
+			newServer.innerIPAddress = result.private_ip_address
+			newServer.dtLaunched = result.launch_time
+			#newServer.status = newServer.PENDING
+			newServer.status = newServer.START
+			newServer.save()
+		except:
+			pass
 
 		# send message to client to notify creating server
 		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
