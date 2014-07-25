@@ -40,6 +40,25 @@ var FormComponents = function () {
             
         })
 
+        function formatCountry(state){
+            if(!state.id) return state.text;
+            return "<img class='flag' src='/static/cloudmanagers/img/flags/" + state.id.toLowerCase() + ".png'/>&nbsp;&nbsp;" + state.text;
+        }
+
+
+        $("#select2_country").select2({
+            placeholder: "Select a Country",
+            allowClear: true,
+            formatResult: formatCountry,
+            formatSelection: formatCountry,
+            escapeMarkup: function(m) { return m; }
+        });
+
+        var user_country = $("#select2_country").data('country');
+        if(user_country){
+            $("#select2_country").val(user_country).trigger("change");
+        }
+
         
     }
 

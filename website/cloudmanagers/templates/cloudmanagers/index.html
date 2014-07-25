@@ -316,7 +316,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                            {% for project in projects_list %}                                
                               <tr>
                                  <td>
-                                    <a href="#">{{project.name}}</a>
+                                    <a href="/cloudmanagers/project/{{ project.id }}">{{project.name}}</a>
                                  </td>
                                  <td>{{project.getAllServers|length}}</td>
                                  <td>{{project.dtAdded|date:"Y-m-d H:i:s"}}</td>
@@ -336,7 +336,6 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                      <div class="caption"><i class="icon-bell"></i>Notifications</div>
                      <div class="tools">
                         <a href="" class="collapse"></a>
-
                         <a href="" class="reload"></a>
                         <a href="" class="remove"></a>
                      </div>
@@ -344,11 +343,11 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                   <div class="portlet-body">
                      <!--BEGIN TABS-->
                      <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1_1" data-toggle="tab">System</a></li>
-                        <li><a href="#tab_1_2" data-toggle="tab">Projects</a></li>
+                        <li ><a href="#tab_1_1" data-toggle="tab">System</a></li>
+                        <li class="active"><a href="#tab_1_2" data-toggle="tab">Projects</a></li>
                      </ul>
                      <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1_1">
+                        <div class="tab-pane " id="tab_1_1">
                            <div class="scroller" style="height: 250px;" data-always-visible="1" data-rail-visible="0">
                               <ul class="feeds">
                               {% for message in sysmessage_list %}
@@ -378,30 +377,31 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               </ul>
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab_1_2">
+                        <div class="tab-pane active" id="tab_1_2">
                            <div class="scroller" style="height: 250px;" data-always-visible="1" data-rail-visible1="1">
                               <ul class="feeds">
                               {% for message in promessage_list %}
                                  <li>
-                                    <a href="#">
-                                       <div class="col1">
-                                          <div class="cont">
-                                             <div class="cont-col1">
-                                                <div class="label label-sm label-success">                        
-                                                   <i class="icon-bell"></i>
-                                                </div>
-                                             </div>
-                                             <div class="cont-col2">
-                                                <div class="desc">
-                                                 {{message.title}} &nbsp;&nbsp;  {{message.content}}
-                                                </div>
-                                             </div>
-                                          </div>
-                                       </div>
-                                       <div class="col2">
-                                       {{message.dtAdded|date:"Y-m-d H:i:s"}}
-                                       </div>
-                                    </a>
+                                   <div class="col1">
+                                      <div class="cont">
+                                         <div class="cont-col1">
+                                            <div class="label label-sm label-success">                        
+                                               <i class="icon-bell"></i>
+                                            </div>
+                                         </div>
+                                         <div class="cont-col2">
+                                            <div class="desc">
+                                              <a href="javascript:">{{message.title}}</a>
+                                            </div>
+                                            <div class="desc">
+                                              {{message.text}}
+                                            </div>
+                                         </div>
+                                      </div>
+                                   </div>
+                                   <div class="col2">
+                                   {{message.dtAdded|date:"Y-m-d H:i:s"}}
+                                   </div>
                                  </li>
                               {% endfor %}
                               </ul>

@@ -97,9 +97,10 @@ def ajax_platform_setting(request):
 def ajax_client_setting(request):
     if request.is_ajax() and request.method == 'POST':
         client = Client.objects.get(id = request.user.id)
-        client.name = request.POST.get('name')
+        client.phone = request.POST.get('phone')
         client.fullName = request.POST.get('fullName')
-	client.save()
+        client.country = request.POST.get('country')
+        client.save()
         result = {}
         result['success'] = True
         result['message'] = "User Settings Saved"

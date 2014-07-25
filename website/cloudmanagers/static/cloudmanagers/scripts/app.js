@@ -330,6 +330,35 @@ var App = function () {
         });
     }
 
+    var handleUserSettingAjax = function(){
+        jQuery('#save_userinfo').on('click', function(e){
+            e.preventDefault();
+             var fullName = $('input[name=fullName]').val();
+             var phone = $('input[name=phone]').val();
+             var country = $('select[name=country]').val();
+
+             var el = jQuery('.page-content');
+             App.blockUI(el);
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/client_setting',
+                dataType : "json",
+                data : {"fullName" : fullName, "phone" : phone, "country" : country},
+                success : function(res){
+                    App.unblockUI($(el));
+                    var $toast = toastr["success"]("Your settings have been saved.");
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    var $toast = toastr["error"]("User Setting Failed");
+                }
+             });
+
+        });
+    }
+
     // Helper function to calculate sidebar height for fixed sidebar layout.
     var _calculateFixedSidebarViewportHeight = function () {
         var sidebarHeight = $(window).height() - $('.header').height() + 1;
@@ -818,9 +847,11 @@ var App = function () {
             handleTheme(); // handles style customer tool
 
             //handle ajax
+            handleUserSettingAjax();
             handleCreateProjectAjax();
             handleAddServerAjax();
             handlePlatformSettingAjax();
+            
 
             //ui component handlers
              // handle fancy box
