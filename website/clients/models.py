@@ -215,12 +215,6 @@ class ClientEnvironment(models.Model):
 			"access_id": properties["access_id"],
 			"access_key": properties["access_key"]
 		}
-		"""
-		token = {
-			"access_id": "AKIAJ3PC3B6J6VVSNTGQ",
-			"access_key": "2Yjrq35Y8H3X2AGIhP+ZAvUDUZaddgzyGb/5fi9Z"
-		}
-		"""
 		connection = IaaSConnection(token, "ec2", region)
 		connection.import_key_pair(keyName, publicKey)
 

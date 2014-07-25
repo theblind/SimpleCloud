@@ -35,14 +35,10 @@ class Farm(models.Model):
 		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
 		# create connetion to buy instance
-		#token = {
-		#	"access_id": info["properties"]["access_id"],
-		#	"access_key": info["properties"]["access_key"]
-		#}		
 		token = {
-			"access_id": "AKIAJ3PC3B6J6VVSNTGQ",
-			"access_key": "2Yjrq35Y8H3X2AGIhP+ZAvUDUZaddgzyGb/5fi9Z"
-		}
+			"access_id": info["properties"]["access_id"],
+			"access_key": info["properties"]["access_key"]
+		}		
 
 		#token = usertoken.get_access_key(None, info['platform'])
 		info['server_location'] = 'us-west-2'
@@ -57,7 +53,7 @@ class Farm(models.Model):
 
 		# receive reservation of buy instance action
 		#reservation = newServer.getConnection().buy_instance(serverInfo)
-		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], "t1.micro")
+		reservation = newServer.getConnection().buy_instance_temporary(serverInfo["image_id"], serverInfo["instance_type"])
 		result = reservation.instances[0]
 
 		serverID = result.id
