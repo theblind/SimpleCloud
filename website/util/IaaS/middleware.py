@@ -76,6 +76,7 @@ class IaaSConnection(object):
 
 	def buy_instances(self, image_id, instance_info, *args, **kwds):
 		if self.provider == "ec2":
+			print instance_info
 			reservation = self.__buy_ec2_instances__(image_id, instance_info)
 			return reservation or []
 		elif self.provider == "azure":
@@ -83,10 +84,10 @@ class IaaSConnection(object):
 		else:
 			return None
 
-	def buy_instance_temporary(self, image_id, instance_type):
+	def buy_instance_temporary(self, image_id, instance_type, key_name):
 		reservation = self.conn.run_instances(
 			image_id,
-			key_name='kyle-lab',
+			key_name=key_name,
 			instance_type=instance_type,
 			security_groups=['default'])
 		return reservation

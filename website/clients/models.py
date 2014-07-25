@@ -4,10 +4,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import hashers
 
 from benchmark.models import Manufacture
-from Crypto.PublicKey import RSA
-
-from util.IaaS.middleware import IaaSConnection
-from util.IaaS import usertoken
 
 class ClientUserManager(BaseUserManager):
 	def create_user(self, email, name='anonymous', fullName='anonymous', password=None):
@@ -199,25 +195,12 @@ class ClientEnvironment(models.Model):
 	status = models.CharField(max_length = 1, choices = BINDING_STATUS, default = INACTIVE)
 
 
-	# import key name and save to SSHKey
-	def importEC2KeyPair(self, keyName, region = "us-west-2"):
-		key = RSA.generate(2048)
-		publicKey = key.publickey().exportKey('OpenSSH')
-		privateKey = key.exportKey('PEM')
-
+	# create SSHKey
+	def createSSHKey(self, keyName, privateKey, publicKey, platform = "ec2", region = "us-west-2"):
 		newSSHKey = SSHKey(environment = self, privateKey = privateKey, publicKey = publicKey,
-			platform = "ec2", cloudLocation = region, cloudKeyName = keyName)
+			platform = platform, cloudLocation = region, cloudKeyName = keyName)
 		newSSHKey.save()
-
-		# binding to iaas provider
-		properties = self.getAllProperties()
-		token = {
-			"access_id": properties["access_id"],
-			"access_key": properties["access_key"]
-		}
-		connection = IaaSConnection(token, "ec2", region)
-		connection.import_key_pair(keyName, publicKey)
-
+		
 	# create property for current environment
 	def createProperty(self,name,value):
 		cep, created = ClientEnvironmentProperty.objects.get_or_create(environment = self, name = name)
