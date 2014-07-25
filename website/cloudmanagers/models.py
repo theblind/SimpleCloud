@@ -67,8 +67,8 @@ class Farm(models.Model):
 		serverInfo = {}
 		serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
 		serverInfo["key_name"] = keyName
-		#serverInfo["instance_type"] = instanceType.alias_name
-		serverInfo["instance_type"] = "t1.micro"
+		serverInfo["instance_type"] = instanceType.alias_name
+		#serverInfo["instance_type"] = "t1.micro"
 		serverInfo["security_groups"] = "default"
 
 		try:
