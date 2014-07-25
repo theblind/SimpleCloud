@@ -143,7 +143,8 @@ def rolemarket(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
 
-    role_list  = list(Role.objects.all())
+    role_list  = list(Role.objects.all()[:36])
+ #   role_list = list(Role.objects.all())
     role_res = []
     for index, role in enumerate(role_list):
         role_res.append(role.getDetails())

@@ -254,99 +254,13 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                                        </tr>
                                        <tr class="">
                                           <td>Software:</td>
-                                          <td><img class="x-icon-role-small x-icon-role-small-{{ role.role_bev | first }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;{{role.role_soft | join:"," }}</td>
+                                          <td><img class="x-icon-role-small x-icon-role-small-{{ role.role_bev | first }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;{{role.role_soft | first}}</td>
                                        </tr>
                                     </tbody>
                                  </table>                                 
                               </div>
                            </div>
                         {% endfor %}
-                        {% comment %}
-                           <div class="col-md-4 col-sm-4 mix category_1">
-                              <div class="stat-block">
-                                 <table class="table table-hover">
-                                    <tbody>
-                                       <tr class="">
-                                          <td>Name:</td>
-                                          <td>base-centos-5-4</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Role ID:</td>
-                                          <td>17627</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Clouds:</td>
-                                          <td><img class="x-icon-platform-small x-icon-platform-small-ec2" title="Amazon EC2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>OS:</td>
-                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-centos">&nbsp;{{role.os}}</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Software:</td>
-                                          <td><img class="x-icon-role-small x-icon-role-small-base" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;None</td>
-                                       </tr>
-                                    </tbody>
-                                 </table>                                 
-                              </div>
-                           </div>
-                           <div class="col-md-4 col-sm-4 mix category_3">
-                              <div class="stat-block">
-                                 <table class="table table-hover">
-                                    <tbody>
-                                       <tr class="">
-                                          <td>Name:</td>
-                                          <td>app-apache-centos-ebs</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Role ID:</td>
-                                          <td>17627</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Clouds:</td>
-                                          <td><img class="x-icon-platform-small x-icon-platform-small-ec2" title="Amazon EC2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>OS:</td>
-                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-ubuntu">&nbsp;Ubuntu 10.04 Lucid</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Software:</td>
-                                          <td><img class="x-icon-role-small x-icon-role-small-app" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;Apache</td>
-                                       </tr>
-                                    </tbody>
-                                 </table>                                 
-                              </div>
-                           </div>
-                           <div class="col-md-4 col-sm-4 mix category_4">
-                              <div class="stat-block">
-                                 <table class="table table-hover">
-                                    <tbody>
-                                       <tr class="">
-                                          <td>Name:</td>
-                                          <td>memcached-debian7</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Role ID:</td>
-                                          <td>17627</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Clouds:</td>
-                                          <td><img class="x-icon-platform-small x-icon-platform-small-gce" title="Amazon EC2" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>OS:</td>
-                                          <td><img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" title="" class="x-icon-osfamily-small x-icon-osfamily-small-debian">&nbsp;Debian 7.5 Wheezy</td>
-                                       </tr>
-                                       <tr class="">
-                                          <td>Software:</td>
-                                          <td><img class="x-icon-role-small x-icon-role-small-memcached" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">&nbsp;Memcached</td>
-                                       </tr>
-                                    </tbody>
-                                 </table>                                 
-                              </div>
-                           </div>
-                        {% endcomment %}
                         </div>
                      </div>
                   </div>
