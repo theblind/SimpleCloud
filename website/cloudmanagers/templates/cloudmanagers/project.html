@@ -519,7 +519,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         </thead>
                         <tbody>
                             {% for server in servers_list %}
-                           <tr data-server="{{ server.id }}" data-status="{{ server.status }}" data-publicdns="{{ server.publicDNS }}" data-publicip="{{server.publicIP}}" data-privateip="{{server.innerIPAddress}}" data-location="{{server.location}}" data-secretGroup="{{server.secretGroup}}" data-manufacture="{{server.manufacture}}"data-replaceid="{{server.serverID}}">
+                           <tr data-server="{{ server.id }}" data-status="{{ server.status }}" data-publicdns="{{ server.publicDNS }}" data-publicip="{{server.publicIP}}" data-privateip="{{server.innerIPAddress}}" data-location="{{server.location}}" data-secretgroup="{{server.secretGroup}}" data-manufacture="{{server.manufacture}}"data-replaceid="{{server.serverID}}">
                               <td style="text-align:center">
                                   <img class="x-icon-platform-small x-icon-platform-small-{{ server.manufacture }}" title="{{ server.manufacture }}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>

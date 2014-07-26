@@ -4,7 +4,7 @@ from django.template.context import RequestContext
 from django.utils import simplejson
 from cloudmanagers.models import Farm, Server, ServerProperty, Role ,Message
 from benchmark.models import InstanceType, Manufacture
-from clients.models import Client, ClientBackend
+from clients.models import Client, ClientBackend, SSHKey
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -268,7 +268,16 @@ def ajax_terminate_server(request):
         result = {}
         result['success'] = True
         result['message'] = "Server successfully Started"
-        return render_to_json_response(result, status = 200)    
+        return render_to_json_response(result, status = 200) 
+
+def ajax_download_sshkey(request, key_id): 
+    sshkey = SSHKey.objects.get(id = key_id)
+    key_info = sshkey.getDetails()
+    private_key = key_info['privateKey']
+    # generate the file
+    response = HttpResponse(private_key, mimetype='application/x-download')
+    response['Content-Disposition'] = 'attachment; filename=mykey.pem'
+    return response
 
 def cron_update_instance(request):
     call_command('updateinstance')

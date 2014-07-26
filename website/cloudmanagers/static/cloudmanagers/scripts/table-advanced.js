@@ -227,11 +227,16 @@ var TableAdvanced = function () {
         });
     }
 
+    var handleDownloadSSHKey = function( key_id ){
+        var $toast = toastr["success"]("Your SSHKey will be Downloaded soon.");
+        window.location = '/cloudmanagers/ajax/download_sshkey/'+key_id;
+    }
+
     var initContextMenu = function() {
         $('#sample_2 td').contextMenu({
             menuSelector: "#serverMenu",
             menuSelected: function (invokedOn, selectedMenu){
-                var element_selected = invokedOn.parent()
+                var element_selected = invokedOn.parent();
                 var server_id = element_selected.data("server");
                 if(selectedMenu.text() == "Stop"){
                     handleStopServerAjax(server_id);
@@ -249,25 +254,24 @@ var TableAdvanced = function () {
                         publicIP: element_selected.data('publicip'),
                         privateIP: element_selected.data('privateip'),
                         location: element_selected.data('location'),
-                        secretGroup: element_selected.data('secretGroup'),
+                        secretGroup: element_selected.data('secretgroup'),
                         manufacture: element_selected.data('manufacture'),
                         replaceid: element_selected.data('replaceid')
                     };
                     console.log(server_info);
                     handleExtendedInfo(server_info);
                 }
-                var msg = "You selected the menu item '" + selectedMenu.text() +
-                    "' on the value '" + invokedOn.parent().data('server') + "'";
-                console.log(msg);
             }
         });
 
         $('#key_table td').contextMenu({
             menuSelector: "#keyMenu",
             menuSelected: function (invokedOn, selectedMenu){
-                var msg = "You selected the menu item '" + selectedMenu.text() +
-                    "' on the value '" + invokedOn.text() + "'";
-                console.log(msg);
+                var element_selected = invokedOn.parent();
+                var key_id = element_selected.data("key");
+                if(selectedMenu.text() == "Download Private Key"){
+                    handleDownloadSSHKey(key_id);
+                }
             }
         });
     }

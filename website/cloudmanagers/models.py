@@ -83,6 +83,7 @@ class Farm(models.Model):
 			newServer.dtLaunched = result.launch_time
 			#newServer.status = newServer.PENDING
 			newServer.status = newServer.START
+			newServer.secretGroup = serverInfo['security_groups']
 			newServer.save()
 		except:
 			pass

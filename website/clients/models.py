@@ -284,6 +284,7 @@ class SSHKey(models.Model):
 	def getDetails(self):
 		info = {}
 
+		info["id"] = self.id
 		info["keyType"] = self.keyType
 		info["privateKey"] = self.privateKey
 		info["publicKey"] = self.publicKey

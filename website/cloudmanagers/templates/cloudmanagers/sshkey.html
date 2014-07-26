@@ -189,7 +189,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
          <!-- BEGIN SAMPLE CONTEXT MENU-->         
          <ul id="keyMenu" class="dropdown-menu context-menu" role="menu" style="display:none" >
             <li><a id="dlprivate" tabindex="-1" href="javascript:">Download Private Key</a></li>
-            <li><a id="dlpublic" tabindex="-1" href="javascript:">Download SSH Public Key</a></li>
+<!--             <li><a id="dlpublic" tabindex="-1" href="javascript:">Download SSH Public Key</a></li> -->
             <li><a id="deletekey" tabindex="-1" href="javascript:">Delete</a></li>
          </ul>    
          <!-- END SAMPLE PORTLET CONTEXT MENU-->          
@@ -251,7 +251,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                         </thead>
                         <tbody>
                         {% for key in ssh_keys_list %}
-                           <tr >
+                           <tr data-key="{{key.id}}">
                               <td style="">
                                   <img class="x-icon-platform-small x-icon-platform-small-{{ key.manufacture }}" title="{{ key.manufacture}}" src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
                               </td>
