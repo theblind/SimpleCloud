@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 import boto.ec2 as ec2
+import qingcloud.iaas
 
 
 # connect to ec2
@@ -14,6 +15,13 @@ def __connect_to_ec2__(token, region):
 def __connect_to_azure__():
 	pass
 
+def __connect_to_qingcloud__(token, region):
+	return qingcloud.iaas.connect_to_zone(
+		str(region),
+		str(token['access_id']),
+		str(token['access_key'])
+	)
+
 class IaaSConnection(object):
 	"""docstring for IaaSConnection"""
 
@@ -22,11 +30,14 @@ class IaaSConnection(object):
 		self.arg = arg
 		self.provider = provider
 		self.token = token
+		self.region = region
 
 		if provider == "ec2":
 			self.conn = __connect_to_ec2__(token, region)
 		elif provider == "azure":
 			self.conn = __connect_to_azure(token, region)
+		elif provider == "qingcloud":
+			self.conn = __connect_to_qingcloud__(token, region)
 		else:
 			self.conn = None
 
@@ -74,6 +85,35 @@ class IaaSConnection(object):
 			dry_run=params_dict['dry_run'] or False
 		)
 
+	def __buy_qingcloud__instances__(image_id, instance_info):
+		params_dict = {
+			"image_id": image_id, "instance_type": None, "cpu": None,
+			"memory": None, "count": None, "instance_name": None, "login_mode": None,
+			"login_keypair": None, "login_passwd": None, "vxnets.n": None, "security_group": None,
+			"volumes.n": None, "need_newsid": None, "need_userdata": None,
+			"userdata_type": None, "userdata_value": None, 
+			"zone": None
+		}
+		params_dict.update(instance_info)
+
+		return self.conn.run_instances(
+			image_id = params_dict['image_id'] or None, 
+			instance_type=params_dict['instance_type'] or None,
+			cpu=params_dict['cpu'] or None,
+			memory=params_dict['memory'] or None,
+			count=params_dict['count'] or 1,
+			instance_name=params_dict['instance_name'] or None,
+			login_mode=params_dict['login_mode'] or None,
+			login_keypair=params_dict['login_keypair'] or None,
+			login_passwd=params_dict['login_passwd'] or None,
+			security_group=params_dict['security_group'] or None,
+			need_newsid=params_dict['need_newsid'] or None,
+			need_userdata=params_dict['need_userdata'] or None,
+			userdata_type=params_dict['userdata_type'] or None,
+			userdata_value=params_dict['userdata_value'] or None,
+			zone=params_dict['zone'] or None
+		)
+
 	def buy_instances(self, image_id, instance_info, *args, **kwds):
 		if self.provider == "ec2":
 			print instance_info
@@ -81,10 +121,12 @@ class IaaSConnection(object):
 			return reservation or []
 		elif self.provider == "azure":
 			pass
+		elif self.provider == "qingcloud":
+			response = self.__buy_qingcloud__instances__(image_id, instance_info)
 		else:
 			return None
 
-	def buy_instance_temporary(self, image_id, instance_type, key_name):
+	def buy_ec2_instance_temporary(self, image_id, instance_type, key_name):
 		reservation = self.conn.run_instances(
 			image_id,
 			key_name=key_name,
@@ -92,28 +134,46 @@ class IaaSConnection(object):
 			security_groups=['default'])
 		return reservation
 
+	def buy_qingcloud_instance_temporary(self, image_id, instance_type, login_passwd):
+		response = self.conn.run_instances(
+			image_id = image_id,
+			instance_type = instance_type,
+			login_mode = "passwd",
+			login_passwd = login_passwd,
+			zone = self.region
+		)
+		return response
+
 	# call the boto api to start a list of isntance
 	def start_instances(self, instance_ids):
 		if self.provider == "ec2":
 			insts = self.conn.start_instances(instance_ids)
+		elif self.provider == "qingcloud":
+			insts = self.conn.start_instances(instances = [instance_ids])
 
 		return insts or []
 
 	def stop_instances(self, instance_ids):
 		if self.provider == "ec2":
 			insts = self.conn.stop_instances(instance_ids)
+		elif self.provider == "qingcloud":
+			insts = self.conn.stop_instances(instances = [instance_ids])
 
 		return insts or []
 
 	def terminate_instances(self, instance_ids):
 		if self.provider == "ec2":
 			insts = self.conn.terminate_instances(instance_ids)
+		elif self.provider == "qingcloud":
+			insts = self.conn.terminate_instances(instances = [instance_ids])
 
 		return insts or []
 
 	def reboot_instances(self, instance_ids):
 		if self.provider == "ec2":
 			insts = self.conn.reboot_instances(instance_ids)
+		elif self.provider == "qingcloud":
+			insts = self.conn.restart_instances(instances = [instance_ids])
 
 		return insts or []
 

@@ -1,26 +1,22 @@
 from IaaS.middleware import IaaSConnection
-from IaaS import usertoken
-import boto.ec2 as ec2
+from django.contrib.auth.models import User
+import qingcloud.iaas
 
-from Crypto.PublicKey import RSA
 
 if __name__ == '__main__':
-    provider = "ec2"
+    provider = "qingcloud"
     token = {
-        "access_id": '123',
-        "access_key": '123'
+        "access_id": 'YZYITLSRAXONXSLUMQBK',
+        "access_key": 'TijzWiPFaqz21NJquhcZSSOtCnvmTvCFMxCohBOl'
     } 
-#    token = usertoken.get_access_key(None, provider)
-    conn = IaaSConnection(token, provider, "us-west-2")
-    print conn.conn.get_all_regions()
 
-    """
-	key = RSA.generate(2048)
-	content = key.publickey().exportKey('OpenSSH')
-	result = conn.conn.import_key_pair("test", content)
-	print result
-	"""
-	# reservation = conn.buy_instance_temporary('ami-fa9cf1ca', 't1.micro')
+    conn = IaaSConnection(token, provider, "gd1")
+
+    login_pass = User.objects.make_random_password(length = 20)
+
+    print login_pass
+
+	#reservation = conn.buy_qingcloud_instance_temporary('centos64x86a', 'c1m1', login_pass)
 
 	# serverID = reservation.instances[0].id
 	# print serverID

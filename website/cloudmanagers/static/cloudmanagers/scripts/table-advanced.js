@@ -219,7 +219,29 @@ var TableAdvanced = function () {
         $('#exinfo-pubip').text(server_info.publicIP);
         $('#exinfo-innerip').text(server_info.privateIP);
         $('#exinfo-secretg').text(server_info.secretGroup);
-        $('#exinfo-platform').addClass('x-icon-platform-e'+server_info.manufacture).attr('title', server_info.manufacture);
+        $('#exinfo-platform').addClass('x-icon-platform-'+server_info.manufacture).attr('title', server_info.manufacture);
+        
+        if(server_info.manufacture == "ec2"){
+            var ec2_location = '\
+                <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="location-ap-northeast-1"></div>\
+                <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="location-ap-southeast-1"></div>\
+                <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="location-ap-southeast-2"></div>\
+                <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="location-eu-west-1"></div>\
+                <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="location-sa-east-1"></div>\
+                <div data-location="us-east-1" style="top:34px;left:48px" class="location selected" title="us-east-1" id="location-us-east-1"></div>\
+                <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="location-us-west-1"></div>\
+                <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="location-us-west-2"></div>\
+            ';
+            $("#exinfo-location").html(ec2_location);
+        }
+        else if(server_info.manufacture == "qingcloud"){
+            var qingcloud_location = '\
+                <div data-location="pek1" style="top:32px;left:160px" class="location" title="pek1" id="location-ap-northeast-1"></div>\
+                <div data-location="gd1" style="top:42px;left:160px" class="location" title="gd1" id="location-ap-southeast-1"></div>\
+            ';
+            $("#exinfo-location").html(qingcloud_location);
+        }
+
         $('#exinfo-location > .location').each(function(){
             if($(this).data('location') == server_info.location){
                 $(this).addClass('selected');
@@ -258,7 +280,7 @@ var TableAdvanced = function () {
                         manufacture: element_selected.data('manufacture'),
                         replaceid: element_selected.data('replaceid')
                     };
-                    console.log(server_info);
+                    //console.log(server_info);
                     handleExtendedInfo(server_info);
                 }
             }

@@ -6,7 +6,9 @@ import json
 from Crypto.PublicKey import RSA
 
 from util.IaaS.middleware import IaaSConnection
-from util.IaaS import usertoken
+
+import logging
+logger = logging.getLogger(__name__)
 
 # --------------- Farm Start ---------------
 
@@ -35,58 +37,88 @@ class Farm(models.Model):
 	def createServer(self, role, instanceType, info={}):
 		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
-		# create connetion to buy instance
-		token = {
-			"access_id": info["properties"]["access_id"],
-			"access_key": info["properties"]["access_key"]
-		}		
+		if info["platform"] == "ec2":
+			# create connetion to buy instance
+			token = {
+				"access_id": info["properties"]["access_id"],
+				"access_key": info["properties"]["access_key"]
+			}		
 
-		info['server_location'] = 'us-west-2'
-		newServer.setConnection(token)
+			#info['server_location'] = 'us-west-2'
+			newServer.setConnection(token)
 
-		# import key pair
-		key = RSA.generate(2048)
-		publicKey = key.publickey().exportKey('OpenSSH')
-		privateKey = key.exportKey('PEM')
-		keyName = "simplecloud-" + info["server_name"]
-		try:
-			newServer.getConnection().import_key_pair(keyName, publicKey)
-			# import EC2 key pair
-			for env in self.client.getAllEnvironments():
-				if env.manufacture.name == instanceType.manufacture.name:
-					env.createSSHKey(keyName, privateKey, publicKey,
-						platform = instanceType.manufacture.name,
-						region = info['server_location'])
-					break
-		except:
-			pass
-			
+			# import key pair
+			key = RSA.generate(2048)
+			publicKey = key.publickey().exportKey('OpenSSH')
+			privateKey = key.exportKey('PEM')
+			keyName = "simplecloud-" + info["server_name"]
+			try:
+				newServer.getConnection().import_key_pair(keyName, publicKey)
+				# import EC2 key pair
+				for env in self.client.getAllEnvironments():
+					if env.manufacture.name == instanceType.manufacture.name:
+						env.createSSHKey(keyName, privateKey, publicKey,
+							platform = instanceType.manufacture.name,
+							region = info['server_location'])
+						break
+			except:
+				pass
 
+			# get Server info to buy instance
+			serverInfo = {}
+			serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
+			serverInfo["key_name"] = keyName
+			serverInfo["instance_type"] = instanceType.alias_name
+			#serverInfo["instance_type"] = "t1.micro"
+			serverInfo["security_groups"] = "default"
 
-		# get Server info to buy instance
-		serverInfo = {}
-		serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
-		serverInfo["key_name"] = keyName
-		serverInfo["instance_type"] = instanceType.alias_name
-		#serverInfo["instance_type"] = "t1.micro"
-		serverInfo["security_groups"] = "default"
+			try:
+				# receive reservation of buy instance action
+				#reservation = newServer.getConnection().buy_instance(serverInfo["image_id"], serverInfo)
+				reservation = newServer.getConnection().buy_ec2_instance_temporary(
+					serverInfo["image_id"], serverInfo["instance_type"], serverInfo["key_name"])
+				result = reservation.instances[0]
 
-		try:
-			# receive reservation of buy instance action
-			#reservation = newServer.getConnection().buy_instance(serverInfo["image_id"], serverInfo)
-			reservation = newServer.getConnection().buy_instance_temporary(
-				serverInfo["image_id"], serverInfo["instance_type"], serverInfo["key_name"])
-			result = reservation.instances[0]
+				newServer.setServerId(result.id)
+				newServer.innerIPAddress = result.private_ip_address
+				newServer.dtLaunched = result.launch_time
+				#newServer.status = newServer.PENDING
+				newServer.status = newServer.START
+				newServer.secretGroup = serverInfo['security_groups']
+				newServer.save()
+			except:
+				pass
+		elif info["platform"] == "qingcloud":
+			# create connetion to buy instance
+			token = {
+				"access_id": info["properties"]["access_id"],
+				"access_key": info["properties"]["access_key"]
+			}		
 
-			newServer.setServerId(result.id)
-			newServer.innerIPAddress = result.private_ip_address
-			newServer.dtLaunched = result.launch_time
-			#newServer.status = newServer.PENDING
-			newServer.status = newServer.START
-			newServer.secretGroup = serverInfo['security_groups']
-			newServer.save()
-		except:
-			pass
+			#info['server_location'] = 'us-west-2'
+			newServer.setConnection(token)
+
+			# get Server info to buy instance
+			serverInfo = {}
+			serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
+			serverInfo["login_passwd"] = Client.objects.make_random_password(length = 20)
+			serverInfo["instance_type"] = instanceType.alias_name
+
+			try:
+				# receive reservation of buy instance action
+				reservation = newServer.getConnection().buy_qingcloud_instance_temporary(
+					serverInfo["image_id"], serverInfo["instance_type"], serverInfo["login_passwd"])
+
+				if reservation['ret_code'] == 0:
+					newServer.setServerId(reservation['instances'][0])
+					newServer.dtLaunched = datetime.datetime.now()
+					#newServer.status = newServer.PENDING
+					newServer.status = newServer.START
+					newServer.save()
+				else:
+					return False
+			except:
+				pass
 
 		# send message to client to notify creating server
 		Message.objects.createProjectMessage(self.client.id, self.id, newServer.id,
@@ -497,6 +529,18 @@ class RoleManager(models.Manager):
 		result = []
 		for role in roles.keys():
 			result.append(roles[role])
+		return result
+
+	def getAvailableRolesByManufactureWithoutPlatforms(self, manufacture):
+		images = RoleImage.objects.getRoleImagesByManufacture(manufacture)
+		result = []
+		roles = {}
+		for i in images:
+			role = i.role
+			if role.name not in roles:
+				info = role.getBasicInfo()
+				roles[role.name] = info
+				result.append(info)
 		return result
 
 

@@ -336,6 +336,9 @@ Header and header elements.
   height: 45px;
   margin-right: 20px;
   display: block; 
+  position: :absolute;
+  top: 0;
+  right: 0;
 }
 
 .header .navbar-nav > li {

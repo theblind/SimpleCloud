@@ -47,15 +47,15 @@ class InstanceTypeManager(models.Manager):
 
 		return list(result)
 
-	def getAllEC2Instances(self):
+	def getInstanceByManufacture(self, manufacture):
 		result = []
 
 		state = set()
-		querySet = self.filter(manufacture_id = "ec2").order_by('alias_name')
+		querySet = self.filter(manufacture_id = manufacture).order_by('alias_name')
 		for instance in querySet:
 			if instance.alias_name not in state:
 				state.add(instance.alias_name)
-				result.append(instance)
+				result.append(instance.getDetails())
 
 		return result
 
@@ -95,12 +95,13 @@ class InstanceType(models.Model):
 	def getDetails(self):
 		info = {}
 
+		info['id'] = self.id
 		info["manufacture"] = self.manufacture.name
 		info["alias_name"] = self.alias_name
 		info["vcpu"] = self.vcpu
-		info["vram"] = self.vram
+		info["vram"] = str(self.vram)
 		info["storage"] = self.storage
-		info["band_width"] = self.band_width
+		info["band_width"] = str(self.band_width)
 		info["region"] = self.region
 		info["os_type"] = self.os_type
 		info["os_text"] = self.os_text

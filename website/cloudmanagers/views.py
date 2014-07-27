@@ -8,13 +8,13 @@ from clients.models import Client, ClientBackend, SSHKey
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+import cloudmanagers.models as cloudmanagers
 
 from django.core.management import call_command
 
 import json
 
 from util.IaaS.middleware import IaaSConnection
-from util.IaaS import usertoken
 
 # Create your views here.
 @login_required
@@ -123,20 +123,8 @@ def project(request, project_id):
     context['servers_list'] = servers_list
     context['project_id'] = int(project_id)
 
-    roles_list = client.getAllEnvironmentsAvailableRoles()
-    for index,role in enumerate(roles_list):
-        roles_list[index]['behaviors_list'] = role['behaviors'].split(',')
-
-        roles_list[index]['architecture'] = ''
-        for platform in role['platforms']:
-            if platform['architecture']:
-                roles_list[index]['architecture'] = platform['architecture'] 
-
-    context['roles_list'] = roles_list
-
-    context['instance_type_list'] = InstanceType.objects.getAllEC2Instances()
-
     return render(request, 'cloudmanagers/project.html', context, context_instance = RequestContext(request))
+
 
 @login_required
 def rolemarket(request):
@@ -171,7 +159,7 @@ def sshkey(request):
     return render(request, 'cloudmanagers/sshkey.html', context, context_instance = RequestContext(request))
 
 def render_to_json_response(context, **response_kwargs):
-    data = simplejson.dumps(context)
+    data = json.dumps(context)
     response_kwargs['content_type'] = 'application/json'
     return HttpResponse(data, **response_kwargs)
 
@@ -278,6 +266,19 @@ def ajax_download_sshkey(request, key_id):
     response = HttpResponse(private_key, mimetype='application/x-download')
     response['Content-Disposition'] = 'attachment; filename=mykey.pem'
     return response
+
+
+def ajax_get_role(request):
+    if request.method == 'POST':
+        manufacture = request.POST['manufacture']
+        result = {}
+        result['roles_list'] = Role.objects.getAvailableRolesByManufactureWithoutPlatforms(manufacture = manufacture)
+        for index,role in enumerate(result['roles_list']):
+            result['roles_list'][index]['behaviors_list'] = role['behaviors'].split(',')
+        result['instance_type_list'] = InstanceType.objects.getInstanceByManufacture(manufacture = manufacture)
+        return render_to_json_response(result, status = 200)
+    else :
+        return HttpResponse("Bad Request")
 
 def cron_update_instance(request):
     call_command('updateinstance')

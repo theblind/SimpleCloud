@@ -139,6 +139,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'cloudmanagers': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
 

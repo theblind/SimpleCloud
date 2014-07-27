@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from clients.models import Client, ClientEnvironment, ClientEnvironmentProperty
 from cloudmanagers.models import Server
 from util.IaaS.middleware import IaaSConnection
-from util.IaaS import usertoken
 from omnibus.api import publish
 from pprint import pprint
 

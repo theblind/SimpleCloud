@@ -156,11 +156,12 @@ class Client(models.Model):
 		return result
 
 	def getAllEnvironmentsAvailableRoles(self):
-		result = []
+		result = {}
 		environments = self.getAllEnvironments()
 
 		for env in environments:
-			result.extend(env.getAllAvailableRoles())
+			result[env.manufacture.name] = []
+			result[env.manufacture.name].extend(env.getAllAvailableRoles())
 
 		return result
 
@@ -248,7 +249,8 @@ class ClientEnvironment(models.Model):
 	def getAllAvailableRoles(self):
 		import cloudmanagers.models as cloudmanagers
 
-		return cloudmanagers.Role.objects.getAvailableRolesByManufacture(manufacture = self.manufacture)
+		#return cloudmanagers.Role.objects.getAvailableRolesByManufacture(manufacture = self.manufacture)
+		return cloudmanagers.Role.objects.getAvailableRolesByManufactureWithoutPlatforms(manufacture = self.manufacture)
 
 
 # save properties for environment

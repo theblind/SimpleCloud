@@ -21,4 +21,5 @@ urlpatterns = patterns('',
 	url(r'^cron_update_instance/$', views.cron_update_instance, name='cron_update_instance'),
 	url(r'^ajax/client_setting$', views.ajax_client_setting, name = 'xClientSetting'),
 	url(r'^ajax/download_sshkey/(?P<key_id>\d+)$', views.ajax_download_sshkey, name = 'xDownloadSshkey'),
+	url(r'^ajax/get_role$', views.ajax_get_role, name = 'xGetRole'),
 )

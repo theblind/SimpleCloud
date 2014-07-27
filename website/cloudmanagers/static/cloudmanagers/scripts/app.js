@@ -288,9 +288,76 @@ var App = function () {
         });
     }
 
+    var _getRoleAndInstance = function(manufacture){
+        var el = jQuery('#addserver > form');
+        App.blockUI(el);
+        $.ajax({
+            type : "POST",
+            cache : false,
+            url : '/cloudmanagers/ajax/get_role',
+            dataType : "json",
+            data : {"manufacture" : manufacture},
+            success : function(res){
+                App.unblockUI($(el));
+                $('#select2_role,#select2_instancetype').empty();
+                $('#role_os').val('');
+                $.each(res.roles_list, function(index, role){
+                    $('#select2_role').append('<option value="'+role.role_id+'" data-behav="'+ role.behaviors_list[0] +'" data-os="'+role.os+'">'+role.name+'</option>')
+                });
+                $.each(res.instance_type_list, function(index, instance_type){
+                    $('#select2_instancetype').append('<option value="'+ instance_type.id +'" data-resource="'+ instance_type.vcpu +' vCPU, '+ instance_type.vram +' GB">'+ instance_type.alias_name +'</option>');
+                });
+
+                FormComponents.init();
+               
+            },
+            error : function(xhr, ajaxOptions, thrownError){
+                App.unblockUI($(el));
+                var $toast = toastr["error"]("Get Role Info Failed");
+            }
+        });
+
+    }
+
     var handleAddServerAjax = function() {
         //handle Map location select
-        jQuery('.map > .location').on('click', function(){
+
+
+        jQuery('#addserver .x-icon-platform').on('click', function(){
+            $('#addserver .x-icon-platform').removeClass('x-btn-pressed');
+            $(this).addClass('x-btn-pressed');
+
+            if($(this).data('platform') == "ec2"){
+                var ec2_location = '\
+                    <div data-location="ap-northeast-1" style="top:32px;left:182px" class="location" title="ap-northeast-1" id="location-ap-northeast-1"></div>\
+                    <div data-location="ap-southeast-1" style="top:54px;left:156px" class="location" title="ap-southeast-1" id="location-ap-southeast-1"></div>\
+                    <div data-location="ap-southeast-2" style="top:76px;left:186px" class="location" title="ap-southeast-2" id="location-ap-southeast-2"></div>\
+                    <div data-location="eu-west-1" style="top:24px;left:88px" class="location" title="eu-west-1" id="location-eu-west-1"></div>\
+                    <div data-location="sa-east-1" style="top:70px;left:68px" class="location" title="sa-east-1" id="location-sa-east-1"></div>\
+                    <div data-location="us-east-1" style="top:34px;left:48px" class="location selected" title="us-east-1" id="location-us-east-1"></div>\
+                    <div data-location="us-west-1" style="top:40px;left:28px" class="location" title="us-west-1" id="location-us-west-1"></div>\
+                    <div data-location="us-west-2" style="top:30px;left:22px" class="location" title="us-west-2" id="location-us-west-2"></div>\
+                ';
+                $("#addserver .map").html(ec2_location);
+                _getRoleAndInstance("ec2");
+
+            }
+            else if($(this).data('platform') == "qingcloud"){
+                var qingcloud_location = '\
+                    <div data-location="pek1" style="top:32px;left:160px" class="location" title="pek1" id="location-ap-northeast-1"></div>\
+                    <div data-location="gd1" style="top:42px;left:160px" class="location" title="gd1" id="location-ap-southeast-1"></div>\
+                ';
+                $("#addserver .map").html(qingcloud_location);
+                _getRoleAndInstance("qingcloud");
+            }
+            jQuery('#addserver .map > .location').on('click', function(){
+                $('.location').removeClass('selected');
+                $(this).addClass('selected');
+            });            
+        });
+
+
+        jQuery('#addserver .map > .location').on('click', function(){
             $('.location').removeClass('selected');
             $(this).addClass('selected');
         });
