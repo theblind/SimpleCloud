@@ -34,21 +34,19 @@ class Farm(models.Model):
 	def createServer(self, role, instanceType, info={}):
 		newServer = Server(farm = self, role = role, instanceType = instanceType, name = info["server_name"], location = info['server_location'])
 
+		# create connetion to buy instance
+		token = {
+			"access_id": info["properties"]["access_id"],
+			"access_key": info["properties"]["access_key"]
+		}		
+		newServer.setConnection(token)
+
 		if info["platform"] == "ec2":
-			# create connetion to buy instance
-			token = {
-				"access_id": info["properties"]["access_id"],
-				"access_key": info["properties"]["access_key"]
-			}		
-
-			#info['server_location'] = 'us-west-2'
-			newServer.setConnection(token)
-
 			# import key pair
 			key = RSA.generate(2048)
 			publicKey = key.publickey().exportKey('OpenSSH')
 			privateKey = key.exportKey('PEM')
-			keyName = "simplecloud-" + info["server_name"]
+			keyName = "simplecloud-" + self.name + "-" + info["server_name"]
 			try:
 				newServer.getConnection().import_key_pair(keyName, publicKey)
 				# import EC2 key pair
@@ -86,15 +84,6 @@ class Farm(models.Model):
 			except:
 				pass
 		elif info["platform"] == "qingcloud":
-			# create connetion to buy instance
-			token = {
-				"access_id": info["properties"]["access_id"],
-				"access_key": info["properties"]["access_key"]
-			}		
-
-			#info['server_location'] = 'us-west-2'
-			newServer.setConnection(token)
-
 			# get Server info to buy instance
 			serverInfo = {}
 			serverInfo["image_id"] = role.images.get(location = info["server_location"]).name
@@ -105,13 +94,20 @@ class Farm(models.Model):
 				# receive reservation of buy instance action
 				reservation = newServer.getConnection().buy_qingcloud_instance_temporary(
 					serverInfo["image_id"], serverInfo["instance_type"], serverInfo["login_passwd"])
+				print reservation
 
 				if reservation['ret_code'] == 0:
-					newServer.setServerId(reservation['instances'][0])
+					serverID = reservation['instances'][0]
+					print serverID
+					newServer.setServerId(serverID)
 					newServer.dtLaunched = datetime.datetime.now()
-					#newServer.status = newServer.PENDING
 					newServer.status = newServer.START
+
+					eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
 					newServer.save()
+					
+					time.sleep(8)
+					newServer.getConnection().binding_qingcloud_eip(1, eip_name, serverID)
 				else:
 					return False
 			except:

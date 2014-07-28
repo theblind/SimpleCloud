@@ -140,6 +140,7 @@ class IaaSConnection(object):
 			instance_type = instance_type,
 			login_mode = "passwd",
 			login_passwd = login_passwd,
+			vxnets = ['vxnet-0'],
 			zone = self.region
 		)
 		return response
@@ -194,10 +195,11 @@ class IaaSConnection(object):
 	def import_key_pair(self, key_name, public_key_material):
 		return self.conn.import_key_pair(key_name, public_key_material)
 
-	def allocate_qingcloud_eip(self, zone, bandwidth, instance_id, **kwds):
-		ret = self.conn.allocate_eips(bandwidth=bandwidth, zone=zone)
-		eip_id = ret["eips"][0]
-		ret = self.conn.associate_eip(eip=eip_id, instance=instance_id, zone=zone)
-		ret = self.conn.describe_eips(instance_id=instance_id, zone=zone)
-		eip_addr = ret["eip_set"][0]["eip_addr"]
-		return eip_addr
+	def binding_qingcloud_eip(self, bandwidth, eip_name, instance_id, **kwds):
+		eip = self.conn.allocate_eips(bandwidth=bandwidth, eip_name=eip_name)
+
+		eip_id = eip["eips"][0]
+		self.conn.associate_eip(eip=eip_id, instance=instance_id)
+		result = self.conn.describe_eips(instance_id=instance_id)
+		address = result["eip_set"][0]["eip_addr"]
+		return address
