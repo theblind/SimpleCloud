@@ -213,44 +213,67 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                <div class="tabbable tabbable-custom">
                   <ul class="nav nav-tabs">
                      <li class="active"><a href="#tab_0" data-toggle="tab">EC2</a></li>
-                     <li><a  href="#tab_1" data-toggle="tab">Azure</a></li>
+                     <li><a  href="#tab_1" data-toggle="tab">QingCloud</a></li>
                      <li><a  href="#tab_2" data-toggle="tab">Aliyun</a></li>
-                     <li><a  href="#tab_3" data-toggle="tab">RackSpace</a></li>
+                     <li><a  href="#tab_3" data-toggle="tab">Azure</a></li>
                   </ul>
                   <div class="tab-content">
                      <div class="tab-pane active" id="tab_0">
                         <div class="portlet">
                            <div class="portlet-body form">
                               <!-- BEGIN FORM-->
-                              <form action="{% url 'cloudmanagers:xPlatformSetting' %}" onsubmit = "return false;" class="horizontal-form">
+                              <form id="ec2_setting" action="{% url 'cloudmanagers:xPlatformSetting' %}" onsubmit = "return false;" class="horizontal-form" >
                                  <div class="form-body">
                                     <h3 class="form-section">Amazon EC2 Keys</h3>
                                     <div class="form-group has-success">
                                        <label class="control-label">Account Number</label>
-                                       <input type="text" id="accountNumber" class="form-control" placeholder="Input your account number" name="accountNumber" value = "{{ properties.account_number }}" \>
+                                       <input type="text" class="form-control" placeholder="Input your account number" name="accountNumber" value = "{{ ec2_properties.account_number }}" \>
                                        <a href="https://console.aws.amazon.com/billing/home#/account" target="_blank"><span class="help-block">Get Your Account Number</span></a>
                                     </div>
                                     <div class="form-group has-success">
                                        <label class="control-label">Access Key ID</label>
-                                       <input type="text" id="accessKey" class="form-control" placeholder="Input your access key ID" name="accessKey" value="{{ properties.access_id }}" \>
+                                       <input type="text" class="form-control" placeholder="Input your access key ID" name="accessKey" value="{{ ec2_properties.access_id }}" \>
                                     </div>
                                     <div class="form-group has-success">
                                        <label class="control-label">Secret Access Key</label>
-                                       <input type="text" id="secretAccessKey" class="form-control" placeholder="Input your secret key" name="secretAccessKey" value="{{ properties.access_key }}" \>
+                                       <input type="text" class="form-control" placeholder="Input your secret key" name="secretAccessKey" value="{{ ec2_properties.access_key }}" \>
                                        <a href="https://console.aws.amazon.com/iam/#home" target="_blank"><span class="help-block">Get Your Access Key ID and Secret Access Key</span></a>
                                     </div>                                    
                                  </div>
                                  <div class="form-actions right">
                                     <button type="button" class="btn btn-default">Cancel</button>
-                                    <button type="submit" class="btn btn-info" id="save_platform"><i class="icon-ok"></i> Save</button>
+                                    <button type="submit" class="btn btn-info" id="save_ec2_platform"><i class="icon-ok"></i> Save</button>
                                  </div>
                               </form>
                               <!-- END FORM--> 
                            </div>
                         </div>                        
                      </div>
-                     <div class="tab-pane" id="tab_1">
-                        Working on.
+                     <div class="tab-pane active" id="tab_1">
+                        <div class="portlet">
+                           <div class="portlet-body form">
+                              <!-- BEGIN FORM-->
+                              <form id="qingcloud_setting" action="{% url 'cloudmanagers:xPlatformSetting' %}" onsubmit = "return false;" class="horizontal-form">
+                                 <div class="form-body">
+                                    <h3 class="form-section">QingCloud Keys</h3>
+                                    <div class="form-group has-success">
+                                       <label class="control-label">Access Key ID</label>
+                                       <input type="text" class="form-control" placeholder="Input your access key ID" name="accessKey" value="{{ qingcloud_properties.access_id }}" \>
+                                    </div>
+                                    <div class="form-group has-success">
+                                       <label class="control-label">Secret Access Key</label>
+                                       <input type="text" class="form-control" placeholder="Input your secret key" name="secretAccessKey" value="{{ qingcloud_properties.access_key }}" \>
+                                       <a href="https://console.qingcloud.com/console/access_keys/" target="_blank"><span class="help-block">Get Your Access Key ID and Secret Access Key</span></a>
+                                    </div>                                    
+                                 </div>
+                                 <div class="form-actions right">
+                                    <button type="button" class="btn btn-default">Cancel</button>
+                                    <button type="submit" class="btn btn-info" id="save_qingcloud_platform"><i class="icon-ok"></i> Save</button>
+                                 </div>
+                              </form>
+                              <!-- END FORM--> 
+                           </div>
+                        </div>                        
                      </div>
                      <div class="tab-pane" id="tab_2">
                         Working on.

@@ -256,11 +256,11 @@ var App = function () {
 
     //handle all ajax request
     var handlePlatformSettingAjax = function() {
-        jQuery('#save_platform').on('click', function(e){
+        jQuery('#save_ec2_platform').on('click', function(e){
              e.preventDefault();
-             var account_num = $('input[name=accountNumber]').val();
-             var access_key = $('input[name=accessKey]').val();
-             var secret_key = $('input[name=secretAccessKey]').val();
+             var account_num = $('#ec2_setting input[name=accountNumber]').val();
+             var access_key = $('#ec2_setting input[name=accessKey]').val();
+             var secret_key = $('#ec2_setting input[name=secretAccessKey]').val();
             
              var el = jQuery('.page-content');
              App.blockUI(el);
@@ -270,7 +270,37 @@ var App = function () {
                 cache : false,
                 url : '/cloudmanagers/ajax/platform_setting',
                 dataType : "json",
-                data : {"accountNumber" : account_num, "accessKey" : access_key, "secretAccessKey" : secret_key},
+                data : {"accountNumber" : account_num, "accessKey" : access_key, "secretAccessKey" : secret_key, "manufacture" : "ec2"},
+                success : function(res){
+                    App.unblockUI($(el));
+                    if(res.success){
+                        var $toast = toastr["success"](res['message']);
+                    }else{
+                        var $toast = toastr["error"](res['message']);
+                    }         
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    var $toast = toastr["error"]("Platform Keys Save Failed.");
+                }
+             });
+
+        });
+
+        jQuery('#save_qingcloud_platform').on('click', function(e){
+             e.preventDefault();
+             var access_key = $('#qingcloud_setting input[name=accessKey]').val();
+             var secret_key = $('#qingcloud_setting input[name=secretAccessKey]').val();
+            
+             var el = jQuery('.page-content');
+             App.blockUI(el);
+
+             $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/platform_setting',
+                dataType : "json",
+                data : {"accessKey" : access_key, "secretAccessKey" : secret_key, "manufacture" : "qingcloud"},
                 success : function(res){
                     App.unblockUI($(el));
                     if(res.success){

@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import hashers
+from util.IaaS.middleware import IaaSConnection
 
 from benchmark.models import Manufacture
 
@@ -104,12 +105,49 @@ class Client(models.Model):
 
 	# collect access key to bind an environment
 	def bindingEnvironment(self, manufacture, **kwargs):
-		newEnvironment = ClientEnvironment(client = self, manufacture = manufacture)
-		newEnvironment.setActive()
-		newEnvironment.save()
+		if manufacture.name == "ec2": 
+			token = {
+				"access_id": kwargs['access_id'],
+				"access_key": kwargs['access_key']
+			} 
+			connection = IaaSConnection(token, manufacture.name, "us-west-2") 
+			try:
+				regions = connection.conn.get_all_regions()
+			except Exception, e:
+				return False
 
-		for (name, value) in kwargs.items():
-			newEnvironment.createProperty(name = name, value = value)
+			newEnvironment, created = ClientEnvironment.objects.get_or_create(client = self, manufacture = manufacture)
+			if created:
+				newEnvironment.setActive()
+				newEnvironment.save()
+
+			for (name, value) in kwargs.items():
+				newEnvironment.createProperty(name = name, value = value)
+
+			return True
+		elif manufacture.name == "qingcloud": 
+			token = {
+				"access_id": kwargs['access_id'],
+				"access_key": kwargs['access_key']
+			} 
+			connection = IaaSConnection(token, manufacture.name, "pek1") 
+			try:
+				ret = connection.conn.describe_instances(limit = 1)
+				if ret['ret_code'] != 0:
+					return False
+			except Exception, e:
+				return False
+
+			newEnvironment, created = ClientEnvironment.objects.get_or_create(client = self, manufacture = manufacture)
+			if created:
+				newEnvironment.setActive()
+				newEnvironment.save()
+
+			for (name, value) in kwargs.items():
+				if value:
+					newEnvironment.createProperty(name = name, value = value)
+
+			return True
 
 
 	# get all environments which are active

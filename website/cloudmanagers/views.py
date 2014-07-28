@@ -72,17 +72,21 @@ def platforms(request):
     context = {}
     client = Client.objects.get(id = request.user.id)
     manufacture = Manufacture.objects.get(name = "ec2")
-    context['properties'] = client.getPropertiesByManufacture(manufacture)
+    context['ec2_properties'] = client.getPropertiesByManufacture(manufacture)
+
+    manufacture = Manufacture.objects.get(name = "qingcloud")
+    context['qingcloud_properties'] = client.getPropertiesByManufacture(manufacture)
 
     return render(request, 'cloudmanagers/platforms.html', context, context_instance = RequestContext(request))
 
 def ajax_platform_setting(request):
     if request.is_ajax() and request.method == 'POST':
         accountNumber = request.POST.get('accountNumber')
+        platform = request.POST.get('manufacture')
         accessKey = request.POST.get('accessKey')
         secretAccessKey = request.POST.get('secretAccessKey')
         client = Client.objects.get(id = request.user.id)
-        manufacture = Manufacture.objects.get(name = 'ec2')
+        manufacture = Manufacture.objects.get(name = platform)
         res = client.bindingEnvironment(manufacture = manufacture, account_number = accountNumber, access_id = accessKey, access_key = secretAccessKey)
         
         result = {}
