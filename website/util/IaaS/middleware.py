@@ -193,3 +193,11 @@ class IaaSConnection(object):
 
 	def import_key_pair(self, key_name, public_key_material):
 		return self.conn.import_key_pair(key_name, public_key_material)
+
+	def allocate_qingcloud_eip(self, zone, bandwidth, instance_id, **kwds):
+		ret = self.conn.allocate_eips(bandwidth=bandwidth, zone=zone)
+		eip_id = ret["eips"][0]
+		ret = self.conn.associate_eip(eip=eip_id, instance=instance_id, zone=zone)
+		ret = self.conn.describe_eips(instance_id=instance_id, zone=zone)
+		eip_addr = ret["eip_set"][0]["eip_addr"]
+		return eip_addr
