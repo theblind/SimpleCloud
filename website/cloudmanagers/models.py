@@ -102,12 +102,12 @@ class Farm(models.Model):
 					newServer.setServerId(serverID)
 					newServer.dtLaunched = datetime.datetime.now()
 					newServer.status = newServer.START
-
-					eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
-					newServer.save()
 					
 					time.sleep(8)
-					newServer.getConnection().binding_qingcloud_eip(1, eip_name, serverID)
+					eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
+					publicIP = newServer.getConnection().binding_qingcloud_eip(1, eip_name, serverID)
+					newServer.publicIPAddress = publicIP
+					newServer.save()
 				else:
 					return False
 			except:

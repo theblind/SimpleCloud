@@ -131,7 +131,7 @@ class IaaSConnection(object):
 			image_id,
 			key_name=key_name,
 			instance_type=instance_type,
-			security_groups=['launch-wizard-1'])
+			security_groups=['default'])
 		return reservation
 
 	def buy_qingcloud_instance_temporary(self, image_id, instance_type, login_passwd):
