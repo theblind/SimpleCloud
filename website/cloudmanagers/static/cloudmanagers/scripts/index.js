@@ -13,12 +13,31 @@ var Index = function () {
             });
         },
 
-        initJVMAP: function () {
+        initJVMAP: function (map_server_list) {
 
             var showMap = function () {
                 jQuery('.vmaps').hide();
                 jQuery('#vmap_world').show();
             }
+
+            markers = [];
+
+            latLng_info = {
+                'ap-southeast-1' : [1.34 , 103.82],
+                'ap-southeast-2' : [-33.82,151.21],
+                'ap-northeast-1' : [35.70,139.69],
+                'us-east-1' : [37.54, -78.65],
+                'us-west-1' : [37.13,-119.49],
+                'us-west-2' : [44.21, -120.61],
+                'eu-west-1' : [53.49,-7.72],
+                'sa-east-1' : [-23.49, -46.63],
+                'pek1' : [39.93, 116.41],
+                'gd1' : [23.43,113.27],
+
+            }
+            $.each(map_server_list, function(index, map_server){
+                markers.push({latLng: latLng_info[map_server['location']], name: map_server['manufacture']+" : "+map_server['location']+"<br/>Instance Number: "+map_server['server_num']});
+            });
 
             var setMap = function () {
                 jQuery('#vmap_world').vectorMap({
@@ -34,12 +53,7 @@ var Index = function () {
                       }
                     },
                     backgroundColor: '#383f47',
-                    markers: [
-                      {latLng: [1.34, 103.82], name: 'Amazon : ap-southeast-1<br/>Instance Number: 3'},
-                      {latLng: [37.54, -78.65], name: 'Amazon : us-east-1<br/>Instance Number : 5'},
-                      {latLng: [44.21, -120.61], name: 'Amazon : us-west-2<br/>Instance Number : 5'},
-                      {latLng: [-23.49, -46.63], name: 'Amazon : sa-east-1<br/>Instance Number : 1'}
-                    ]
+                    markers: markers,
                 });
             }
 

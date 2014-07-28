@@ -329,7 +329,7 @@ var App = function () {
             data : {"manufacture" : manufacture},
             success : function(res){
                 App.unblockUI($(el));
-                $('#select2_role,#select2_instancetype').empty();
+                $('#select2_role,#select2_instancetype,#instance_resource').empty();
                 $('#role_os').val('');
                 $.each(res.roles_list, function(index, role){
                     $('#select2_role').append('<option value="'+role.role_id+'" data-behav="'+ role.behaviors_list[0] +'" data-os="'+role.os+'">'+role.name+'</option>')

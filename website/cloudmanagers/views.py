@@ -21,13 +21,33 @@ from util.IaaS.middleware import IaaSConnection
 def index(request):
 
     client = Client.objects.get(id = request.user.id)
-    servers_num = len(client.getAllServers())
+    all_servers = client.getAllServers()
+    map_server_list = []
+    for index, server in enumerate(all_servers):
+        #terminated server
+        if server.status == 0:
+            break
+
+        temp_added = False
+        manufacture_name = server.instanceType.manufacture.name
+        location = server.location
+        for index, map_server in enumerate(map_server_list):
+            if map_server['manufacture'] == manufacture_name and map_server['location'] == location:
+                map_server_list[index]['server_num'] += 1
+                temp_added = True
+                break
+        if not temp_added:
+            map_server_list.append({"manufacture" : manufacture_name, "location" : location, "server_num" : 1})
+
+    servers_num = len(all_servers)
     sshkey_num = len(client.getAllEnvironmentsSSHKeys())
 
     context = {
-              'servers_num':servers_num,              
-              'sshkey_num':sshkey_num,
-              }
+        'map_server_list' : map_server_list,
+        'servers_num':servers_num,              
+        'sshkey_num':sshkey_num,
+    }
+
     return render(request, 'cloudmanagers/index.html',context, context_instance = RequestContext(request))
 
 

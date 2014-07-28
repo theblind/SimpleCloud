@@ -617,7 +617,8 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
          UIToastr.init();    
          App.init(); // initlayout and core plugins
          Index.init();
-         Index.initJVMAP(); // init index page's custom scripts
+
+         Index.initJVMAP([{% for map_server in map_server_list %}{manufacture: "{{map_server.manufacture}}", location : "{{map_server.location}}", server_num: {{map_server.server_num}} },{% endfor %}]); 
          Index.initChat();
          Index.initPeityElements();
          Index.initDashboardDaterange();
