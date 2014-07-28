@@ -214,7 +214,7 @@ var TableAdvanced = function () {
 
     var handleExtendedInfo = function(server_info) {
         $('#exinfo-id').text(server_info.replaceid);
-        $('#exinfo-status').addClass('label-'+server_info.status).text(server_info.status);
+        $('#exinfo-status').attr('class', 'label label-md label-'+server_info.status).text(server_info.status);
         $('#exinfo-pubdns').text(server_info.publicDNS);
         $('#exinfo-pubip').text(server_info.publicIP);
         $('#exinfo-innerip').text(server_info.privateIP);

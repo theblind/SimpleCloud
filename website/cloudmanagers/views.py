@@ -135,7 +135,6 @@ def ajax_client_setting(request):
 @login_required
 def project(request, project_id):
     context = {}
-    client = Client.objects.get(id = request.user.id)
 
     project = Farm.objects.get(id = project_id)
     context['current_project'] = project
@@ -143,7 +142,6 @@ def project(request, project_id):
     servers_list = []
     for index, server in enumerate(servers):
         servers_list.append(server.getDetails())
-        servers_list[index]['name'] = server.name
     context['servers_list'] = servers_list
     context['project_id'] = int(project_id)
 
@@ -303,6 +301,15 @@ def ajax_get_role(request):
         return render_to_json_response(result, status = 200)
     else :
         return HttpResponse("Bad Request")
+
+def ajax_get_server_list(request):
+    if request.method == 'POST':
+        project = Farm.objects.get(id = int(request.POST['project_id']))
+        servers = project.getAllServers()
+        servers_list = []
+        for index, server in enumerate(servers):
+            servers_list.append(server.getDetails())
+        return render_to_json_response(servers_list, status = 200)
 
 def cron_update_instance(request):
     call_command('updateinstance')

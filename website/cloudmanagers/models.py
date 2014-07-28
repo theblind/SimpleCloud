@@ -7,9 +7,6 @@ from Crypto.PublicKey import RSA
 
 from util.IaaS.middleware import IaaSConnection
 
-import logging
-logger = logging.getLogger(__name__)
-
 # --------------- Farm Start ---------------
 
 # Farm represent a task for cloud servers
@@ -302,6 +299,7 @@ class Server(models.Model):
 		info = {}
 
 		info["id"] = self.id
+		info["name"] = self.name
 		info["manufacture"] = self.instanceType.manufacture.name
 		info["role"] = self.role.name
 		info["serverID"] = self.replaceServerID

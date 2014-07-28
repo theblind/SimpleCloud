@@ -456,7 +456,7 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                   <div class="portlet-title">
                      <div class="caption"><i class="icon-globe"></i>Server List</div>
                      <div class="tools">
-                        <a href="javascript:;" class="reload"></a>
+                        <a href="javascript:;" id="update_server_table" class="reload"></a>
                      </div>
                      <div class="actions">
                         <div class="btn-group">
@@ -504,10 +504,10 @@ Purchase: http://themeforest.net/item/conquer-responsive-admin-dashboard-templat
                               </td>
                               <td >{{ server.name }}</td>
                               <td >{{ server.role }}</td>
-                              <td style="text-align:center" >
+                              <td style="text-align:center" class="td-status">
                                   <span class="label label-sm label-{{server.status}}" >{{ server.status }}</span>
                               </td>
-                              <td >{{ server.publicIP }}</td>
+                              <td class="td-pubip">{{ server.publicIP }}</td>
                               <td >{{ server.instanceType }}</td>
                               <td >{{ server.location }}</td>
                               <td >{{ server.launchTime }}</td>

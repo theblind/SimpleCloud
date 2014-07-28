@@ -456,6 +456,44 @@ var App = function () {
         });
     }
 
+    var handleUpdateServerTable = function(){
+        jQuery('body').on('click', '#update_server_table', function (e) {
+            e.preventDefault();
+            var el = jQuery(this).closest(".portlet").children(".portlet-body");
+            App.blockUI(el);
+
+            var project_id = $('input[name=newserver_projectid]').val();
+
+            $.ajax({
+                type : "POST",
+                cache : false,
+                url : '/cloudmanagers/ajax/get_server_list',
+                dataType : "json",
+                data : {"project_id" : project_id},
+                success : function(res){
+                    $.each(res, function(index, server){
+                        server_ele = $('tr[data-server='+server.id+']');
+                        server_ele.data('status', server.status);
+                        server_ele.data('publicdns', server.publicDNS);
+                        server_ele.data('publicip', server.publicIP);
+                        server_ele.data('privateip', server.innerIPAddress);
+                        server_ele.data('secretgroup', server.secretGroup);
+
+                        server_ele.children('.td-status').html('<span class="label label-sm label-'+server.status+'" >'+ server.status +'</span>');
+                        server_ele.children('.td-pubip').html(server.publicIP ? server.publicIP : 'None');
+                    });
+                    App.unblockUI($(el));
+                },
+                error : function(xhr, ajaxOptions, thrownError){
+                    App.unblockUI($(el));
+                    var $toast = toastr["error"]("Update Server List Failed");
+                }
+             });
+        });
+
+    }
+
+
     // Helper function to calculate sidebar height for fixed sidebar layout.
     var _calculateFixedSidebarViewportHeight = function () {
         var sidebarHeight = $(window).height() - $('.header').height() + 1;
@@ -621,14 +659,14 @@ var App = function () {
             jQuery(this).closest(".portlet").remove();
         });
 
-        jQuery('body').on('click', '.portlet > .portlet-title > .tools > a.reload', function (e) {
+/*        jQuery('body').on('click', '.portlet > .portlet-title > .tools > a.reload', function (e) {
             e.preventDefault();
             var el = jQuery(this).closest(".portlet").children(".portlet-body");
             App.blockUI(el);
             window.setTimeout(function () {
                 App.unblockUI(el);
             }, 1000);
-        });
+        });*/
 
         jQuery('body').on('click', '.portlet > .portlet-title > .tools > .collapse, .portlet .portlet-title > .tools > .expand', function (e) {
             e.preventDefault();
@@ -948,6 +986,7 @@ var App = function () {
             handleCreateProjectAjax();
             handleAddServerAjax();
             handlePlatformSettingAjax();
+            handleUpdateServerTable();
             
 
             //ui component handlers
