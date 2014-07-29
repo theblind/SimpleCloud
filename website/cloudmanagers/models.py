@@ -77,8 +77,8 @@ class Farm(models.Model):
 				newServer.setServerId(result.id)
 				newServer.innerIPAddress = result.private_ip_address
 				newServer.dtLaunched = result.launch_time
-				#newServer.status = newServer.PENDING
-				newServer.status = newServer.START
+				newServer.status = newServer.PENDING
+				#newServer.status = newServer.START
 				newServer.secretGroup = serverInfo['security_groups']
 				newServer.save()
 			except:
@@ -256,8 +256,8 @@ class Server(models.Model):
 			new_status = self.SERVER_STATUS[self.STOP][1],
 			title = 'Server Stop', text = self.name + ' has been successfully stopped.')
 
-		#self.status = self.STOPPING
-		self.status = self.STOP
+		self.status = self.STOPPING
+		#self.status = self.STOP
 		self.dtShutDown = datetime.datetime.now()
 
 		# connect to iaas platform
