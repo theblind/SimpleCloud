@@ -141,11 +141,11 @@ class InstanceType(models.Model):
 
 		if self.manufacture.name == 'Aliyun':
 			if price.pricing_cycle == "hour":
-				info["pph"] = str(price.prices / 3)
-				info["ppm"] = str(price.prices * 24 * 30 / 3)
+				info["pph"] = "%.2f" % (price.prices / 3)
+				info["ppm"] = "%.2f" % (price.prices * 24 * 30 / 3)
 			elif price.pricing_cycle == "month":
 				info["pph"] = "%.2f" % (price.prices / (24 * 30) / 3)
-				info["ppm"] = str(price.prices / 3)
+				info["ppm"] = "%.2f" % (price.prices / 3)
 
 		info["unit"] = price.monetary_unit
 
