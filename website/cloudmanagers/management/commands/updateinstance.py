@@ -27,15 +27,18 @@ class Command(BaseCommand):
                                     if instance.state == status[1]:
                                         new_status = status[0]
                                         break
-
-                                change_num = Server.objects.filter(replaceServerID = instance.id).update(publicIPAddress = instance.ip_address, publicDNS = instance.public_dns_name, status = new_status)
                                 try:
-                                    server_new = Server.objects.get(replaceServerID = instance.id)
+                                    change_server = Server.objects.get(replaceServerID = instance.id)
                                 except Exception, e:
                                     continue
+                                change_server.publicIPAddress = instance.ip_address
+                                change_server.publicDNS = instance.public_dns_name
+                                old_status = change_server.status
+                                change_server.status = new_status
+                                change_server.save()
 
-                                change_num = 1
-                                if change_num > 0:
+                                #change_num = 1
+                                if old_status != new_status:
                                     publish(
                                         client.name,
                                         'wakeup',
@@ -45,7 +48,7 @@ class Command(BaseCommand):
                                     publish(
                                         client.name,
                                         'update_instance',
-                                        {'name': server_new.name, 'status': server_new.SERVER_STATUS[new_status][1]},
+                                        {'name': change_server.name, 'status': change_server.SERVER_STATUS[new_status][1]},
                                         sender='server'
                                     )
         
