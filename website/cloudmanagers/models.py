@@ -102,6 +102,17 @@ class Farm(models.Model):
 					newServer.setServerId(serverID)
 					newServer.dtLaunched = datetime.datetime.now()
 					newServer.status = newServer.START
+
+					# import EC2 key pair
+					for env in self.client.getAllEnvironments():
+						if env.manufacture.name == instanceType.manufacture.name:
+							keyName = "simplecloud-" + self.name + "-" + info["server_name"]
+							env.createSSHKey(keyName,
+								privateKey = serverInfo["login_passwd"],
+								publicKey = "",
+								platform = instanceType.manufacture.name,
+								region = info['server_location'])
+							break
 					
 					time.sleep(8)
 					eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
