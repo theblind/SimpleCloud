@@ -34,6 +34,8 @@ class Command(BaseCommand):
                                 change_server.publicIPAddress = instance.ip_address
                                 change_server.publicDNS = instance.public_dns_name
                                 old_status = change_server.status
+                                if old_status == 0:
+                                    continue
                                 change_server.status = new_status
                                 change_server.save()
 
