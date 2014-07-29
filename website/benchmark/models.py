@@ -139,6 +139,14 @@ class InstanceType(models.Model):
 			info["pph"] = "%.2f" % (price.prices / (24 * 30))
 			info["ppm"] = str(price.prices)
 
+		if manufacture == 'Aliyun':
+			if price.pricing_cycle == "hour":
+				info["pph"] = str(price.prices / 3)
+				info["ppm"] = str(price.prices * 24 * 30 / 3)
+			elif price.pricing_cycle == "month":
+				info["pph"] = "%.2f" % (price.prices / (24 * 30) / 3)
+				info["ppm"] = str(price.prices / 3)
+
 		info["unit"] = price.monetary_unit
 
 		return info
