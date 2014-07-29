@@ -114,10 +114,10 @@ class Farm(models.Model):
 								region = info['server_location'])
 							break
 					
-					time.sleep(8)
-					eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
-					publicIP = newServer.getConnection().binding_qingcloud_eip(1, eip_name, serverID)
-					newServer.publicIPAddress = publicIP
+					#time.sleep(8)
+					#eip_name = 'simplecloud-' + self.name + "-" + info["server_name"]
+					#publicIP = newServer.getConnection().binding_qingcloud_eip(1, eip_name, serverID)
+					#newServer.publicIPAddress = str(publicIP)
 					newServer.save()
 				else:
 					return False
